@@ -72,10 +72,23 @@ the article. Add a theme here when it shows up in 2+ cases; link the cases.
 - **Shows up in:** CASE-001.
 - **WoW expression:** the healer/tank crisis eased only when Blizzard re-itemized
   and rebalanced hybrids/tanks (a system patch), not when guild leaders reformed.
+  Cleanest example: Blizzard's 2011 **"Dungeon Finder — Call to Arms"** *added
+  rewards* (satchels, mounts) for the scarce tank/healer role — the developer chose
+  **incentives** for the exact problem guild leaders "solved" by coercion.
 - **Corporate expression:** retention collapse reverses only with real
   compensation/structure change, not pep talks or values posters.
 - **Why they match:** the behavior is a rational response to incentives; change
   the incentives or the behavior stands.
+
+---
+
+> **Deep-research note (2026-07-25):** Round-1 deep research added heavy academic
+> anchoring for all five themes (see `literature.md` and each case's
+> `deep-research.md`), and forced one honest refinement to the **Gatekeeping-as-
+> risk-shifting** theme: the gating metric (GearScore/RaiderIO; degrees/LeetCode) is
+> a **noisy, biased, gameable proxy** for competence — correlated with skill via
+> selection effects — **not a "meaningless" one.** The critique is *inflation past
+> function + asymmetry + cost-redistribution*, not "all bars are fake."
 
 <!--
 Template for a theme entry:

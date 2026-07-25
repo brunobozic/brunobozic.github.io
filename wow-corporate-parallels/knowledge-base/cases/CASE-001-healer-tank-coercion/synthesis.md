@@ -77,6 +77,48 @@ disanalogies (pay, exit cost, voluntariness) don't break the parallel — they
 explain why the guild version is *faster and clearer*, which is the whole thesis
 of the project.
 
+## Deep-research update (Round 1 — 2026-07-25)
+
+New evidence **strengthens** the case and sharpens its honesty (full detail in
+`deep-research.md`):
+
+- **Loyalty→exploitation now rests on the primary paper** — Stanley, Neck & Neck
+  (2023, *J. Experimental Social Psychology*): loyal workers are selectively
+  targeted for unpaid/extra work, and it's **self-reinforcing** (accepting it earns
+  the "loyal" label that invites more). This is the empirical spine of the
+  "family/duty/extra-mile" mechanism.
+- **The tightest real-world "healer" analog:** nurse research. Aiken (JAMA 2002)
+  ties overloading the scarce role to burnout *and* patient mortality; a 2024 study
+  finds **mandatory (coerced) overtime** is the workload factor tied to intent-to-
+  leave, with authors recommending it be **banned**. "Forcing the healer to keep
+  healing drives them out" is now evidenced in the literal healthcare version.
+- **Motivation-crowding** (Deci/Koestner/Ryan 1999; Frey & Jegen 2001) supplies the
+  *why*: controlling, coercive levers crowd out the intrinsic drive that made
+  someone load-bearing. Coercion is not a free lever.
+- **Cleanest illustration of the thesis:** Blizzard's 2011 **"Dungeon Finder — Call
+  to Arms"** — facing the *same* tank/healer shortage, the **developer added rewards
+  (satchels, mounts)** while guild leaders coerced. Incentives vs. compliance, run
+  as a natural experiment inside the same game.
+- **Academic backing for "guilds bureaucratize into workplaces"**: Ahlström & Fors
+  (2024) "workification" in a *Classic* guild; Yee's "Labor of Fun"; Lukacs et al.
+  on emotional labor; Ducheneaut et al. (CHI 2007) showing **class balance predicts
+  guild survival** — the structural correlate of role scarcity.
+
+**Honest qualifications now recorded (do not drop from the article):**
+- Not all loyalty is exploited — Meyer & Allen's **affective** (healthy) vs.
+  **continuance/normative** (trapped/guilt) commitment. The target is exploited
+  commitment, not loyalty as such.
+- Retention often runs through **genuine social bonds** (Debeauvais et al. 2011:
+  real friends/family are the strongest retention lever) — "guild family" sometimes
+  names something real. And commitment is well-predicted by satisfaction + sunk
+  investment (Investment Model), not only fear.
+- Blizzard's own diagnosis framed the shortage as driven by **responsibility/
+  pressure**, not merely under-reward — so the fix may need to cut *load*, not just
+  add pay. This refines (doesn't refute) the "fix incentives" claim.
+
+Rating unchanged at **STRONG** — the new primary evidence outweighs the
+qualifications, which mostly narrow *which* loyalty/scarcity we mean.
+
 ## Cross-references
 
 - **Related cases:** none yet (CASE-001 is the first).

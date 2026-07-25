@@ -77,6 +77,45 @@ persistent community documentation on the WoW side. The disanalogies sharpen
 rather than weaken the point: the guild's fast feedback is exactly why its version
 self-corrects sooner while the corporate one festers.
 
+## Deep-research update (Round 1 — 2026-07-25)
+
+New evidence **strengthens** the case, adds a conceptual bridge, and forces one
+honest self-correction (full detail in `deep-research.md`):
+
+- **Primary sources now anchor the corporate side:** Fuller & Raman's *Dismissed by
+  Degrees* (67% of postings require a degree vs. 16% of incumbents), **Spence's
+  signaling theory** (education as signal independent of productivity), **Collins'**
+  credential-as-closure, the **Kim & Low** connected-hiring stat (37% of external
+  CEOs tied to the hiring board vs. ~5% by chance), **Rivera's** cultural matching,
+  and **Baert's** experiment (risk aversion → conformist hiring). The gatekeeper-
+  self-interest driver is now evidenced, not just asserted.
+- **The conceptual bridge:** Consalvo's **"gaming capital"** — mastery/score as
+  social currency — is the game-studies twin of the corporate **credential/signal**.
+  GearScore and a diploma do the *same social work*: a legible token that sorts
+  insiders from outsiders. This is the tightest link between the two sides.
+- **Self-correction (important):** our "score ≠ competence" line is **too strong**.
+  Theorycraft communities produce genuine competence (Steinkuehler & Duncan 2008)
+  and high scorers skew toward the analytic power-gamer cohort — so score and skill
+  are **positively correlated via selection**, even though the metric doesn't
+  *measure* play and is trivially gamed (off-spec inflation, boosting). The honest
+  claim is **"noisy, biased, gameable proxy," not "meaningless proxy."** Same
+  correction applies to degrees/LeetCode: weak-but-nonzero signal.
+
+**Honest steelman now recorded (do not drop from the article):**
+- Gatekeeping is partly **rational triage under anonymity/risk** (Tobold, Spinks,
+  Wowpedia): with strangers and real wipe/repair costs, a cheap numeric filter is a
+  defensible first pass — the gate is *social*, the number just makes it efficient.
+- **Structured** interviews and work samples have **real predictive validity**
+  (Schmidt & Hunter 1998) — the critique targets *arbitrary/unstructured* screens
+  (LeetCode puzzles; io-gating), not multi-step assessment per se.
+- Network hiring can carry genuine information, not only cronyism.
+
+**The refined ethical core:** the wrong isn't that any bar exists — it's **inflation
+past function** plus **asymmetry** plus the **redistribution of cost** onto those
+who can't bootstrap in (new/returning/alt players; career-changers; the
+non-credentialed). Rating unchanged at **STRONG**; the steelman narrows the claim to
+its defensible, sharper form.
+
 ## Cross-references
 
 - **Related cases:** **CASE-001** — same underlying leadership pathology

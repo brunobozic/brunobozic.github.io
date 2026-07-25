@@ -12,10 +12,31 @@ organizational life, one sourced "case" at a time, building toward an article.
 
 ## Current phase
 
-**Phase 1 — Collecting & researching observations.** CASE-001 & CASE-002 complete.
+**Phase 1 — Collecting & researching observations.** CASE-001 & CASE-002 complete
++ **Deep-research Round 1 done** for both. CASE-003 observation received (queued).
 
 Scaffolding, templates, and operating instructions are in place. Two observations
-fully written up, sourced, and rated STRONG. Awaiting observation #3.
+fully written up, sourced, rated STRONG, and now **deepened with academic/primary
+sources** (see `knowledge-base/literature.md` and each case's `deep-research.md`).
+Observation #3 received mid-session and queued for its own pipeline + research.
+
+### Deep-research Round 1 (2026-07-25) — what it added
+- **New KB artifacts:** `knowledge-base/literature.md` (master bibliography);
+  `deep-research.md` in each of CASE-001 and CASE-002.
+- **CASE-001 upgrades:** primary loyalty→exploitation paper (Stanley et al. 2023);
+  nurse mandatory-overtime→intent-to-leave evidence; motivation-crowding theory;
+  Blizzard "Call to Arms" as the clean incentives-vs-coercion example; WoW-guild
+  sociology (workification, emotional labor, class-balance→survival).
+- **CASE-002 upgrades:** primary *Dismissed by Degrees*; Spence signaling; Collins;
+  Kim & Low connected-hiring (37%); Rivera cultural matching; Baert risk-aversion.
+  **Conceptual bridge:** Consalvo "gaming capital" ↔ credential/signal.
+  **Self-correction:** metric is a *noisy, biased proxy*, not "meaningless."
+- **Both:** honest contradicts/complicates sections added (affective vs. exploited
+  commitment; gating as rational triage; structured interviews' real validity;
+  degree-reset-but-mostly-rhetoric).
+- **Follow-ups (non-blocking):** re-verify snippet-based quotes on open network
+  before print; confirm flagged authorship (Lukacs 2010; Investment-Model 2014;
+  Kim & Low; Baert); pull exact interviewing.io coefficients live.
 
 ## Case index
 
@@ -54,9 +75,16 @@ across both cases — strong candidate for a central article pillar.
 
 ## Next steps
 
-1. Author supplies observation #3.
-2. Claude creates `CASE-003-<slug>/` from the template and runs the pipeline.
-3. Check new observations against the five themes; add themes as needed.
+1. **CASE-003 (received, queued):** author's meta-observation — *immature/
+   narcissistic ("ADHD 9-year-old") guild leaders reason and strategize the same
+   way as grown C-level execs, and both persist in behaviors even when logic and
+   observable results show they aren't working.* This is a **thesis-level** case
+   (shared leadership cognition + persistence-despite-disconfirming-evidence).
+   Anticipated anchors: escalation of commitment / sunk cost (Staw 1976); CEO
+   narcissism (Chatterjee & Hambrick 2007); hubris hypothesis (Roll 1986); upper-
+   echelons theory (Hambrick & Mason 1984); overconfidence; confirmation bias.
+   Run the full pipeline + a deep-research pass; populate `literature.md` §6.
+2. Check new observations against the five themes; add themes as needed.
 4. Follow-ups before final article (non-blocking):
    - CASE-001: cite primary journal article behind ASU loyalty study (C1);
      re-verify W3/W4 druid quotes directly (403'd on fetch); find a cleaner source
