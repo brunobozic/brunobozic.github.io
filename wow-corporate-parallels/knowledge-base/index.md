@@ -11,7 +11,7 @@ patterns that span multiple cases.
 
 | ID | Title | One-line parallel | Rating | Status |
 |----|-------|-------------------|--------|--------|
-| _(none yet)_ | | | | |
+| [CASE-001](cases/CASE-001-healer-tank-coercion/) | The Healer/Tank Coercion Cycle | Scarce, under-rewarded roles met with coercion + loyalty rhetoric instead of incentives → capable-first attrition and collapse, in both guilds and companies | STRONG | complete |
 
 **Status:** `open` (in progress) · `complete` (all four files done) · `parked`.
 **Rating:** STRONG · PARTIAL · WEAK · DISANALOGOUS (see `../CLAUDE.md`).

@@ -12,23 +12,30 @@ organizational life, one sourced "case" at a time, building toward an article.
 
 ## Current phase
 
-**Phase 0 — Scaffolding complete. Collecting observations.**
+**Phase 1 — Collecting & researching observations.** CASE-001 complete.
 
-The repository structure, templates, and operating instructions are in place.
-Waiting for the author to supply the first observation.
+Scaffolding, templates, and operating instructions are in place. The first
+observation is fully written up, sourced, and rated. Awaiting observation #2.
 
 ## Case index
 
 | ID | Slug | Observation (short) | WoW side | Corp side | Synthesis | Rating |
 |----|------|--------------------|----------|-----------|-----------|--------|
-| _(none yet)_ | | | | | | |
+| CASE-001 | healer-tank-coercion | Scarce healers/tanks met with coercion (DKP/attendance, spec+loot lock-in, self-farmed flasks, unequal inspections, leader reward-hoarding, "family/duty" rhetoric) → attrition & collapse; fixed only when Blizzard changed the system | done | done | done | STRONG |
 
 Status legend for the side columns: `todo` / `researching` / `drafted` / `done`.
 Full catalog with more detail: `knowledge-base/index.md`.
 
 ## Emerging themes
 
-None yet. Log them in `knowledge-base/themes.md` as patterns repeat across cases.
+Four themes seeded from CASE-001 (see `knowledge-base/themes.md`):
+1. **Compliance-vs-incentive substitution** — treating an incentive problem as a
+   compliance problem. (Looks like the spine of the whole article.)
+2. **Loyalty/duty rhetoric as extraction** — "family / extra mile."
+3. **The managerial-caste double standard** — asymmetric scrutiny + reward capture.
+4. **Systemic fix, not willpower** — dysfunction ends only when incentives change.
+
+Watch whether observations #2+ reinforce these or add new ones.
 
 ## Key decisions
 
@@ -41,10 +48,14 @@ None yet. Log them in `knowledge-base/themes.md` as patterns repeat across cases
 
 ## Next steps
 
-1. Author supplies observation #1.
-2. Claude creates `CASE-001-<slug>/` from the template.
-3. Research WoW-side corroboration, then corporate-side parallel, then synthesize.
-4. Update this file and `knowledge-base/index.md`.
+1. Author supplies observation #2.
+2. Claude creates `CASE-002-<slug>/` from the template and runs the pipeline.
+3. Check new observations against the four seeded themes; add themes as needed.
+4. Follow-ups on CASE-001 before final article (non-blocking): locate & cite the
+   primary journal article behind the ASU loyalty study (C1); re-verify W3/W4
+   druid quotes directly (they 403'd on fetch); find a cleaner source for the
+   "guild collapsed overnight" mechanism if one exists.
+5. Migrate the whole project into the private repo once the author creates it.
 
 ## Open questions / parking lot
 
