@@ -80,6 +80,40 @@ the article. Add a theme here when it shows up in 2+ cases; link the cases.
 - **Why they match:** the behavior is a rational response to incentives; change
   the incentives or the behavior stands.
 
+### THEME: Same seat, same brain (structural production of leadership cognition)
+- **What it is:** the reasoning patterns, ego-defenses, and blind spots of "the
+  leader" are produced largely by the **structural position** — lightly-accountable
+  authority + public identity investment in past decisions — rather than by the
+  individual's age, maturity, or personality. Change the person, keep the seat, and
+  you get the same behavior; change the accountability structure and it changes.
+- **Shows up in:** CASE-003 (and it *explains* CASE-001 and CASE-002).
+- **WoW expression:** a "9-year-old"/immature GM strategizes and self-justifies like
+  a C-level exec; near-absolute single-account GM power; the community's own verdict
+  that "age ≠ maturity," the problem is disposition under authority.
+- **Corporate expression:** upper-echelons theory (strategy routed through the top
+  seat's filtered construal); **power itself** degrading feedback processing
+  (Keltner); **acquired** hubris syndrome (Owen & Davidson); narcissism predicting
+  *emergence* not *effectiveness* (Grijalva) ⇒ selection + structure, not person.
+- **Why they match:** it's the *configuration of the role* — not the résumé — that
+  generates the cognition, which is exactly why a guild and a boardroom converge.
+
+### THEME: Persistence despite disconfirming evidence (escalation of commitment)
+- **What it is:** leaders keep doing the demonstrably-failing thing, and negative
+  feedback *increases* rather than decreases commitment, because abandoning the
+  course means admitting *they* were wrong.
+- **Shows up in:** CASE-003 (the engine under the persistence in CASE-001 & 002).
+- **WoW expression:** the raid leader who runs the wipe strat again despite the logs;
+  the GM who won't change comp, roster, or loot policy as the guild bleeds out.
+- **Corporate expression:** escalation of commitment (Staw; Sleesman meta-analysis:
+  **personal responsibility for the prior decision** is the key amplifier); sunk
+  cost; overprecision (certainty that survives disconfirming data); self-serving
+  attribution that reframes the bad results.
+- **Why they match:** the driver is **self-justification under identity threat**, not
+  economics — a universal default the unaccountable, ego-invested seat maximizes.
+- **Scope condition:** persistence is *sometimes* rational (grit), real evidence is
+  usually noisy, and de-escalation is achievable — so the claim is about *ignoring
+  genuinely diagnostic signals*, not about ever persisting.
+
 ---
 
 > **Deep-research note (2026-07-25):** Round-1 deep research added heavy academic

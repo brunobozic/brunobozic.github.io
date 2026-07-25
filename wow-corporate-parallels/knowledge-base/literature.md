@@ -133,9 +133,65 @@ Tags: **[EV]** evidence (peer-reviewed / data / primary report) · **[OP]** opin
   Psychological Bulletin 124(2):262–274. *(structured interviews r≈.51 — complicates)*
 - **[OP]** Larson, *Interviewing engineering executives* (lethain.com).
 
-## 6. Leadership pathology / persistence-despite-evidence · used by: CASE-003 (queued)
+## 6. Leadership pathology / persistence-despite-evidence · used by: CASE-003
 
-*To be populated when CASE-003 is researched. Anticipated anchors: escalation of
-commitment / sunk-cost (Staw 1976); CEO narcissism (Chatterjee & Hambrick 2007);
-Hubris Hypothesis (Roll 1986); upper-echelons theory (Hambrick & Mason 1984);
-overconfidence in managers; confirmation bias & motivated reasoning.*
+### Escalation of commitment / sunk cost
+- **[EV]** Staw (1976). *Knee-Deep in the Big Muddy.* OBHP 16(1):27–44. DOI
+  10.1016/0030-5073(76)90005-2. — personal responsibility → more doubling down.
+- **[EV]** Arkes & Blumer (1985). *The Psychology of Sunk Cost.* OBHDP 35(1):124–140.
+  DOI 10.1016/0749-5978(85)90049-4.
+- **[EV]** Staw & Ross (1987). *Behavior in Escalation Situations.* Research in Org.
+  Behavior 9:39–78 *(no crossref DOI; cite by vol/pp)*. — project/psychological/
+  **social/structural** four-class model.
+- **[EV]** Sleesman, Conlon, McNamara & Miles (2012). *Cleaning Up the Big Muddy.*
+  AMJ 55(3):541–562. DOI 10.5465/amj.2010.0696. — meta-analysis; personal
+  responsibility robust amplifier.
+
+### CEO/executive narcissism, hubris, overconfidence
+- **[EV]** Chatterjee & Hambrick (2007). *It's All About Me.* ASQ 52(3):351–386. DOI
+  10.2189/asqu.52.3.351. — narcissistic CEOs: extreme/erratic strategy, feedback-resistant.
+- **[OP]** Maccoby (2000). *Narcissistic Leaders.* HBR 78(1).
+- **[EV]** Roll (1986). *The Hubris Hypothesis of Corporate Takeovers.* J. Business
+  59(2):197–216. DOI 10.1086/296325.
+- **[EV]** Hayward & Hambrick (1997). *Explaining the Premiums Paid for Large
+  Acquisitions.* ASQ 42(1):103–127. DOI 10.2307/2393810. — hubris → premiums,
+  **worse under weak oversight.**
+- **[EV]** Malmendier & Tate (2005). *CEO Overconfidence and Corporate Investment.*
+  J. Finance 60(6):2661–2700. DOI 10.1111/j.1540-6261.2005.00813.x.
+- **[EV]** Moore & Healy (2008). *The Trouble With Overconfidence.* Psych. Review
+  115(2):502–517. DOI 10.1037/0033-295X.115.2.502. — **overprecision.**
+- **[OP]** Lovallo & Kahneman (2003). *Delusions of Success.* HBR 81(7).
+
+### Upper echelons / power's cognitive effects (the "seat shapes cognition" core)
+- **[EV]** Hambrick & Mason (1984). *Upper Echelons.* AMR 9(2):193–206. DOI
+  10.5465/amr.1984.4277628.
+- **[EV]** Keltner, Gruenfeld & Anderson (2003). *Power, Approach, and Inhibition.*
+  Psych. Review 110(2):265–284. DOI 10.1037/0033-295X.110.2.265.
+- **[EV-adjacent]** Owen & Davidson (2009). *Hubris Syndrome.* Brain 132(5):1396–1406.
+  DOI 10.1093/brain/awp008. — hubris as **acquired** from unconstrained power.
+
+### Motivated reasoning / confirmation bias / groupthink
+- **[OP]** Janis (1972/1982). *Groupthink.* Houghton Mifflin.
+- **[EV]** Nickerson (1998). *Confirmation Bias.* Review of General Psychology
+  2(2):175–220. DOI 10.1037/1089-2680.2.2.175.
+- **[EV]** Staw, McKechnie & Puffer (1983). *The Justification of Organizational
+  Performance.* ASQ 28(4):582–600. DOI 10.2307/2393010. — self-serving attribution.
+
+### Contradicts / complicates (the scope condition)
+- **[EV]** Sivanathan, Molden, Galinsky & Ku (2008). *Self-affirmation in
+  de-escalation.* OBHDP 107(1):1–14. DOI 10.1016/j.obhdp.2008.02.004. — de-escalation
+  achievable.
+- **[EV]** Duckworth, Peterson, Matthews & Kelly (2007). *Grit.* JPSP 92(6):1087–1101.
+  DOI 10.1037/0022-3514.92.6.1087. — persistence is sometimes rational.
+- **[EV]** Grijalva, Harms, Newman, Gaddis & Fraley (2015). *Narcissism and
+  Leadership.* Personnel Psychology 68(1):1–47. DOI 10.1111/peps.12072. — narcissism
+  → *emergence* not *effectiveness*; ⇒ selection + structure over person.
+
+### WoW-side (guild-leadership pathology) — see also §1
+- **[OP]** Scott F. Andrews, "Officers' Quarters" columns (WoW Insider / Blizzard
+  Watch) + *The Guild Leader's Handbook* (No Starch, 2010). — field catalog of GM
+  dysfunction.
+- **[EV]** Poor & Skoric (2014) and Ducheneaut et al. (2007) *(in §1)* — GM structural
+  power; guild fragility.
+- **[OP]** MMO-Champion "age ≠ maturity" thread; *Massively OP* (2023) on vanished
+  leaders — structural concentration of power in the GM seat.

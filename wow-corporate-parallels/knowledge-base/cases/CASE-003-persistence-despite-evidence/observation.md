@@ -1,6 +1,6 @@
 # CASE-003 — Same Brain: Persistence Despite Disconfirming Evidence · Observation (WoW side)
 
-> **Status:** drafted (research pass in progress) · **Rating (from synthesis):** TBD
+> **Status:** drafted · **Rating (from synthesis):** STRONG (with an explicit scope condition)
 
 ## The observation (author, first-hand)
 
@@ -35,16 +35,47 @@ guild leader and the CEO converge because the *seat* shapes the thinking.
 
 ## Independent WoW-community corroboration
 
-*(Deep-research pass in progress — this section will be populated with:*
-- *documented patterns of guild-leader ego, drama, and refusal to change raid
-  strategy despite repeated wipes / logs showing the problem;*
-- *"guild drama" / "loot drama" / GM power-trip literature and retrospectives;*
-- **any* commentary on immature or narcissistic guild leadership and its outcomes.)*
+**1. The dysfunctional guild leader is a *documented, recognizable type* — cataloged
+by the community's most authoritative practitioner voice.**
+- Scott F. Andrews' decade-long "Officers' Quarters" column (WoW Insider →
+  Blizzard Watch) and his book *The Guild Leader's Handbook* (No Starch, 2010) read
+  as a field catalog of the exact behaviors: leaders who **surveil and expel**
+  members over trivia ("Guild leaders behaving badly"), demote officers in
+  **selfish loot rage** ("Guild leader loot rage"), and run the guild to feed the
+  leader's own appetite ("The raid-aholic"). → The self-dealing, punitive, ego-as-
+  guild pattern is role-typical enough to sustain a long-running advice column.
+  [OPINION — practitioner]
+- **2. The failure is structurally located in the GM role, not the person's age.**
+  Game-studies and community sources converge: guild mechanics vest **near-absolute
+  power in the single GM**, and guild survival hinges on it (Poor & Skoric 2014;
+  *Massively OP* 2023 on vanished leaders). A widely-echoed MMO-Champion thread
+  ("Young guild leaders and Me-first vs. Guild-first") reaches the community
+  consensus that **age ≠ maturity** — there are egotistical adult GMs and
+  well-run teenage guilds; the problem tracks *disposition under authority*, not
+  birth year. → This directly supports the observation's core move: it's the
+  **seat**, not the age. [OPINION forum + EVIDENCE academic]
+- **3. Guilds are baseline-fragile and often die from leadership/organization, not
+  bad luck.** Ducheneaut et al. (CHI 2007) find ~25% of guilds dissolve within
+  ~a month; Chen's *Leet Noobs* ethnography documents a raid group dying in an
+  "online meltdown" as authority/goal conflict overwhelms the social bonds. →
+  Establishes that leader-driven collapse is common, not anecdotal.
+
+*(Deep detail and the corporate-side mechanism — escalation of commitment, CEO
+narcissism, hubris, power's cognitive effects — are in `deep-research.md`.)*
 
 ## What corroborates / what complicates
 
-*(To be completed after research. Anticipated complication: survivorship/selection —*
-*we remember the dramatic bad leaders; many guild leaders are competent and*
-*responsive. The claim is about a recognizable **type/mode**, not all leaders.)*
+- **Strongly supports:** the recognizable ego/self-dealing/persistence type; the
+  **structural concentration of power in the GM seat**; and the community's own
+  rejection of the "just immature kids" reading in favor of "disposition under
+  authority" — which is exactly the observation's structural thesis.
+- **Complicates (kept honestly):** **selection/survivorship bias.** Writing about
+  guild *failure* over-samples drama. A large "good GM" literature describes leaders
+  who delegate, plan succession, take feedback, and adapt (e.g., the *Bronze League*
+  interview with an iterating Classic GM). And much guild death is **structural
+  churn / burnout**, not a villain leader (Andrews' "A burned-out leader"; Spinks'
+  "thankless life"). → The honest claim is *the structural position reliably
+  produces this failure mode in susceptible individuals*, **not** that most guild
+  leaders are narcissists.
 
-_Sources will be listed in `sources.md`._
+_Sources listed in `sources.md`; verification caveat there (snippet-based)._
