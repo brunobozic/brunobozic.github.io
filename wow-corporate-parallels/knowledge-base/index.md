@@ -12,6 +12,7 @@ patterns that span multiple cases.
 | ID | Title | One-line parallel | Rating | Status |
 |----|-------|-------------------|--------|--------|
 | [CASE-001](cases/CASE-001-healer-tank-coercion/) | The Healer/Tank Coercion Cycle | Scarce, under-rewarded roles met with coercion + loyalty rhetoric instead of incentives → capable-first attrition and collapse, in both guilds and companies | STRONG | complete |
+| [CASE-002](cases/CASE-002-gatekeeping-credential-spiral/) | The Gatekeeping / Credential Spiral | Entry bars inflated past function into a catch-22 that serves the gatekeeper's risk-shifting, applied to the low-caste but not the leaders who set them — GearScore ≈ credential inflation & the engineer-gauntlet-vs-exec-dinner asymmetry | STRONG | complete |
 
 **Status:** `open` (in progress) · `complete` (all four files done) · `parked`.
 **Rating:** STRONG · PARTIAL · WEAK · DISANALOGOUS (see `../CLAUDE.md`).

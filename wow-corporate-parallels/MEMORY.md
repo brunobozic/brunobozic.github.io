@@ -12,30 +12,36 @@ organizational life, one sourced "case" at a time, building toward an article.
 
 ## Current phase
 
-**Phase 1 — Collecting & researching observations.** CASE-001 complete.
+**Phase 1 — Collecting & researching observations.** CASE-001 & CASE-002 complete.
 
-Scaffolding, templates, and operating instructions are in place. The first
-observation is fully written up, sourced, and rated. Awaiting observation #2.
+Scaffolding, templates, and operating instructions are in place. Two observations
+fully written up, sourced, and rated STRONG. Awaiting observation #3.
 
 ## Case index
 
 | ID | Slug | Observation (short) | WoW side | Corp side | Synthesis | Rating |
 |----|------|--------------------|----------|-----------|-----------|--------|
 | CASE-001 | healer-tank-coercion | Scarce healers/tanks met with coercion (DKP/attendance, spec+loot lock-in, self-farmed flasks, unequal inspections, leader reward-hoarding, "family/duty" rhetoric) → attrition & collapse; fixed only when Blizzard changed the system | done | done | done | STRONG |
+| CASE-002 | gatekeeping-credential-spiral | Gear bar inflated above what the raid dropped → catch-22 (GearScore/RaiderIO); parallels credential inflation, entry-level catch-22, and the engineer-gauntlet vs exec-hired-over-dinner asymmetry; bar serves gatekeeper's risk-shifting, not objective need | done | done | done | STRONG |
 
 Status legend for the side columns: `todo` / `researching` / `drafted` / `done`.
 Full catalog with more detail: `knowledge-base/index.md`.
 
 ## Emerging themes
 
-Four themes seeded from CASE-001 (see `knowledge-base/themes.md`):
+Five themes now (see `knowledge-base/themes.md`):
 1. **Compliance-vs-incentive substitution** — treating an incentive problem as a
-   compliance problem. (Looks like the spine of the whole article.)
-2. **Loyalty/duty rhetoric as extraction** — "family / extra mile."
-3. **The managerial-caste double standard** — asymmetric scrutiny + reward capture.
-4. **Systemic fix, not willpower** — dysfunction ends only when incentives change.
+   compliance problem. (Looks like the spine of the whole article.) [CASE-001]
+2. **Loyalty/duty rhetoric as extraction** — "family / extra mile." [CASE-001]
+3. **The managerial-caste double standard** — asymmetric scrutiny + reward
+   capture. [CASE-001, CASE-002] ← recurring; strengthening.
+4. **Systemic fix, not willpower** — dysfunction ends only when incentives/systems
+   change. [CASE-001, CASE-002]
+5. **Gatekeeping-as-risk-shifting (the credential catch-22)** — entry bars
+   inflated past function to shift blame off the gatekeeper. [CASE-002]
 
-Watch whether observations #2+ reinforce these or add new ones.
+Signal so far: the **managerial-caste double standard** is the connective tissue
+across both cases — strong candidate for a central article pillar.
 
 ## Key decisions
 
@@ -48,13 +54,15 @@ Watch whether observations #2+ reinforce these or add new ones.
 
 ## Next steps
 
-1. Author supplies observation #2.
-2. Claude creates `CASE-002-<slug>/` from the template and runs the pipeline.
-3. Check new observations against the four seeded themes; add themes as needed.
-4. Follow-ups on CASE-001 before final article (non-blocking): locate & cite the
-   primary journal article behind the ASU loyalty study (C1); re-verify W3/W4
-   druid quotes directly (they 403'd on fetch); find a cleaner source for the
-   "guild collapsed overnight" mechanism if one exists.
+1. Author supplies observation #3.
+2. Claude creates `CASE-003-<slug>/` from the template and runs the pipeline.
+3. Check new observations against the five themes; add themes as needed.
+4. Follow-ups before final article (non-blocking):
+   - CASE-001: cite primary journal article behind ASU loyalty study (C1);
+     re-verify W3/W4 druid quotes directly (403'd on fetch); find a cleaner source
+     for the "guild collapsed overnight" mechanism.
+   - CASE-002: cite the primary Fuller & Raman HBS report ("Dismissed by Degrees")
+     directly instead of the AEI summary (C1).
 5. Migrate the whole project into the private repo once the author creates it.
 
 ## Open questions / parking lot

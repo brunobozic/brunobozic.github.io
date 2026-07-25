@@ -37,14 +37,34 @@ the article. Add a theme here when it shows up in 2+ cases; link the cases.
 ### THEME: The managerial-caste double standard
 - **What it is:** the burden-bearing caste is scrutinized and controlled; the
   privileged caste exempts itself and captures the scarce rewards.
-- **Shows up in:** CASE-001.
+- **Shows up in:** CASE-001, CASE-002.
 - **WoW expression:** pre-raid gear inspections and flask checks for healers/tanks
   but not DPS; leaders playing the comfortable role while forcing others into the
-  hard one; loot reserved for leaders and "trustees."
+  hard one; loot reserved for leaders and "trustees." In CASE-002: leaders set the
+  gear bar but are already exempt from it.
 - **Corporate expression:** monitoring the ICs while leadership is unaccountable;
-  bonuses/promotions concentrating at the top; "do as I say" hypocrisy.
+  bonuses/promotions concentrating at the top; "do as I say" hypocrisy. In
+  CASE-002: engineers run a 6–25 round gauntlet while executives are hired over
+  networks/dinner with less scrutiny.
 - **Why they match:** visible double standards destroy perceived fairness, after
   which the best performers disengage and people self-protect instead of perform.
+
+### THEME: Gatekeeping-as-risk-shifting (the credential catch-22)
+- **What it is:** a gatekeeper raises the entry bar above what the activity
+  objectively needs — and often above what the activity itself would grant — to
+  shift risk/blame off themselves, producing a catch-22 that locks out capable
+  newcomers while the metric stops tracking real competence.
+- **Shows up in:** CASE-002.
+- **WoW expression:** GearScore/RaiderIO requirements exceeding what the raid
+  drops; "link the achievement proving you already cleared it"; a number that
+  ignores actual skill.
+- **Corporate expression:** credential/degree inflation (65% of postings require a
+  degree vs 16% of incumbents); "entry-level, 2–5 years experience required"; the
+  metric (degree, LeetCode) failing to predict on-the-job performance.
+- **Why they match:** the bar optimizes the *gatekeeper's* risk/convenience, not
+  the organization's need — so it inflates past function and self-perpetuates
+  (GearScore → RaiderIO; degree inflation → AI-era creep). Driven by blame
+  diffusion: a credential to point at if the pick fails.
 
 ### THEME: Systemic fix, not willpower (the collapse only ends when incentives change)
 - **What it is:** coercion-driven dysfunction persists until the underlying
