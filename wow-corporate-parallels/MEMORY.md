@@ -12,17 +12,38 @@ organizational life, one sourced "case" at a time, building toward an article.
 
 ## Current phase
 
-**Phase 1 — Collecting & researching observations.** CASE-001 through **CASE-006 all
-complete** with deep research. Six STRONG cases banked. **The system is now
-conceptually complete** — strongly recommend drafting the article next.
+**Phase 2 — Article drafted.** Six STRONG cases + a framing pass, and **Draft 1 of the
+article is written**: `article/drafts/the-healer-always-quits-first.md`.
 
-Scaffolding, templates, and operating instructions are in place. Six observations
-fully written up, sourced, rated STRONG, and **deepened with academic/primary sources**
-(see `knowledge-base/literature.md` and each case's `deep-research.md`). CASE-003 is
-the **thesis-level meta-case** (the cognitive engine); CASE-004 traps the burdened
-worker in role; CASE-005 welds the exit shut; CASE-006 closes the last valve (voice).
-The mistreatment arc is now a complete enclosure. Ready for observation #7 OR to draft
-the article.
+Scaffolding, six fully-researched cases, a framing pass (guild-as-lab), a ~120-source
+bibliography across 10 domains, and a complete first draft are all committed. CASE-003
+is the thesis-level engine; CASES 001/002/004/005/006 are the five-move enclosure.
+
+### Article draft (Draft 1 — 2026-07-26)
+- **File:** `article/drafts/the-healer-always-quits-first.md` (~4,300 words).
+- **Structure:** raid-night hook → "a company with the serial numbers filed off" →
+  why the guild is a clean *mirror* (framing, with the honest transfer-limit seeded) →
+  the five-move enclosure (coerced in / gatekept / trapped / can't leave / can't speak
+  up) → the twist/engine (same seat, same brain) → where the analogy breaks → so-what
+  (the tells + psychological safety) → return to the raid-night scene.
+- **Framing anchored honestly:** guild = supported *mirror/laboratory* (Bainbridge,
+  Castronova, Prax, Shen/Monge/Williams); NOT a leadership pipeline (Lu/Shen/Williams:
+  guild leadership predicts volunteer-org, not company, leadership). See
+  `knowledge-base/framing-guild-as-lab.md`.
+- **Every claim traces** to a case `sources.md`; first-hand recollections labeled as
+  such, not dressed as proof.
+
+### Next steps for the article (revision pass — non-blocking)
+1. Author read-through: voice/tone, any facts to correct, cuts (it runs long).
+2. Before any *public* publication: re-verify the snippet-sourced citations against
+   original texts (flagged throughout the case files) — esp. exact stats and the
+   `[DOI verify]` items.
+3. Decide venue/length; possibly split into a series (one case per post) or tighten to
+   ~3,000 words for a single essay.
+4. Title decision: current pick "The Healer Always Quits First" (alts in `outline.md`).
+5. Optional: more observations → more cases → more sections, if the author wants scope
+   beyond the healer arc (e.g., recruitment scams, loot-council corruption, server-first
+   race dynamics).
 
 ### Deep-research Round 1 (2026-07-25) — what it added
 - **New KB artifacts:** `knowledge-base/literature.md` (master bibliography);

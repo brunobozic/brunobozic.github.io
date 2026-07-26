@@ -335,3 +335,40 @@ Tags: **[EV]** evidence (peer-reviewed / data / primary report) · **[OP]** opin
 - **[EV]** Judge, Livingston & Hurst (2012). *Do Nice Guys…Really Finish Last?* JPSP
   102(2). DOI 10.1037/a0026021. *(complicates: disagreeableness often rewarded in pay →
   the rule is "don't name OUR problems," not "don't be difficult")*
+
+## 10. Framing — the guild as an organizational laboratory · used by: article §3, §6
+
+### The lab/mirror premise (well-supported)
+- **[EV]** Bainbridge (2007). *The Scientific Research Potential of Virtual Worlds.*
+  Science 317(5837):472–476. DOI 10.1126/science.1146930.
+- **[EV]** Castronova (2005). *Synthetic Worlds.* Univ. Chicago Press; (2003) *On Virtual
+  Economies*, Game Studies 3(2). — virtual worlds as controlled social/economic labs.
+- **[EV]** Prax (2010). *Leadership Style in World of Warcraft Raid Guilds.* DiGRA
+  Nordic. — raid leaders are **"Janus-faced"** (situational leadership).
+- **[EV]** Shen, Monge & Williams (2014). *Virtual Brokerage and Closure.* Communication
+  Research. — org-network theory tested on game data.
+- **[EV]** Lisk, Kaplancali & Riggio (2012). *Leadership in Multiplayer Online Gaming
+  Environments.* Simulation & Gaming 43(1). DOI 10.1177/1046878110391975.
+- **[EV]** Ducheneaut, Yee, Nickell & Moore (2006). *"Alone Together?"* CHI 2006.
+  *(also §1)* — the transparent behavioral-log methodology.
+
+### The popular articulation (OPINION — label; note commercial interest)
+- **[OP]** Reeves, Malone & O'Driscoll (2008). *Leadership's Online Labs.* HBR 86(5). —
+  speed, cheap risk, temporary/task-based leadership.
+- **[OP]** IBM/Seriosity (2007). *Virtual Worlds, Real Leaders.* *(Seriosity = commercial
+  interest)*
+- **[OP]** Reeves & Read (2009). *Total Engagement.* Harvard Business Press.
+- **[OP]** Brown & Thomas (2008). *The Gamer Disposition*, HBR; (2006) *You Play WoW?
+  You're Hired!*, Wired.
+
+### The honest limit (goes in article §6 "where it breaks")
+- **[EV]** Lu, Shen & Williams (2014). *Friending Your Way Up the Ladder.* Computers in
+  Human Behavior 35:54–60. DOI 10.1016/j.chb.2014.02.011. — **in-game leadership predicts
+  volunteer-org leadership but NOT company leadership.** Keep "mirror" (supported) vs.
+  "training pipeline" (contested) distinct.
+- **[EV]** Williams, Yee & Caplan (2008). *Who Plays, How Much, and Why?* JCMC 13(4). DOI
+  10.1111/j.1083-6101.2008.00428.x. — population self-selected, male-skewed.
+- **[EV]** Nardi (2010). *My Life as a Night Elf Priest.* *(also §1)* — counterweight to
+  the "leadership boot camp" reduction.
+
+_Detail + verification caveats: `framing-guild-as-lab.md`._
