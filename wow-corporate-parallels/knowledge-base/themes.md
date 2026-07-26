@@ -151,6 +151,30 @@ the article. Add a theme here when it shows up in 2+ cases; link the cases.
   stigma is sometimes organic and turnover is genuinely contagious — the tell is
   *orchestration + retaliatory intent*, not the presence of loyalty feeling.
 
+### THEME: Punished voice / compliance over competence
+- **What it is:** naming a real problem is treated as a worse offense than any
+  performance problem; the messenger is punished for the message, the grievance is
+  recoded as a character defect, and compliant people are kept over crucial-but-outspoken
+  ones. Being right doesn't protect you; being agreeable does.
+- **Shows up in:** CASE-006; closes the sequence CASE-004 (trap) → CASE-005 (exit) →
+  CASE-006 (voice). Powered by CASE-003's engine.
+- **WoW expression:** healers accurately calling raiding an "unpaid job" and being
+  relabeled "immature/selfish/drama"; guild policy of "attitude over skill" + "zero
+  tolerance for backtalk"; the "if you don't like it, leave" endpoint.
+- **Corporate expression:** challenging voice → **lower performance ratings** at equal
+  idea quality (Burris 2012); blameless bearers of bad news penalized (John et al. 2019;
+  the MUM effect); fear of the **troublemaker label** as the top silencer (Milliken et
+  al. 2003); the grievance recoded via **do-gooder derogation** / DARVO; "fit" over
+  productivity (Rivera). Psychological safety (Edmondson) is the counter-model.
+- **Why they match:** an accurate grievance implies leadership tolerated the problem, so
+  the cheapest response is to **discredit the namer** — self-/reputation-protection under
+  weak accountability (the CASE-003 family).
+- **Boundary + sharp reconciliation:** not all voice is constructive; teams need
+  cooperative norms; many orgs *do* value voice (failure mode, not iron law). And
+  disagreeableness is often *rewarded* in pay (Judge et al. 2012) — so the rule isn't
+  "don't be difficult," it's **"don't name *our* problems"** (self-promoting
+  disagreeableness upward is fine; challenging the org's own practices is punished).
+
 ### THEME: Same seat, same brain (structural production of leadership cognition)
 - **What it is:** the reasoning patterns, ego-defenses, and blind spots of "the
   leader" are produced largely by the **structural position** — lightly-accountable

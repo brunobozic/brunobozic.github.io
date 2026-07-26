@@ -1,6 +1,6 @@
 # CASE-006 — Naming the Problem: Punished Voice & Compliance Over Competence · Observation (WoW side)
 
-> **Status:** drafted (research pass in progress) · **Rating (from synthesis):** TBD
+> **Status:** drafted · **Rating (from synthesis):** STRONG
 
 ## The observation (author, first-hand)
 
@@ -41,17 +41,48 @@ silent compliance or a punished exit.
 
 ## Independent WoW-community corroboration
 
-*(Deep-research pass in progress — to be populated with:*
-- *healers/raiders voicing "this is a second job / unpaid labor" and the reaction;*
-- *guild culture labelling complainers as "drama"/"toxic"/"not a team player";*
-- *"if you don't like it, leave" responses; valuing attitude/compliance over skill;*
-- *the gamer-labor / "playbour" framing of raiding as unpaid work.)*
+**1. The "unpaid second job" complaint is *accurate* — it's a studied mode of play,
+not whining.** Academic work names hardcore raiding as labor: Yee's **"Labor of Fun"**
+(MMO players average ~22 hrs/week and *pay a fee* to do this work), Kücklich's
+**"playbour"** (unpaid work inside games captured as value by others), Taylor's
+"power gamers" whose play "feels like work," and the "Managed Hearthstone" study naming
+the **emotional labor** of complying with guild sociability norms. Grassroots discourse
+independently and repeatedly calls raiding "a second job that doesn't pay," and elite
+guilds (e.g. **Exodus**) have quit hardcore raiding over exactly this unsustainability.
+([Yee 2006, *Games and Culture* 1(1)](https://journals.sagepub.com/doi/10.1177/1555412005281819);
+[Kücklich "Playbour"](https://en.wikipedia.org/wiki/Playbour);
+[PC Gamer — Exodus quits](https://www.pcgamer.com/legendary-wow-guild-quits-hardcore-raiding-for-good/);
+[Kotaku — "The Crushing Design…"](https://kotaku.com/the-crushing-design-of-world-of-warcrafts-big-raids-1782715670)) [EVIDENCE + OPINION]
+
+**2. "Compliance over competence" is stated openly in guild policy.** A real guild
+recruitment page declares it prioritizes **"attitude over skill"** — preferring
+positive, coachable underperformers over skilled players with the "wrong attitude" —
+with **"zero tolerance for backtalk."** That last clause is precisely where an accurate
+complaint gets recoded as bad attitude.
+([Guilds of WoW — Raiding Requirements & Expectations](https://guildsofwow.com/pxe/post/4717/raiding-with-us-requirements-expectations)) [OPINION — primary artifact]
+
+**3. Voicing concerns runs to an "if you don't like it, leave" endpoint.** Scott
+Andrews' "Officers' Quarters" counsels officers to shut down in-raid commentary and,
+if a member keeps raising concerns, to "ask the person to leave the guild… never be
+afraid of doing that" — and separately treats the skilled-but-outspoken raider as a
+"problem to be managed" even when class/spec-valuable. Elite-guild toxicity threads
+report that *calling out* bad behavior invites harassment.
+([Andrews — "…players who tell you how to run your guild"](https://blizzardwatch.com/2018/10/04/officers-quarters-suggestions-get-let-tell-run-guild/);
+["The A-Team Question"](https://www.engadget.com/2010/03/08/officers-quarters-the-a-team-question/)) [OPINION]
 
 ## What corroborates / what complicates
 
-*(To be completed after research. Anticipated complication: some "complaints" really are*
-*corrosive/bad-faith drama, and teams do need functional norms — so the wrong is*
-*punishing *legitimate, accurate* voice and prizing compliance over crucial performance,*
-*not every act of moderating genuinely toxic behavior.)*
+- **Strongly supports:** the accuracy of the "unpaid labor" complaint (a documented,
+  studied mode), the explicit "attitude/compliance over skill" norm, and the
+  "speak-up → asked to leave" endpoint even for valuable players.
+- **First-hand / thinner:** the specific *recoding* of these healers' accurate
+  complaint into "immature/selfish" is the author's testimony; the *pattern* (complaint
+  → "bad attitude"/"drama"/"not a team player") is well-attested. Flagged `[FIRST-HAND]`.
+- **Complicates (kept honestly):** some "complaints" **really are** corrosive bad-faith
+  drama, and teams legitimately need functional norms and cooperative screening ("no
+  bad players, only bad guild matches"); hardcore raiding is **opt-in**, so "it's a
+  second job" is partly a self-selected bargain. The wrong is punishing **legitimate,
+  accurate, good-faith** voice and prizing **compliance over *crucial* competence** —
+  not moderating genuinely toxic behavior or letting mismatches find a better home.
 
-_Sources will be listed in `sources.md`._
+_All sources also listed in `sources.md`; verification caveat there (snippet-based)._

@@ -287,3 +287,51 @@ Tags: **[EV]** evidence (peer-reviewed / data / primary report) · **[OP]** opin
   Force.* J. Law & Economics 64(1). DOI 10.1086/712206. — de facto blacklisting.
 - **[EV]** Felps et al. (2009). *Turnover Contagion.* AMJ 52(3). DOI
   10.5465/amj.2009.41331075. *(complicates: exit is contagious, both ways)*
+
+## 9. Punished voice / compliance over competence · used by: CASE-006
+
+### Employee voice & silence
+- **[EV]** Van Dyne & LePine (1998). *Helping and Voice Extra-Role Behaviors.* AMJ
+  41(1). DOI 10.5465/256902. — voice = discretionary, status-quo-challenging.
+- **[EV]** Morrison & Milliken (2000). *Organizational Silence.* AMR 25(4). DOI
+  10.5465/AMR.2000.3707697. — silence is systemic; "dissent = disloyalty."
+- **[EV]** Milliken, Morrison & Hewlin (2003). *An Exploratory Study of Employee
+  Silence.* JMS 40(6). DOI 10.1111/1467-6486.00387. — **top silencer = troublemaker-label fear.**
+- **[EV]** Detert & Burris (2007). *Leadership Behavior and Employee Voice.* AMJ 50(4).
+  DOI 10.5465/amj.2007.26279183. — climate most affects the **best performers'** voice.
+- **[EV]** Detert & Edmondson (2011). *Implicit Voice Theories.* AMJ 54(3). DOI
+  10.5465/amj.2011.61967925. — pre-emptive self-censorship.
+- **[EV review]** Morrison (2011). *Employee Voice Behavior.* AMA Annals 5(1). DOI
+  10.5465/19416520.2011.574506.
+
+### Shooting the messenger
+- **[EV]** Rosen & Tesser (1970). *The MUM Effect.* Sociometry 33(3). DOI
+  10.2307/2786156 `[verify]`.
+- **[EV]** John, Blunden & Liu (2019). *Shooting the Messenger.* J. Exp. Psych: General
+  148(4). DOI 10.1037/xge0000586. — **blameless messengers penalized** (11 experiments).
+
+### Conformity / fit over competence
+- **[EV]** Burris (2012). *The Risks and Rewards of Speaking Up.* AMJ 55(4). DOI
+  10.5465/amj.2010.0562. — **challenging voice → lower performance ratings.**
+- **[EV]** Rivera (2012). *Hiring as Cultural Matching.* ASR 77(6). DOI
+  10.1177/0003122412463213. *(also §5)* — fit often outweighs productivity.
+- **[OP]** Harvey (1974). *The Abilene Paradox.* Org. Dynamics 3(1). DOI
+  10.1016/0090-2616(74)90005-9 `[verify]`.
+- **[OP]** Janis (1972). *Victims of Groupthink.* *(also §6)*
+
+### The grievance→character-defect reframe + retaliation
+- **[EV]** Minson & Monin (2012). *Do-Gooder Derogation.* SPPS 3(2). DOI
+  10.1177/1948550611415695. — **preemptively denigrate principled objectors.**
+- **[OP→EV analogy]** Freyd (1997) DARVO; Harsey & Freyd (2020), DOI
+  10.1080/10926771.2020.1774695.
+- **[EV]** Kish-Gephart, Detert, Treviño & Edmondson (2009). *Silenced by Fear.* ROB 29.
+  DOI 10.1016/j.riob.2009.07.002.
+- **[EV meta]** Mesmer-Magnus & Viswesvaran (2005). *Whistleblowing…* JBE 62(3). DOI
+  10.1007/s10551-005-0849-1. — retaliation predicted by org variables, not reporter traits.
+
+### Counter-model + the sharp complication
+- **[EV]** Edmondson (1999). *Psychological Safety and Learning Behavior in Work Teams.*
+  ASQ 44(2). DOI 10.2307/2666999. — safe voice → learning → performance.
+- **[EV]** Judge, Livingston & Hurst (2012). *Do Nice Guys…Really Finish Last?* JPSP
+  102(2). DOI 10.1037/a0026021. *(complicates: disagreeableness often rewarded in pay →
+  the rule is "don't name OUR problems," not "don't be difficult")*
