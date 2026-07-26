@@ -1,6 +1,6 @@
 # CASE-004 — The Trap: Hollow Promises, Talent-Hoarding & Scapegoating · Observation (WoW side)
 
-> **Status:** drafted (research pass in progress) · **Rating (from synthesis):** TBD
+> **Status:** drafted · **Rating (from synthesis):** STRONG
 
 ## The observation (author, first-hand)
 
@@ -48,18 +48,70 @@ worker trapped in place**:
 
 ## Independent WoW-community corroboration
 
-*(Deep-research pass in progress — to be populated with:*
-- *documented "healer blamed for wipes / healer scapegoating" community discourse;*
-- *guild rank stagnation, empty promises of promotion/role-change, "next tier/next
-  season" deferral;*
-- *being locked into a role by loot rules despite parse performance;*
-- **any* evidence of guilds using PIP-style processes.)*
+**1. Scapegoating the healer is a documented, named community pattern.**
+- The reflexive "why no heal?" blame — directed at healers even when a death was
+  caused by a player ignoring mechanics — is a running community complaint ("Stop
+  blaming the healers"), and the deeper asymmetry is named directly: **healers are
+  invisible when it works and blamed when it fails.** MMORPG.com's "Giving the
+  Healer Their Due" argues healers should be praised for clean runs as readily as
+  they're blamed for wipes, citing FFXIV's commendation system as a corrective.
+  ([MMORPG.com](https://www.mmorpg.com/editorials/giving-the-healer-their-due-a-look-at-one-of-the-major-roles-in-keeping-your-mmo-group-alive-2000117812);
+  [Blizzard forums — "Stop blaming the healers"](https://us.forums.blizzard.com/en/wow/t/stop-blaming-the-healers/2078686)).
+  [OPINION — community/journalism]
+
+**2. Role lock-in via scarcity is real, and leaders lean on it.**
+- Community writing captures the exact lever: the healer/tank pool is small, so those
+  players are "required at every raid" — *"DPS is fun, healing/tanking is a job"* —
+  which is precisely the "we can't afford to lose a healer" justification for keeping
+  a competent player stuck.
+  ([Greedy Goblin — "Tank and healer burnout"](http://greedygoblin.blogspot.com/2009/04/tank-and-healer-burnout.html)).
+  [OPINION]
+
+**3. Punitive / never-ending "trials" are a recognized red flag — the PIP analog.**
+- Guild-management writing names **time-boxed trials (2–3 weeks / one tier) with
+  criteria stated up front** as healthy, and **trials that quietly extend for months
+  / permanent-feeling probation** as a **culture red flag** that erodes trust and
+  drives people out. That is the guild form of a "performance improvement plan" used
+  to keep someone stuck rather than develop them.
+  ([LootList+ — onboarding raiders without killing morale](https://www.getlootlist.com/blog/how-to-onboard-new-raiders-without-killing-morale)).
+  [OPINION — practitioner]
+
+**4. Benching/roster progression *should* be honest and meritocratic — which is what
+makes the observed behavior a betrayal.**
+- Scott Andrews' "Officers' Quarters" frames the raid as a sports team where players
+  can earn a starting slot, and coaches leaders to communicate benching honestly. The
+  wrong in this case is the **dishonesty and non-delivery**, measured against this
+  well-known "practice squad → starter" ideal.
+  ([Andrews — "Riding the pine"](https://www.engadget.com/2009-01-05-officers-quarters-riding-the-pine.html);
+  ["Benched by your guild"](https://blizzardwatch.com/2015/11/27/officers-quarters-benched-by-your-guild-wed/)).
+  [OPINION — practitioner]
+
+**5. Academic grounding: healers carry distinctive labor; leaders control the
+role/narrative.**
+- Nardi's *Night Elf Priest* (healer-POV ethnography) and the "Managed Hearthstone"
+  emotional-labor work establish that healing carries real, invisible labor; Williams,
+  Kirschner & Suhaimi-Broder show guild/raid leaders hold disproportionate power over
+  roles *and* the shared "definition of the situation" — the same power used to defer
+  promises, hoard talent, and control who gets blamed.
+  ([Managed Hearthstone (Springer)](https://link.springer.com/chapter/10.1007/978-3-642-11743-5_13);
+  [Williams et al. — Structural Roles (Emerald)](https://www.emerald.com/insight/content/doi/10.1108/S0163-239620140000043016/full/html)).
+  [EVIDENCE]
 
 ## What corroborates / what complicates
 
-*(To be completed after research. Anticipated complication: sometimes keeping a
-strong healer as a healer is genuinely optimal for the raid — role scarcity is real
-— so the wrong isn't role assignment per se, but the **dishonesty** (false promises)
-and the **refusal to ever deliver** on advancement.)*
+- **Strongly supports:** the healer-scapegoating asymmetry, role lock-in via
+  scarcity, the never-ending-trial red flag (PIP analog), and the honest-meritocracy
+  ideal the observed behavior betrays.
+- **First-hand / thinner:** the *specific* "strung along on a promised DPS swap while
+  parses proved competence" narrative is the author's testimony; the *theme* is
+  well-attested, but no single canonical community post nails this exact arc.
+  Flagged `[FIRST-HAND]` in `sources.md`.
+- **Complicates (kept honestly):** role scarcity means keeping a strong healer *as* a
+  healer is **sometimes genuinely optimal** — so the wrong isn't role assignment, it's
+  the **dishonesty and the never-delivering**. Scapegoating isn't healer-exclusive
+  (tanks catch it too — "blame the visible responsibility-role"), and **some wipes
+  really are healing failures** — the abuse is *reflexive, cause-blind* blame, not all
+  blame. Benching/trials are legitimate tools; the pathology is the punitive/indefinite/
+  dishonest version.
 
-_Sources will be listed in `sources.md`._
+_All sources also listed in `sources.md`; verification caveat there (snippet-based)._

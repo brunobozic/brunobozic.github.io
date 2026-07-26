@@ -195,3 +195,44 @@ Tags: **[EV]** evidence (peer-reviewed / data / primary report) · **[OP]** opin
   power; guild fragility.
 - **[OP]** MMO-Champion "age ≠ maturity" thread; *Massively OP* (2023) on vanished
   leaders — structural concentration of power in the GM seat.
+
+## 7. The trap: broken promises, talent-hoarding, PIP-misuse, blame culture · used by: CASE-004
+
+### Psychological-contract breach / career plateau (hollow promises, deferral)
+- **[OP]** Rousseau (1989). *Psychological and Implied Contracts in Organizations.*
+  Employee Responsibilities & Rights J. 2(2):121–139. DOI 10.1007/BF01384942.
+- **[EV]** Robinson & Rousseau (1994). *Violating the Psychological Contract: Not the
+  Exception but the Norm.* JOB 15(3):245–259. DOI 10.1002/job.4030150306.
+- **[EV]** Zhao, Wayne, Glibkowski & Bravo (2007). *Impact of Psychological Contract
+  Breach…: A Meta-Analysis.* Personnel Psychology 60(3):647–680. DOI
+  10.1111/j.1744-6570.2007.00087.x.
+- **[OP]** Ference, Stoner & Warren (1977). *Managing the Career Plateau.* AMR 2(4).
+- **[EV]** Heilmann, Holt & Rilovick (2008). *Effects of Career Plateauing on
+  Turnover.* JLOS 15(1):59–68. DOI 10.1177/1548051808317999.
+
+### Talent-hoarding
+- **[EV*]** Haegele (2022–25). *Talent Hoarding in Organizations.* arXiv 2206.15098.
+  — reducing hoarding → **+123%** promotion applications; ~75% of managers hoard.
+  *(working paper — confirm status)*
+- **[OP/data]** Gartner HR (2020). *Understanding and Preventing Talent Hoarding.* —
+  **>50%** of supervisors admit hoarding.
+
+### PIP as control / managed-out
+- **[OP]** HBR/Gallo (2024). *When a PIP Could Help Your Employee.* *(steelman)*
+- **[OP]** Ruvio & Morgeson (2022). *Are You Being Quiet Fired?* HBR.
+- **[OP/journalism]** WorkLife (2024). *Quietly cut with a PIP?* — Glassdoor PIP
+  mentions ~8×↑ since 2021. *(Do not cite unsourced "PIP success rate" numbers.)*
+
+### Blame culture / scapegoating / attribution
+- **[EV]** Ross (1977). *The Intuitive Psychologist…* (fundamental attribution error).
+  Adv. Exp. Soc. Psych. 10:173–220.
+- **[OP/framework]** Reason (2000). *Human Error: Models and Management.* BMJ
+  320:768–770. DOI 10.1136/bmj.320.7237.768. — person vs. systems approach.
+- **[OP]** Dekker. *Just Culture: Balancing Safety and Accountability.* — accountability
+  retained for genuine negligence.
+- **[EV]** Fast & Tiedens (2010). *Blame Contagion.* JESP 46(1):97–106. DOI
+  10.1016/j.jesp.2009.10.007. — blame-shifting spreads; ego-protection driven.
+- **[OP theory]** Roulet & Pichler (2020). *Blame Game Theory.* Organization Theory
+  1(4). DOI 10.1177/2631787720975192. — scapegoating as elite self-protection.
+- **[EV]** Bonazzi (1983). *Scapegoating in Complex Organizations.* Organization
+  Studies 4(1):1–18. DOI 10.1177/017084068300400101.

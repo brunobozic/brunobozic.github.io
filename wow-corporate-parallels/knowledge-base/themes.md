@@ -80,6 +80,39 @@ the article. Add a theme here when it shows up in 2+ cases; link the cases.
 - **Why they match:** the behavior is a rational response to incentives; change
   the incentives or the behavior stands.
 
+### THEME: Trapping the competent (hollow promises · talent-hoarding · PIP-as-control)
+- **What it is:** keeping an essential, hard-to-replace worker *stuck* in their
+  burdened role — via advancement promised and perpetually deferred, being hoarded
+  despite proven competence, and "development" processes that actually trap or manage
+  them out — because they're more valuable in place than promoted.
+- **Shows up in:** CASE-004 (career face of CASE-001).
+- **WoW expression:** "we'll see next season"; kept as healer despite parses proving
+  equal DPS ("can't afford to lose a healer"); a guild "performance improvement plan"
+  / endless trial used to keep people stuck.
+- **Corporate expression:** psychological-contract breach (broken promotion promises);
+  manager talent-hoarding (reducing it raised promotion applications ~123%); PIP used
+  as a managed-out/"quiet firing" tool.
+- **Why they match:** the immediate decision-maker is rewarded for their unit's
+  output, not for developing people *out* of it — so private incentive diverges from
+  the person's interest, and a promise (which costs nothing) buys another cycle.
+- **Boundary:** the wrong is the **dishonesty and non-delivery**, not role assignment,
+  retention, or standards — some in-role retention and some PIPs are legitimate.
+
+### THEME: Scapegoating the burdened role (blame culture)
+- **What it is:** systemic failures get blamed on the visible, low-power role rather
+  than on strategy, process, or leadership — protecting those at the top.
+- **Shows up in:** CASE-004; mechanistically linked to CASE-003.
+- **WoW expression:** "learn to heal," "lazy healers" on every wipe; healers invisible
+  when it works, blamed when it fails.
+- **Corporate expression:** fundamental attribution error; person-approach vs.
+  systems-approach (Reason); scapegoating as elite self-protection onto low-retaliation
+  members (Roulet & Pichler); blame *contagion* (Fast & Tiedens — it spreads).
+- **Why they match:** blame flows down the power gradient because it's cheap,
+  ego-protective, and satisfies the attribution reflex — the same self-serving
+  attribution that keeps a leader's identity intact in CASE-003.
+- **Boundary:** individual accountability is sometimes appropriate; the wrong is
+  *reflexive, cause-blind* blame that defaults to the person when the cause is systemic.
+
 ### THEME: Same seat, same brain (structural production of leadership cognition)
 - **What it is:** the reasoning patterns, ego-defenses, and blind spots of "the
   leader" are produced largely by the **structural position** — lightly-accountable
