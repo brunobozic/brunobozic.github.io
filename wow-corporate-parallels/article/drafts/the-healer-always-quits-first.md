@@ -81,10 +81,10 @@ true of a workplace:
 
 I want to be honest about the limit of this up front, because it's the honest version of
 the claim and I'll come back to it: the guild is a clean **mirror**, not a leadership
-academy. When researchers have actually matched players' in-game behavior to their offline
-lives, the leadership transfer comes out weak and uneven — real enough in other *voluntary*
-settings, faint-to-absent when it comes to rank inside a company. So I am not telling you
-that raiding makes you a good executive. I'm telling you the guild shows you,
+academy. A study that matched some eighteen thousand players' in-game behavior to their
+offline lives found that the leadership carried over into *volunteer* organizations — and had
+*no* measurable link to leadership rank inside companies. So I am not telling you that raiding
+makes you a good executive. I'm telling you the guild shows you,
 in fast-forward and high-contrast, what leaders *do* — and what they do is remarkably
 consistent whether they're nine years old or in the C-suite.
 
@@ -363,9 +363,9 @@ preview of a slow corporate rot.
 leaders are a self-selected slice of *that*. What's true of them is not automatically true of a
 mandatory, diverse workforce.
 
-**And the transfer claim is unproven — I want to be clear about this.** Remember that when
-researchers matched in-game leadership to offline life, the link to corporate leadership came
-out weak and inconsistent? That's the boundary. The guild is a legitimate laboratory for
+**And the transfer claim is unproven — I want to be clear about this.** Remember the study of
+eighteen thousand players whose in-game leadership carried into volunteer organizations but had
+*no* link to leadership rank in companies? That's the boundary. The guild is a legitimate laboratory for
 *seeing* organizational dynamics — the mirror is real, and the peer-reviewed record supports it.
 It is *not* evidence that raiding trains executives, and the loudest versions of that claim came
 from people selling game-flavored enterprise software. Keep the mirror; drop the pipeline.
@@ -438,9 +438,12 @@ carefully, what happens to them when they finally tell you the truth.
 `../../knowledge-base/cases/` and the master bibliography in
 `../../knowledge-base/literature.md`. Where I've written "in my guilds" or "I saw," that's
 first-hand recollection and is labeled as such in the case notes, not presented as evidence.
-Snippet-sourced citations gathered during research should be re-verified against original texts
-before this is published anywhere public — in particular the in-game-to-offline leadership-transfer
-finding (Williams et al.'s "Friending your way up the ladder" is the likely source and should be
-read directly before the volunteer-vs-corporate framing is restated) and the CEO connected-hiring
-study, whose 37% figure is confirmed but whose surrounding interpretation is contested in the
-literature. Verified during this revision: the talent-hoarding +123% figure (Hägele, 2022).*
+The load-bearing citations were verified against original sources in a dedicated pass (logged in
+`../../knowledge-base/verification-round-2.md`): the volunteer-vs-corporate leadership-transfer
+finding (Lu, Shen & Williams 2014), the loyalty-exploitation, nurse-overtime, degree-inflation,
+talent-hoarding (+123%), noncompete, challenging-voice, shot-messenger, escalation, and
+narcissism studies all check out as used. Two claims were corrected in this draft: the CEO
+connected-hiring figure (37% is confirmed, but the study's valence is efficiency, not cronyism —
+so the "weakest record" reading was cut) and a thinly-sourced "PIP mentions rose eightfold" stat
+(removed). Any remaining snippet-based quotes should still be confirmed against the originals
+before public print.*

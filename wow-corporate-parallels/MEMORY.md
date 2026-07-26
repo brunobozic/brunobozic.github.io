@@ -3,7 +3,7 @@
 > Source of truth for where this project stands. Update at the end of every
 > working session. Read this + `CLAUDE.md` at the start of every session.
 
-_Last updated: 2026-07-25_
+_Last updated: 2026-07-26_
 
 ## Project one-liner
 
@@ -12,8 +12,9 @@ organizational life, one sourced "case" at a time, building toward an article.
 
 ## Current phase
 
-**Phase 2 — Article drafted.** Six STRONG cases + a framing pass, and **Draft 1 of the
-article is written**: `article/drafts/the-healer-always-quits-first.md`.
+**Phase 2 — Article revised.** Six STRONG cases + a framing pass, and **Draft 2 of the
+article is written** (editorial + fact-check revision of Draft 1):
+`article/drafts/the-healer-always-quits-first.md`.
 
 Scaffolding, six fully-researched cases, a framing pass (guild-as-lab), a ~120-source
 bibliography across 10 domains, and a complete first draft are all committed. CASE-003
@@ -32,6 +33,61 @@ is the thesis-level engine; CASES 001/002/004/005/006 are the five-move enclosur
   `knowledge-base/framing-guild-as-lab.md`.
 - **Every claim traces** to a case `sources.md`; first-hand recollections labeled as
   such, not dressed as proof.
+
+### Article revision (Draft 2 — 2026-07-26)
+Editorial + fact-check pass on Draft 1 (~4,300 → ~4,900 words). Reviewed across ~12
+lenses (org-psych, methodology, WoW-domain, prose, structure, red-team, fact-check,
+exec-reader, lay-reader, labor-ethics, publishing, legal). Changes committed
+(`c7750ee`):
+- **Honesty — narrator self-implication.** Added a paragraph in the "same seat, same
+  brain" section where the author owns having made the five enclosure moves himself
+  (deferred a healer, let "lazy healers" stand, treated the namer as the problem). Closes
+  the credibility gap where the "I" narrated the moves from outside. Makes the author
+  Exhibit A for the seat thesis.
+- **Overclaim softened.** "That healer is almost always right" → early-warning-system
+  framing (you won't always agree; a team that punishes the warning just stops hearing
+  it). Removes the one line a skeptical exec could seize on.
+- **Citation corrections (pending the verification round below):**
+  - Dropped the unsupported "vs ~5% by chance" and "most common where the record was
+    weakest" around the 37% connected-CEO figure (37% itself is fine; the embellishments
+    were not in Kim & Low as recalled).
+  - Softened both uses of the Lu/Shen/Williams transfer finding to "weak/uneven" pending
+    primary-text verification (NB: KB `framing-guild-as-lab.md` actually cites this
+    precisely — Lu, Shen & Williams 2014, CHB 35:54–60 — so the *original* wording may be
+    restorable once the paper is confirmed).
+  - Cut the thinly-sourced "PIPs rose eightfold on Glassdoor" stat, kept the point.
+  - Verified live during revision: talent-hoarding **+123%** = Hägele, *Talent Hoarding
+    in Organizations* (arXiv 2206.15098, 2022). Confirmed correct.
+- **Craft:** GearScore/40-man era signpost; foreshadowed the hobby-vs-waged-labor caveat
+  at the nurse comparison; folded Hughes into Bandura in Move 4; varied a repeated verbal
+  tic; bumped draft marker + closing source caveat.
+
+### Deep-research Round 2 (2026-07-26) — verification of snippet-sourced citations
+Triggered by the Draft-2 fact-check: the article's remaining risk was not wrong claims
+but **real citations gathered from research snippets that were never checked against
+primary texts** (flagged throughout the case files and `framing-guild-as-lab.md`, whose
+publisher pages 403'd). Re-reviewed the whole dataset and deep-researched the 14
+load-bearing claims against authoritative sources. **Full log:
+`knowledge-base/verification-round-2.md`.**
+
+**Result: 12 of 14 verified accurate as written; 2 corrected.**
+- ✅ **Verified** (primary/publisher/author-PDF/first-party): Lu-Shen-Williams transfer
+  finding (restored precise wording); Stanley et al. loyalty→exploitation; Bae nurse
+  mandatory-overtime; Fuller & Raman 67/16 degree inflation; Hägele +123% talent hoarding;
+  Starr et al. 18% noncompetes; Burris challenging-voice; John et al. "Shooting the
+  Messenger" (11 experiments); Sleesman et al. escalation (k=141); Grijalva narcissism
+  emergence-not-effectiveness; Yee ~20 hrs/week; Barker concertive control.
+- ⚠️ **Corrected — CEO connected-hiring (Kim & Low, 37%):** 37% and above-chance hold, but
+  the paper's valence is *efficiency, not cronyism* (connected CEOs enhance firm value).
+  The draft's "most common where the record was weakest" spin and the "~5% by chance"
+  figure were **removed**; keep only the access-asymmetry point. (Matches CASE-002's own
+  complication #8.)
+- ⚠️ **Corrected — PIP "eightfold":** traces to one secondary source (WorkLife.news citing
+  Glassdoor), underlying data not independently retrievable → **cut** from the article.
+  Sturdier substitutes noted (HR Acuity ~44/1,000 in 2023, up ~30% since 2020; Amazon
+  PIP-then-layoff wave).
+- **KB updated:** new `verification-round-2.md`; Round-2 notes added to
+  `framing-guild-as-lab.md`, CASE-002 `deep-research.md`, CASE-004 `sources.md`.
 
 ### Next steps for the article (revision pass — non-blocking)
 1. Author read-through: voice/tone, any facts to correct, cuts (it runs long).

@@ -128,6 +128,17 @@ becomes prescriptive" reading — while also forcing an honest correction to our
   **37% of external CEOs socially connected to the hiring board** vs. **~5% by
   chance**; connected candidates **~35% more likely to be appointed.** → Hard anchor
   for the "hired over dinner" top-of-org asymmetry, quantified.
+  - **[Round-2 verification, 2026-07-26]** Primary-source check confirms **37%** and
+    that it is "significantly higher than expected after adjusting for network sizes"
+    (so the *above-chance* point holds), BUT the **"~5% by chance"** figure could not be
+    confirmed against the paper and reads like a snippet artifact — do **not** quote it.
+    More important: the paper's **valence is the opposite of cronyism** — connected CEOs
+    *enhance firm value*, take *lower* initial pay, and match at least as well (similar
+    separation rates); connectedness is concentrated at "informationally opaque firms /
+    less established CEOs," **not** "weakest records." Use only as an **access-asymmetry**
+    point (a third of top hires arrive through a relationship the IC will never get), not
+    as evidence that connected execs are worse. This matches complication #8 below, and
+    the article (Draft 2) was corrected accordingly. See `verification-round-2.md`.
 - **McPherson, Smith-Lovin & Cook (2001), "Birds of a Feather: Homophily in Social
   Networks," *Annual Review of Sociology* 27:415–444.** DOI 10.1146/annurev.soc.27.1.415.
   [EVIDENCE — review] → *Why* network hiring reproduces sameness; the mechanism

@@ -56,6 +56,12 @@ to study organizational dynamics) — and, crucially, the honest limit on that c
   but was **not linked to leadership status in companies at all.** ⇒ Frame the guild as
   a lab for *organizational dynamics* and *volunteer-org* leadership, **not** as a
   corporate-leadership training pipeline.
+  **[Round-2 verification, 2026-07-26 — VERIFIED against the paper]** Finding confirmed
+  verbatim: "the linkage between players' relational activities in MMOGs and their offline
+  leadership was found in voluntary organizations, but not in companies." This is the
+  article's load-bearing "keep the mirror, drop the pipeline" citation (used twice); the
+  precise wording was restored in Draft 2 on the strength of this check. No longer
+  snippet-only. See `verification-round-2.md`.
 - **Williams, Yee & Caplan (2008), "Who Plays, How Much, and Why?", *JCMC* 13(4).**
   [EVIDENCE, ~7,000 players + logs] Players are older/more varied than the stereotype,
   but the population is **self-selected and male-skewed** — selection effects limit
