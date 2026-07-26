@@ -12,14 +12,15 @@ organizational life, one sourced "case" at a time, building toward an article.
 
 ## Current phase
 
-**Phase 1 — Collecting & researching observations.** CASE-001 through **CASE-004 all
-complete** with deep research. Four STRONG cases banked.
+**Phase 1 — Collecting & researching observations.** CASE-001 through **CASE-005 all
+complete** with deep research. Five STRONG cases banked.
 
-Scaffolding, templates, and operating instructions are in place. Four observations
-fully written up, sourced, rated, and **deepened with academic/primary sources**
+Scaffolding, templates, and operating instructions are in place. Five observations
+fully written up, sourced, rated STRONG, and **deepened with academic/primary sources**
 (see `knowledge-base/literature.md` and each case's `deep-research.md`). CASE-003 is
-the **thesis-level meta-case** (the cognitive engine); CASE-004 is the career-and-blame
-face of CASE-001. Awaiting observation #5 — and the article outline is unblocked.
+the **thesis-level meta-case** (the cognitive engine); CASE-004 traps the burdened
+worker in role; CASE-005 welds the exit shut. Awaiting observation #6 — the article
+outline is well unblocked and could be drafted now.
 
 ### Deep-research Round 1 (2026-07-25) — what it added
 - **New KB artifacts:** `knowledge-base/literature.md` (master bibliography);
@@ -47,15 +48,16 @@ face of CASE-001. Awaiting observation #5 — and the article outline is unblock
 | CASE-002 | gatekeeping-credential-spiral | Gear bar inflated above what the raid dropped → catch-22 (GearScore/RaiderIO); parallels credential inflation, entry-level catch-22, and the engineer-gauntlet vs exec-hired-over-dinner asymmetry; bar serves gatekeeper's risk-shifting, not objective need | done | done | done | STRONG |
 | CASE-003 | persistence-despite-evidence | "9-yr-old" GMs strategize like C-level execs & both persist despite disconfirming evidence — because the *structural seat* (unaccountable authority + ego-investment), not age/personality, makes the cognition. Meta-case for 001/002. Escalation of commitment, CEO narcissism, hubris, power→cognition | done | done | done | STRONG* |
 | CASE-004 | hollow-promises-scapegoating | Competent healer kept trapped: false "next season" promises, hoarded ("can't afford to lose a healer"), a punitive "performance improvement plan," blamed for every wipe → psychological-contract breach, talent-hoarding (+123% suppressed promotions), PIP-as-managed-out, blame culture | done | done | done | STRONG |
+| CASE-005 | deniable-peer-enforcement | Vilify leavers, outsource policing to peers, keep clean hands via proxies, blacklist those who leave → concertive control (peers police harder, no mgmt fingerprints), moral disengagement/dirty work, work-devotion norm, retaliation + noncompetes. Welds shut CASE-004's exit | done | done | done | STRONG |
 
 `*` = STRONG with an explicit scope condition. Status legend:
 `todo`/`researching`/`drafted`/`done`. Full catalog: `knowledge-base/index.md`.
 
 ## Emerging themes
 
-Nine themes now (see `knowledge-base/themes.md`):
+Eleven themes now (see `knowledge-base/themes.md`):
 1. **Compliance-vs-incentive substitution.** [CASE-001]
-2. **Loyalty/duty rhetoric as extraction.** [CASE-001]
+2. **Loyalty/duty rhetoric as extraction.** [CASE-001, CASE-005]
 3. **The managerial-caste double standard.** [CASE-001, CASE-002, CASE-004]
 4. **Systemic fix, not willpower.** [CASE-001, CASE-002, CASE-003]
 5. **Gatekeeping-as-risk-shifting (the credential catch-22).** [CASE-002]
@@ -65,13 +67,18 @@ Nine themes now (see `knowledge-base/themes.md`):
 8. **Trapping the competent** — hollow promises, talent-hoarding, PIP-as-control.
    [CASE-004]
 9. **Scapegoating the burdened role (blame culture).** [CASE-004]
+10. **Deniable enforcement** — outsourced peer policing + moral disengagement. [CASE-005]
+11. **Controlling exit** — vilifying leavers + weaponized reputation. [CASE-005]
 
 **Structure of the argument now visible:** Themes 6–7 (CASE-003) are the *engine*;
-themes 1–5, 8–9 are what that engine *does*. The **managerial-caste double standard**
-(theme 3, now in 3 cases) is the most visible connective tissue; **"same seat, same
-brain"** (theme 6) is the deepest claim / likely thesis chapter. The burdened role
-(healer) is now attacked from two sides: **coerced in (CASE-001)** and **trapped +
-blamed (CASE-004)** — a natural paired section for the article.
+the rest are what that engine *does*. The **managerial-caste double standard** (theme 3)
+and **loyalty-as-extraction** (theme 2) are the most visible connective tissue;
+**"same seat, same brain"** (theme 6) is the deepest claim / thesis chapter.
+
+**The burdened-role arc is now a full narrative** (a natural multi-section spine):
+- **coerced in** (CASE-001) → **scrutinized/gatekept** (CASE-002 caste) →
+- **trapped in role** (CASE-004) → **can't leave** (CASE-005) →
+- all because **the seat makes leaders behave this way** (CASE-003).
 
 ## Key decisions
 

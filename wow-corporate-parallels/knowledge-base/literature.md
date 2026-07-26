@@ -236,3 +236,54 @@ Tags: **[EV]** evidence (peer-reviewed / data / primary report) · **[OP]** opin
   1(4). DOI 10.1177/2631787720975192. — scapegoating as elite self-protection.
 - **[EV]** Bonazzi (1983). *Scapegoating in Complex Organizations.* Organization
   Studies 4(1):1–18. DOI 10.1177/017084068300400101.
+
+## 8. Deniable enforcement / peer control / exit control · used by: CASE-005
+
+### Concertive / clan / normative control + peer surveillance (the STAR spine)
+- **[EV]** Barker (1993). *Tightening the Iron Cage: Concertive Control in
+  Self-Managing Teams.* ASQ 38(3):408–437. DOI 10.2307/2393374. — **peers police harder
+  than mgmt, no mgmt fingerprints.** Tightest match in the project for peer policing.
+- **[EV/theory]** Tompkins & Cheney (1985). *Communication and Unobtrusive Control…*
+  (Sage). — coined concertive/unobtrusive control (no visible controller).
+- **[EV/theory]** Ouchi (1979/1980). *Control Mechanisms* (Mgmt Science 25(9), DOI
+  10.1287/mnsc.25.9.833) / *Markets, Bureaucracies, and Clans* (ASQ 25(1), DOI
+  10.2307/2392231). — **clan control** by internalized values.
+- **[OP/EV]** Kunda (1992). *Engineering Culture.* — normative control *(also in §3)*.
+- **[EV]** Sewell (1998). *The Discipline of Teams…Electronic and Peer Surveillance.*
+  ASQ 43(2):397–428. `[DOI verify]` — vertical data + horizontal peer surveillance.
+
+### Conformity / mobbing / ostracism (manufactured peer pressure)
+- **[EV]** Asch (1955). *Opinions and Social Pressure.* Sci. American 193(5). `[DOI verify]`
+- **[EV]** Deutsch & Gerard (1955). *Normative and Informational Social Influences.*
+  J. Abnormal & Social Psych. 51(3):629–636. DOI 10.1037/h0046408.
+- **[EV]** Leymann (1990). *Mobbing and Psychological Terror at Workplaces.* Violence
+  and Victims 5(2). DOI 10.1891/0886-6708.5.2.119.
+- **[EV]** Ferris, Brown, Berry & Lian (2008). *Workplace Ostracism Scale.* JAP 93(6).
+  `[DOI verify]`
+- **[EV]** O'Reilly, Robinson, Berdahl & Banki (2015). *Is Negative Attention Better
+  Than No Attention?* Org. Science 26(3). DOI 10.1287/orsc.2014.0900. — ostracism →
+  turnover 3 yrs later.
+
+### Moral disengagement / dirty work / deniability
+- **[EV/theory]** Bandura (1999). *Moral Disengagement…* PSPR 3(3):193–209. DOI
+  10.1207/s15327957pspr0303_3. — displacement + diffusion of responsibility.
+- **[OP/theory]** Hughes (1962). *Good People and Dirty Work.* Social Problems 10(1).
+  DOI 10.2307/799402.
+- **[EV/theory]** Ashforth & Kreiner (1999). *Dirty Work…* AMR 24(3). DOI
+  10.5465/amr.1999.2202129.
+- **[OP framework]** Herman & Chomsky (1988). *Manufacturing Consent.* *(framing only)*
+- **[OP]** Sutton (2007/2010). *The No Asshole Rule* / *Good Boss, Bad Boss.* —
+  "umbrella vs. funnel."
+
+### Exit vilification / retaliation / blacklisting
+- **[EV/theory]** Near & Miceli (1985). *Organizational Dissidence: Whistle-Blowing.*
+  J. Business Ethics 4(1). DOI 10.1007/BF00382668.
+- **[EV]** Rehg, Miceli, Near & Van Scotter (2008). *Retaliation Against
+  Whistleblowers.* Org. Science 19(2). DOI 10.1287/orsc.1070.0310.
+- **[EV]** Reid (2015). *…the Ideal Worker Image.* Org. Science 26(4). DOI
+  10.1287/orsc.2015.0975.
+- **[EV]** Blair-Loy (2003). *Competing Devotions* (work-devotion schema). Harvard UP.
+- **[EV]** Starr, Prescott & Bishara (2021). *Noncompete Agreements in the U.S. Labor
+  Force.* J. Law & Economics 64(1). DOI 10.1086/712206. — de facto blacklisting.
+- **[EV]** Felps et al. (2009). *Turnover Contagion.* AMJ 52(3). DOI
+  10.5465/amj.2009.41331075. *(complicates: exit is contagious, both ways)*

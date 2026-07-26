@@ -113,6 +113,44 @@ the article. Add a theme here when it shows up in 2+ cases; link the cases.
 - **Boundary:** individual accountability is sometimes appropriate; the wrong is
   *reflexive, cause-blind* blame that defaults to the person when the cause is systemic.
 
+### THEME: Deniable enforcement (outsourced peer policing + moral disengagement)
+- **What it is:** leadership relocates coercion to the peer group and to proxies, so
+  enforcement is harsher (peers police harder than managers), cheaper, and
+  **unattributable** — no leader "did" anything.
+- **Shows up in:** CASE-005; powered by CASE-003's engine.
+- **WoW expression:** a campaign to make rank-and-file raiders pressure/police the
+  healers; officers/proxies absorbing the rage when someone quits; leaders staying off
+  the record; player-adopted surveillance addons.
+- **Corporate expression:** **concertive/clan/normative control** (Barker; Ouchi;
+  Kunda) — peers enforce value-based rules more punitively than management, with *no
+  visible controller*; horizontal peer surveillance (Sewell); **moral disengagement**
+  via diffusion/displacement of responsibility (Bandura) and **delegated "dirty work"**
+  (Hughes) — the "shit umbrella" inverted into a deniable funnel (Sutton).
+- **Why they match:** direct visible coercion is expensive and makes the leader the
+  villain; peer enforcement exploits the universal fear of rejection (Asch) while
+  filing the leader's name off the harm.
+- **Boundary:** peer/clan control is often genuinely healthy; the pathology is
+  **intensification + inescapability + orchestration-with-deniability**, not team-based
+  norms as such.
+
+### THEME: Controlling exit (vilifying leavers + weaponized reputation)
+- **What it is:** leaving is pre-stigmatized as betrayal and made costly — socially,
+  reputationally, sometimes legally — so the trap has no escape hatch.
+- **Shows up in:** CASE-005 (sequel to CASE-004; turns CASE-001's loyalty rhetoric
+  against leavers).
+- **WoW expression:** "disloyal, never belonged"; shaming gquitters; public blame in
+  server channels → forced character rename or server transfer; blacklisting.
+- **Corporate expression:** the **work-devotion schema** casting exit as apostasy
+  (Blair-Loy); ideal-worker penalty for revealing non-devotion (Reid); **retaliation**
+  against those who break ranks, falling hardest on the least powerful (Rehg et al.);
+  **noncompetes** as de facto blacklisting even where unenforceable (Starr et al.);
+  ostracism/mobbing that makes the push-out look voluntary (Leymann; O'Reilly et al.).
+- **Why they match:** if exit is cheap, coercion fails; so the system raises the exit
+  cost and brands the leaver as the offender.
+- **Boundary:** some reputation-sharing is legitimate (truthful, proportionate); exit
+  stigma is sometimes organic and turnover is genuinely contagious — the tell is
+  *orchestration + retaliatory intent*, not the presence of loyalty feeling.
+
 ### THEME: Same seat, same brain (structural production of leadership cognition)
 - **What it is:** the reasoning patterns, ego-defenses, and blind spots of "the
   leader" are produced largely by the **structural position** — lightly-accountable
