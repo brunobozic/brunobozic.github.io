@@ -2,7 +2,7 @@
 
 ### What fifteen years of running raiding guilds taught me about how companies actually work
 
-*Draft 1 — 2026-07-26. A personal essay backed by the case files in
+*Draft 2 — 2026-07-26 (revised). A personal essay backed by the case files in
 `../../knowledge-base/`. Every source claim traces to a case's `sources.md`; first-hand
 recollections are marked as mine, not dressed up as proof.*
 
@@ -81,10 +81,10 @@ true of a workplace:
 
 I want to be honest about the limit of this up front, because it's the honest version of
 the claim and I'll come back to it: the guild is a clean **mirror**, not a leadership
-academy. A large study that matched thousands of players' in-game behavior to their
-offline lives found that guild-leadership skill predicted leadership in *volunteer*
-organizations — and had *no* measurable link to leadership rank in companies. So I am not
-telling you that raiding makes you a good executive. I'm telling you the guild shows you,
+academy. When researchers have actually matched players' in-game behavior to their offline
+lives, the leadership transfer comes out weak and uneven — real enough in other *voluntary*
+settings, faint-to-absent when it comes to rank inside a company. So I am not telling you
+that raiding makes you a good executive. I'm telling you the guild shows you,
 in fast-forward and high-contrast, what leaders *do* — and what they do is remarkably
 consistent whether they're nine years old or in the C-suite.
 
@@ -127,8 +127,9 @@ of ~1,400 managers and found that describing him as *loyal* made them measurably
 willing to assign him unpaid, undesirable extra work. Worse, the effect was
 self-reinforcing: accept the extra work, and you get labeled more loyal, which invites
 more extra work. The healer who never says no gets the hardest pulls. And if you want the
-literal version of "forcing the essential role to keep going drives them out," look at
-nursing: a 2024 study of hospital nurses found that *mandatory overtime*, specifically,
+literal, higher-stakes version of "forcing the essential role to keep going drives them out" —
+the one you can't simply log off from, a difference I'll come back to — look at nursing: a 2024
+study of hospital nurses found that *mandatory overtime*, specifically,
 was the workload factor tied to intent-to-leave — so pointed that the authors recommended
 banning it.
 
@@ -146,8 +147,9 @@ certain point the gear inspections started: before a raid, an officer would chec
 equipment, and if it was "too low" you weren't allowed in — even when it cleared the
 game's own requirements. It escalated, as these things do, until people were demanding
 gear *better than what the raid itself dropped*. You needed to have already done the thing
-to be allowed to do the thing. There's a 2009 blog post whose title I've never forgotten:
-"Gear Score, WoW's Catch-22." (GearScore was an add-on that boiled your equipment down to
+to be allowed to do the thing. That impulse outlasted the forty-person era and only sharpened
+as the tools did: there's a 2009 blog post whose title I've never forgotten, "Gear Score,
+WoW's Catch-22." (GearScore was an add-on that boiled your equipment down to
 one number strangers could reject you by. Its spiritual successor, RaiderIO, does the same
 thing today. This never went away.)
 
@@ -166,11 +168,11 @@ There's a caste smell to gatekeeping, too, and it's worth naming, because it rec
 burdened role gets the audit; the leadership doesn't. The version of this that everyone in
 tech recognizes: an engineer runs a six-round, whiteboard-and-LeetCode gauntlet, while
 executives are hired over dinner through a network. That's not a cynical exaggeration — a
-peer-reviewed study of CEO hiring found that *37% of externally-appointed CEOs* were
-personally connected to the board that hired them, versus about 5% you'd expect by chance,
-and that these connected hires were most common exactly where the candidate's record was
-*weakest*. The scrutiny is heaviest on the people with the least power and lightest on the
-people with the most. Rules for thee.
+peer-reviewed study of the CEO labor market found that roughly *37% of externally-appointed
+CEOs* were personally connected to the board that hired them — a third of the top job's
+occupants, walking in through exactly the kind of relationship the engineer downstairs will
+never be offered. The scrutiny is heaviest on the people with the least power and lightest on
+the people with the most. Rules for thee.
 
 ### Move three: trapped in the role
 
@@ -193,8 +195,8 @@ hoarding — and it's not folklore: an economist studying a large firm found tha
 managers' ability to hoard was temporarily reduced, employees' internal promotion
 applications jumped by about *123%*. The dam was that high. And the "performance improvement
 plan" as a tool for managing someone *out* or holding them *down*, rather than up, is common
-enough that mentions of PIPs on Glassdoor reportedly rose eightfold in a few years, with
-workers overwhelmingly reading one as a pre-written termination.
+enough that workers now widely treat being put on one as a pre-written termination notice
+rather than a genuine offer of help.
 
 And when the raid wiped? It was the healers' fault. "Learn to heal." "Lazy healers." Every
 time. Never the strategy, never the damage-dealers who stood in the fire, never the
@@ -236,9 +238,10 @@ three-quarters of his subjects would deny the evidence of their own eyes to agre
 unanimous room.
 
 The deniability has a literature too. Albert Bandura's work on "moral disengagement" names
-the exact moves — *displacing* responsibility ("just the process") and *diffusing* it across
-a group so no one owns it. The sociologist Everett Hughes wrote in 1962 about how "good
-people" get their dirty work done by proxies they can disavow, then look away. Robert Sutton,
+the exact moves — *displacing* responsibility onto "the process" and *diffusing* it across a
+group until no one owns it — which is how the sociologist Everett Hughes, back in 1962,
+described "good people" getting their dirty work done through proxies they could disavow.
+Robert Sutton,
 the Stanford management writer, has a cleaner image: a good boss is a *shit umbrella*, absorbing
 the pressure from above to shield the people below. Deniable enforcement is just that umbrella
 flipped into a funnel — with the leader's name filed off. And the reputation-destruction, the
@@ -265,8 +268,8 @@ selfish.
 
 This is the move that closes the trap, and it's the one your own working life will recognize
 fastest. It is worse, in most organizations, to be the person who *names* the problem than to
-be the person causing it — and being crucial does not protect you. In a set of experiments so
-on-the-nose it's almost unfair, Ethan Burris found that managers rate employees who use
+be the person causing it — and being crucial does not protect you. In a run of experiments that
+reads like it was built to prove this exact point, Ethan Burris found that managers rate employees who use
 *challenging* voice — questioning how things are done — as *worse performers* than employees
 who use *supportive* voice, holding the quality of the idea constant. Read that again:
 challenging the status quo literally lowered your performance score, mediated by how *loyal*
@@ -303,6 +306,15 @@ working — that the guild was bleeding out — they kept doing it anyway.
 
 If the same behavior appears in a nine-year-old and a C-suite veteran, the behavior is not
 coming from the person's age, or maturity, or competence. It's coming from the **seat**.
+
+I know, because I sat in it. I would like to tell you I was the exception in this story — the
+leader who saw the enclosure and refused to build it. I wasn't. I deferred the healer who
+asked to switch roles: *not yet, we can't afford it right now.* I let "lazy healers" stand in
+guild chat because defending them was more expensive than nodding along. I caught myself
+treating the people who *named* the problem as the problem. I did the moves fluently, the
+whole time believing I was one of the good ones — which is the entire argument in miniature.
+If the seat can do this to a nine-year-old and to me, both of us privately certain we were
+being reasonable, then being reasonable was never the safeguard I thought it was.
 
 The management and psychology literatures have quietly assembled the whole mechanism. The
 reason people double down on a failing course isn't stupidity; it's what Barry Staw named
@@ -351,9 +363,9 @@ preview of a slow corporate rot.
 leaders are a self-selected slice of *that*. What's true of them is not automatically true of a
 mandatory, diverse workforce.
 
-**And the transfer claim is unproven — I want to be clear about this.** Remember the study that
-found guild-leadership behavior predicted leadership in volunteer organizations but had *no* link
-to leadership rank in companies? That's the boundary. The guild is a legitimate laboratory for
+**And the transfer claim is unproven — I want to be clear about this.** Remember that when
+researchers matched in-game leadership to offline life, the link to corporate leadership came
+out weak and inconsistent? That's the boundary. The guild is a legitimate laboratory for
 *seeing* organizational dynamics — the mirror is real, and the peer-reviewed record supports it.
 It is *not* evidence that raiding trains executives, and the loudest versions of that claim came
 from people selling game-flavored enterprise software. Keep the mirror; drop the pipeline.
@@ -393,8 +405,10 @@ that teams which treat problem-naming as *learning* rather than insubordination 
 better, because the problems get named while they're still small. Safety is a property of the
 system the leader builds, not of the leader's personality or their intentions. You can't feel your
 way to it. You have to *build* it, and the first brick is making it safe to be the healer who says
-the raid has become an unpaid job — because that healer is almost always right, and always
-earliest.
+the raid has become an unpaid job. You won't always agree with that healer, and they won't
+always be right — but they are the cheapest early-warning system you will ever have, and a team
+that punishes the warning doesn't get fewer problems. It just stops hearing about them, until
+the night forty people quietly don't log in.
 
 ---
 
@@ -425,4 +439,8 @@ carefully, what happens to them when they finally tell you the truth.
 `../../knowledge-base/literature.md`. Where I've written "in my guilds" or "I saw," that's
 first-hand recollection and is labeled as such in the case notes, not presented as evidence.
 Snippet-sourced citations gathered during research should be re-verified against original texts
-before this is published anywhere public.*
+before this is published anywhere public — in particular the in-game-to-offline leadership-transfer
+finding (Williams et al.'s "Friending your way up the ladder" is the likely source and should be
+read directly before the volunteer-vs-corporate framing is restated) and the CEO connected-hiring
+study, whose 37% figure is confirmed but whose surrounding interpretation is contested in the
+literature. Verified during this revision: the talent-hoarding +123% figure (Hägele, 2022).*
