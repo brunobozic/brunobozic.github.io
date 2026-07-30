@@ -61,6 +61,16 @@ exec-reader, lay-reader, labor-ethics, publishing, legal). Changes committed
 - **Craft:** GearScore/40-man era signpost; foreshadowed the hobby-vs-waged-labor caveat
   at the nurse comparison; folded Hughes into Bandura in Move 4; varied a repeated verbal
   tic; bumped draft marker + closing source caveat.
+- **Perspective shift (later pass, per author):** de-personalized the narrator from
+  *guild leader* ("I ran guilds… recruited, promoted, benched") to *long-time observer*
+  ("played since vanilla, ~two decades, watched the same pattern recur across many
+  guilds"). Subtitle, intro, and scattered "my guild / we used / led through" markers
+  changed to player/observer framing; the raid-night "we/our" (a player was still in
+  those raids) kept. The self-implication paragraph was reworked from "I sat in the seat
+  and did the moves" to "I watched it across guild after guild under leaders who shared
+  nothing but the chair" + light bystander complicity (nodded along, stayed) — which
+  actually *strengthens* the "same seat, same brain" thesis (pattern seen across many
+  occupants) while keeping honesty.
 
 ### Deep-research Round 2 (2026-07-26) — verification of snippet-sourced citations
 Triggered by the Draft-2 fact-check: the article's remaining risk was not wrong claims

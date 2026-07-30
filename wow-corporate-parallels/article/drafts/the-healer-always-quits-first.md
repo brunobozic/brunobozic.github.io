@@ -1,6 +1,6 @@
 # The Healer Always Quits First
 
-### What fifteen years of running raiding guilds taught me about how companies actually work
+### What two decades in World of Warcraft raiding guilds taught me about how companies actually work
 
 *Draft 2 — 2026-07-26 (revised). A personal essay backed by the case files in
 `../../knowledge-base/`. Every source claim traces to a case's `sources.md`; first-hand
@@ -25,12 +25,12 @@ happening that night, or any night. People started typing their goodbyes and app
 to other guilds. The organization we'd spent two years building was simply gone, the
 way a company that misses payroll is gone: not with a decision, but with an absence.
 
-I have led guilds, on and off, for more than fifteen years. I have recruited, promoted,
-benched, and buried them. And the longer I did it, the more I noticed something that I
-found first funny and then unsettling: **the mistakes we made in the guild were the
-exact mistakes I watched grown, credentialed, well-paid executives make in the actual
-workplace.** Not similar. The same. Same moves, same words, same blind spots — just
-faster, and with the lights on.
+I've played *World of Warcraft* since vanilla — on and off for the better part of two
+decades — most of it in raiding guilds, watching them form, raid, feud, and fall apart. And
+the longer I paid attention, the more I noticed something I found first funny and then
+unsettling: **the mistakes I kept seeing guilds make were the exact mistakes I watched grown,
+credentialed, well-paid executives make in the actual workplace.** Not similar. The same.
+Same moves, same words, same blind spots — just faster, and with the lights on.
 
 This essay is my attempt to take that seriously.
 
@@ -95,7 +95,7 @@ the most important and most abused role in the game: the healer.
 
 ## The enclosure, in five moves
 
-The healer is the load-bearing worker. In the era I mostly led through — "Classic" WoW,
+The healer is the load-bearing worker. In the era I mostly played through — "Classic" WoW,
 the forty-person-raid years — healers were miserable to play solo (they did almost no
 damage) and indispensable in a group. So few people wanted to main a healer that guilds
 were permanently short of them. No healers, no raid. It was the clearest possible case of
@@ -110,7 +110,7 @@ compliance* — mandates, guilt, surveillance. The first costs the leaders somet
 second is free and flatters them. Under pressure, weak leadership picks the second every
 single time.
 
-So healers got the stick. We used "DKP" — dragon-kill points, a currency you earn by
+So healers got the stick. Guilds used "DKP" — dragon-kill points, a currency you earn by
 *attending* raids and spend on loot — and layered attendance rules on top, all aimed at
 forcing the scarce role to show up. Hybrid classes like druids, who *could* heal, were
 mandated into healing and then quietly locked there: loot rules let them roll only on
@@ -183,7 +183,7 @@ they ask: can I finally play the role I want? And the answer, forever, is *next 
 Not no. Never a clean no — a clean no you could act on. Just deferral. "We'll see next
 tier." "We can't afford to lose a healer right now." Meanwhile the promise buys another
 few months of compliance for free. And when the healer pushes, there's a process waiting —
-in my guilds we literally had what amounted to a performance improvement plan, framed as
+the guilds I raided in literally had what amounted to a performance improvement plan, framed as
 development, whose actual function was to keep people *in place*.
 
 Every piece of this is a documented workplace pattern. A verbal "you're next" is what
@@ -203,7 +203,7 @@ time. Never the strategy, never the damage-dealers who stood in the fire, never 
 leadership. This is the oldest move in the book — the fundamental attribution error dressed
 as management — and it does real work: it protects the people at the top by pushing blame
 down the power gradient to the most visible, least-defended role. Safety science has a name
-for the alternative nobody in my guild ever reached for: a "just culture," which asks what
+for the alternative I never once watched guild leadership reach for: a "just culture," which asks what
 in the *system* failed before it asks who to burn. There's even an experiment showing blame
 is *contagious* — watch someone shift blame, and you're more likely to do it yourself,
 because it protects your self-image. Which is exactly why "it's the healers" spread through
@@ -253,7 +253,7 @@ doesn't dare.
 ### Move five: you can't even say it
 
 Here is where the story turns, and where the person telling it — the healer — is finally, in
-a sense, right out loud. At some point our healers said the true thing. They said: this has
+a sense, right out loud. At some point the healers said the true thing. They said: this has
 become an unpaid job. Five, six hours a day. Mandatory attendance, hours of grinding for the
 potions and flasks we're *required* to bring, all for a "mutual good" that never mutualizes.
 This is not what a game is supposed to be.
@@ -278,7 +278,7 @@ paper — titled, again with no irony, "Shooting the Messenger" — ran eleven e
 found people dislike and penalize the *bearer* of bad news even when everyone agrees the
 messenger had nothing to do with it. When researchers asked employees *why* they stay silent
 about serious problems, the number-one reason wasn't fear of being fired. It was fear of being
-labeled — a troublemaker, a complainer, *difficult*. Exactly the label our healers got.
+labeled — a troublemaker, a complainer, *difficult*. Exactly the label the healers got.
 
 And the recoding of a legitimate complaint into a character defect — "there's a problem here"
 becoming "*you* are the problem" — is itself a studied reflex. Psychologists call one version
@@ -307,14 +307,14 @@ working — that the guild was bleeding out — they kept doing it anyway.
 If the same behavior appears in a nine-year-old and a C-suite veteran, the behavior is not
 coming from the person's age, or maturity, or competence. It's coming from the **seat**.
 
-I know, because I sat in it. I would like to tell you I was the exception in this story — the
-leader who saw the enclosure and refused to build it. I wasn't. I deferred the healer who
-asked to switch roles: *not yet, we can't afford it right now.* I let "lazy healers" stand in
-guild chat because defending them was more expensive than nodding along. I caught myself
-treating the people who *named* the problem as the problem. I did the moves fluently, the
-whole time believing I was one of the good ones — which is the entire argument in miniature.
-If the seat can do this to a nine-year-old and to me, both of us privately certain we were
-being reasonable, then being reasonable was never the safeguard I thought it was.
+I say that with some confidence because I watched it happen across guild after guild, year
+after year, under leaders who shared nothing but the chair. Teenagers and
+grown professionals, the gentle and the vicious, ran the same plays in the same order. And I
+wasn't watching from some clean height above it — I nodded along when officers called the
+healers lazy, and I stayed in guilds that ran this playbook long after I could see where it
+led, because leaving is only free in theory. That's the unsettling part. You could not predict
+a leader's behavior from their personality, only from their position; and the moment someone
+sat down in the seat, the personality stopped telling you much of anything.
 
 The management and psychology literatures have quietly assembled the whole mechanism. The
 reason people double down on a failing course isn't stupidity; it's what Barry Staw named
@@ -414,7 +414,7 @@ the night forty people quietly don't log in.
 
 ## The four minutes, again
 
-The healers in my guild were not troublesome, or immature, or selfish. They were the most
+The healers in that guild were not troublesome, or immature, or selfish. They were the most
 clear-eyed people in the organization. They had done the math — on the hours, the grind, the
 promises that never came, the blame that always did — and they had reached the correct answer
 before anyone else, because they were the ones paying. When they logged in on their damage-dealer
@@ -436,8 +436,9 @@ carefully, what happens to them when they finally tell you the truth.
 
 *Sources for every claim above live in the case files under
 `../../knowledge-base/cases/` and the master bibliography in
-`../../knowledge-base/literature.md`. Where I've written "in my guilds" or "I saw," that's
-first-hand recollection and is labeled as such in the case notes, not presented as evidence.
+`../../knowledge-base/literature.md`. Where I've written "I saw" or "the guilds I played in,"
+that's first-hand recollection from two decades as a player and is labeled as such in the case
+notes, not presented as evidence.
 The load-bearing citations were verified against original sources in a dedicated pass (logged in
 `../../knowledge-base/verification-round-2.md`): the volunteer-vs-corporate leadership-transfer
 finding (Lu, Shen & Williams 2014), the loyalty-exploitation, nurse-overtime, degree-inflation,
