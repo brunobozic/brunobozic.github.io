@@ -11,10 +11,13 @@ namespace QuietHull.Data
         [Min(1f)] [SerializeField] internal float countdownSeconds = 1800f;
         [Tooltip("The countdown stops while a teaching prompt is open.")]
         [SerializeField] internal bool pauseCountdownDuringPrompts = true;
+        [Tooltip("False: there's no fail timer; the countdown is the par time used for pacing and par bonuses.")]
+        [SerializeField] internal bool countdownIsFailTimer = true;
         [SerializeField] internal MissionBeatDefinition[] beats = Array.Empty<MissionBeatDefinition>();
 
         public float CountdownSeconds => countdownSeconds;
         public bool PauseCountdownDuringPrompts => pauseCountdownDuringPrompts;
+        public bool CountdownIsFailTimer => countdownIsFailTimer;
         public IReadOnlyList<MissionBeatDefinition> Beats => beats ?? Array.Empty<MissionBeatDefinition>();
 
         protected override void ValidateDefinition(ValidationReport report)

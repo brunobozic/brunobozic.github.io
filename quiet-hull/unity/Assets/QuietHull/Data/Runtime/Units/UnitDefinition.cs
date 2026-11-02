@@ -37,6 +37,12 @@ namespace QuietHull.Data
         [SerializeField] internal UnitAbility abilities = UnitAbility.Move | UnitAbility.Interact;
         [SerializeField] internal ItemDefinition[] startingItems = Array.Empty<ItemDefinition>();
 
+        [Header("Growth")]
+        [Tooltip("Augment slots this body accepts (empty for workers).")]
+        [SerializeField] internal AugmentSlot[] augmentSlots = Array.Empty<AugmentSlot>();
+        [Tooltip("Specializations offered once the unit has enough experience.")]
+        [SerializeField] internal SpecializationDefinition[] specializationOptions = Array.Empty<SpecializationDefinition>();
+
         public float MaxHealth => maxHealth;
         public float Armour => armour;
         public bool CanBeDestroyed => canBeDestroyed;
@@ -52,6 +58,26 @@ namespace QuietHull.Data
         public int HandCarrySlots => handCarrySlots;
         public UnitAbility Abilities => abilities;
         public IReadOnlyList<ItemDefinition> StartingItems => startingItems ?? Array.Empty<ItemDefinition>();
+        public IReadOnlyList<AugmentSlot> AugmentSlots => augmentSlots ?? Array.Empty<AugmentSlot>();
+        public IReadOnlyList<SpecializationDefinition> SpecializationOptions => specializationOptions ?? Array.Empty<SpecializationDefinition>();
+
+        public bool Accepts(AugmentDefinition augment)
+        {
+            if (augment == null)
+            {
+                return false;
+            }
+
+            foreach (var slot in AugmentSlots)
+            {
+                if (slot == augment.Slot)
+                {
+                    return true;
+                }
+            }
+
+            return false;
+        }
 
         public bool Can(UnitAbility ability) => (abilities & ability) == ability;
 
@@ -77,6 +103,20 @@ namespace QuietHull.Data
             foreach (var item in StartingItems)
             {
                 report.NotNull(this, nameof(startingItems), item);
+            }
+
+            var slots = new HashSet<AugmentSlot>();
+            foreach (var slot in AugmentSlots)
+            {
+                if (!slots.Add(slot))
+                {
+                    report.Error(this, nameof(augmentSlots), $"{slot} is listed twice.");
+                }
+            }
+
+            foreach (var option in SpecializationOptions)
+            {
+                report.NotNull(this, nameof(specializationOptions), option);
             }
         }
     }

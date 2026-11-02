@@ -1,4 +1,4 @@
-# Quiet Hull — Unity data layer (prologue)
+# Quiet Hull — Unity data layer (prologue and mission 2)
 
 Drop `Assets/QuietHull/` into the Unity 6 (URP) project. C# 9, no .NET 8 APIs in runtime code.
 
@@ -6,9 +6,9 @@ Drop `Assets/QuietHull/` into the Unity 6 (URP) project. C# 9, no .NET 8 APIs in
 
 | Assembly | Folder | Contents |
 | --- | --- | --- |
-| `QuietHull.Data` (runtime) | `Data/Runtime` | ScriptableObject definitions: items, weapons, tools, cargo, sentries, units, aliens, recipes, workstations, room ambience, loot caches, waves, mission beats, mission scripts, and the `DefinitionCatalog` with a thread-safe id lookup. No third-party dependencies. |
-| `QuietHull.Data.Editor` | `Data/Editor` | `PrologueContentBuilder` (every prologue value, one place), the asset generator, catalog validation, Serilog + OpenTelemetry wiring. |
-| `QuietHull.Data.Tests.Editor` | `Data/Tests/Editor` | Edit-mode tests that check the design doc's tuning targets (ammo left after the stream, masking per room, material totals, rupture times, alloy value). |
+| `QuietHull.Data` (runtime) | `Data/Runtime` | ScriptableObject definitions: items, weapons, tools, cargo, key items, sentries, units, aliens, augments (8 slots), specializations, Omen cards (with the rarity math), shuttle modules, market offers, contracts, recipes, workstations, room ambience, hazards, room treatments, fixtures, loot caches, waves, mission beats and scripts, announcements, and the `DefinitionCatalog` with a thread-safe id lookup. `RarityMath` and `StatMath` are pure helpers. No third-party dependencies. |
+| `QuietHull.Data.Editor` | `Data/Editor` | Content builders (`PrologueContentBuilder`, `ColdSleepContentBuilder`: every value in one place), the asset generator, catalog validation, Serilog + OpenTelemetry wiring. |
+| `QuietHull.Data.Tests.Editor` | `Data/Tests/Editor` | Edit-mode tests that check the design doc's tuning targets: the rarity matrix, ammo per trip, masking, material totals, rupture and freeze times, the hub economy, specialization balance. |
 
 ## Setup
 
@@ -16,8 +16,9 @@ Drop `Assets/QuietHull/` into the Unity 6 (URP) project. C# 9, no .NET 8 APIs in
    - `Serilog` (3.1+)
    - `System.Diagnostics.DiagnosticSource` (8.0+; provides `ActivitySource` for OpenTelemetry spans)
 2. Make sure the Test Framework package is installed (Window ▸ Package Manager ▸ Test Framework).
-3. **Quiet Hull ▸ Prologue ▸ Generate Data Assets** writes everything to `Assets/QuietHull/Content/Prologue/`.
-   Running it again updates assets in place (GUIDs stay stable).
+3. **Quiet Hull ▸ Content ▸ Generate Prologue** and **Generate Mission 2 (Cold Sleep)** write everything under
+   `Assets/QuietHull/Content/`. Running them again updates assets in place (GUIDs stay stable); shared
+   definitions (materials, sentries, aliens) stay single assets.
 4. **Quiet Hull ▸ Validate All Catalogs** validates every catalog in the project.
 5. Window ▸ General ▸ Test Runner ▸ EditMode ▸ Run All.
 
@@ -34,9 +35,9 @@ Drop `Assets/QuietHull/` into the Unity 6 (URP) project. C# 9, no .NET 8 APIs in
 
 ## Conventions
 
-- Ids are `lower_snake_case` with a prefix: `itm_`, `mat_`, `rcp_`, `bp_`, `ws_`, `unit_`, `alien_`, `amb_`,
-  `cache_`, `wave_`, `beat_`, `mission_`, `cat_`.
+- Ids are `lower_snake_case` with a prefix: `itm_`, `mat_`, `rcp_`, `bp_`, `ws_`, `unit_`, `alien_`, `enemy_`, `amb_`,
+  `hz_`, `rt_`, `fx_`, `cache_`, `aug_`, `spec_`, `omen_`, `mod_`, `offer_`, `con_`, `wave_`, `beat_`, `ann_`, `mission_`, `cat_`.
 - One ScriptableObject class per file, named after the class (Unity needs this for asset references).
 - Definitions are read-only at runtime (internal serialized fields, public getters), so the sim can read
   them from any thread once loaded.
-- Change prologue numbers in `PrologueContentBuilder`, regenerate, run the tests.
+- Change numbers in the content builders, regenerate, run the tests.

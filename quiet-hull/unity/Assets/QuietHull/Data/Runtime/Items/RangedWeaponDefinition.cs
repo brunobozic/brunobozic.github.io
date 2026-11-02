@@ -13,6 +13,10 @@ namespace QuietHull.Data
         [Min(1)] [SerializeField] internal int magazineSize = 12;
         [Min(0f)] [SerializeField] internal float reloadSeconds = 1.5f;
 
+        [Tooltip("Fraction a hit slows its target (Controller foam). 0 = none.")]
+        [Range(0f, 0.95f)] [SerializeField] internal float slowFraction;
+        [Min(0f)] [SerializeField] internal float slowSeconds;
+
         [Tooltip("Scripted moments (the prologue finale) ignore reserve ammo.")]
         [SerializeField] internal bool unlimitedReserve;
 
@@ -23,6 +27,8 @@ namespace QuietHull.Data
         public int MagazineSize => magazineSize;
         public float ReloadSeconds => reloadSeconds;
         public bool UnlimitedReserve => unlimitedReserve;
+        public float SlowFraction => slowFraction;
+        public float SlowSeconds => slowSeconds;
 
         /// <summary>Sustained DPS including reloads.</summary>
         public float SustainedDamagePerSecond
@@ -36,7 +42,16 @@ namespace QuietHull.Data
 
         protected override void ValidateItem(ValidationReport report)
         {
-            report.Positive(this, nameof(damagePerShot), damagePerShot);
+            if (!(damagePerShot > 0f) && !(slowFraction > 0f))
+            {
+                report.Error(this, nameof(damagePerShot), "a weapon must damage or slow.");
+            }
+
+            if (slowFraction > 0f)
+            {
+                report.Positive(this, nameof(slowSeconds), slowSeconds);
+            }
+
             report.Positive(this, nameof(fireIntervalSeconds), fireIntervalSeconds);
             report.Positive(this, nameof(range), range);
             report.Positive(this, nameof(magazineSize), magazineSize);

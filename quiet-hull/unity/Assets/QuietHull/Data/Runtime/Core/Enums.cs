@@ -101,7 +101,9 @@ namespace QuietHull.Data
         CutBolt = 0,
         SealDoor = 1,
         RemoveDebris = 2,
-        MineResource = 3
+        MineResource = 3,
+        CutPanel = 4,
+        DetachFixture = 5
     }
 
     [Flags]
@@ -147,5 +149,140 @@ namespace QuietHull.Data
     {
         Warning = 0,
         Error = 1
+    }
+
+    /// <summary>Syndicate-style augment slots on a synthetic body.</summary>
+    public enum AugmentSlot
+    {
+        Arms = 0,
+        Legs = 1,
+        Eyes = 2,
+        Ears = 3,
+        Lungs = 4,
+        Heart = 5,
+        Dermis = 6,
+        Brain = 7
+    }
+
+    public enum AugmentKind
+    {
+        Cyber = 0,
+        Bio = 1
+    }
+
+    /// <summary>Stats that augments, specializations and Omens can modify.</summary>
+    public enum UnitStat
+    {
+        MaxHealth = 0,
+        Armour = 1,
+        MoveSpeed = 2,
+        NoiseWalking = 3,
+        HeatSignature = 4,
+        HeatAfterExertion = 5,
+        VisionRange = 6,
+        ContactDetectionRange = 7,
+        DoorsHeardThrough = 8,
+        CritChance = 9,
+        CritMultiplier = 10,
+        WeakPointMultiplier = 11,
+        FireRate = 12,
+        ReloadTime = 13,
+        MeleeDamage = 14,
+        HealthRegenPerSecond = 15,
+        HealthRegenOutOfCombat = 16,
+        HeatShielding = 17,
+        ColdShielding = 18,
+        AbilityCooldown = 19,
+        ExperienceGain = 20,
+        TargetAcquisitionTime = 21,
+        EmpResistance = 22,
+        SeesThroughSmoke = 23,
+        SentryHitRateVsSlowed = 24
+    }
+
+    public enum ModifierOperation
+    {
+        /// <summary>value += amount</summary>
+        Add = 0,
+        /// <summary>value *= (1 + amount); amount 0.15 = +15%</summary>
+        AddPercent = 1
+    }
+
+    public enum Archetype
+    {
+        Marksman = 0,
+        Controller = 1,
+        Bulwark = 2,
+        HeavyGunner = 3
+    }
+
+    public enum OmenFamily
+    {
+        Hive = 0,
+        Ship = 1,
+        Condition = 2,
+        Fabrication = 3,
+        Expedition = 4,
+        Fortune = 5,
+        Culling = 6,
+        Brutality = 7,
+        Hybrid = 8,
+        Vow = 9
+    }
+
+    /// <summary>Which rarity factor scales an effect: the benefit (m) or the handicap (h).</summary>
+    public enum OmenSide
+    {
+        Benefit = 0,
+        Handicap = 1
+    }
+
+    /// <summary>The scaling rules from the doc's rarity math (Content lists, section 2).</summary>
+    public enum ScalingRule
+    {
+        /// <summary>Doesn't scale (on/off effects).</summary>
+        None = 0,
+        /// <summary>value × factor (percent bonuses and penalties).</summary>
+        Linear = 1,
+        /// <summary>value × factor; the fraction is a chance of one more.</summary>
+        Count = 2,
+        /// <summary>floor(value × factor) (slots, guaranteed sockets).</summary>
+        Structural = 3,
+        /// <summary>1 + (k − 1) × factor.</summary>
+        Multiplier = 4,
+        /// <summary>1 − (1 − p)^factor, for chances and biases.</summary>
+        Chance = 5,
+        /// <summary>1 − (1 − r)^factor, for reductions.</summary>
+        Reduction = 6
+    }
+
+    public enum OmenEffectKind
+    {
+        LootPercent = 0,
+        ContractPayPercent = 1,
+        SurgeSizePercent = 2,
+        AlienHealthPercent = 3,
+        AlienDamagePercent = 4,
+        NoEpicRolls = 5,
+        RarityRolls = 6,
+        AwarenessJumpPercent = 7
+    }
+
+    public enum VowCondition
+    {
+        None = 0,
+        /// <summary>No unit detected (an alien reaching Hunting on it) while the hive is Dormant.</summary>
+        UndetectedWhileDormant = 1,
+        NoUnitWrecked = 2,
+        UnderParTime = 3
+    }
+
+    public enum OfferKind
+    {
+        Service = 0,
+        Unit = 1,
+        ShuttleModule = 2,
+        Augment = 3,
+        Item = 4
     }
 }

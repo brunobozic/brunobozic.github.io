@@ -17,12 +17,12 @@ namespace QuietHull.Data.Editor
         public const string LaneBPrefix = "lane_b_";
 
         // Asset sub-folders.
-        private const string MaterialsFolder = "Materials";
-        private const string ItemsFolder = "Items";
-        private const string CraftingFolder = "Crafting";
-        private const string UnitsFolder = "Units";
-        private const string WorldFolder = "World";
-        private const string ScriptFolder = "Script";
+        private const string MaterialsFolder = "Prologue/Materials";
+        private const string ItemsFolder = "Prologue/Items";
+        private const string CraftingFolder = "Prologue/Crafting";
+        private const string UnitsFolder = "Prologue/Units";
+        private const string WorldFolder = "Prologue/World";
+        private const string ScriptFolder = "Prologue/Script";
 
         public static PrologueContent Build(IDefinitionFactory factory)
         {
@@ -41,12 +41,7 @@ namespace QuietHull.Data.Editor
             BuildWorld(content, maker);
             BuildScript(content, maker);
 
-            var catalog = factory.GetOrCreateCatalog(CatalogId);
-            catalog.catalogId = CatalogId;
-            catalog.definitions = new List<DefinitionBase>(maker.All);
-            catalog.InvalidateLookup();
-
-            content.Catalog = catalog;
+            content.Catalog = maker.WriteCatalog(CatalogId);
             content.All = maker.All;
             return content;
         }
@@ -625,28 +620,6 @@ namespace QuietHull.Data.Editor
             mission.pauseCountdownDuringPrompts = true;
             mission.beats = beats.ToArray();
             c.Mission = mission;
-        }
-
-        /// <summary>Gets or creates definitions through the factory and keeps catalog order.</summary>
-        private sealed class DefinitionMaker
-        {
-            private readonly IDefinitionFactory _factory;
-            private readonly List<DefinitionBase> _all = new List<DefinitionBase>(96);
-
-            public DefinitionMaker(IDefinitionFactory factory) => _factory = factory;
-
-            public IReadOnlyList<DefinitionBase> All => _all;
-
-            public T Def<T>(string id, string folder, string displayName, string description, params string[] tags) where T : DefinitionBase
-            {
-                var definition = _factory.GetOrCreate<T>(id, folder);
-                definition.id = id;
-                definition.displayName = displayName;
-                definition.description = description;
-                definition.tags = tags ?? Array.Empty<string>();
-                _all.Add(definition);
-                return definition;
-            }
         }
     }
 }
