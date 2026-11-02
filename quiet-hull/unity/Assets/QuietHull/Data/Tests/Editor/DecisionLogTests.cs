@@ -117,7 +117,7 @@ namespace QuietHull.Data.Tests
             Assert.That(file.DeviationCount, Is.EqualTo(2));
 
             var end = ForecastReport.Build(log, _d.AllDecisions, 18);
-            Assert.That(end.Lines.Last().Text, Is.EqualTo("Final disposition: candidate stays aboard. Predicted —."));
+            Assert.That(end.Lines.Last().Text, Is.EqualTo("Final disposition: candidate stays aboard. Predicted " + ForecastReport.UnforecastMark + ". " + ForecastReport.ScopeNote));
             Assert.That(end.UnforecastCount, Is.EqualTo(1));
         }
 

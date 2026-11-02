@@ -14,6 +14,12 @@ namespace QuietHull.Data
         public const string DeviationNote = "Acceptable deviation.";
         public const string UnforecastMark = "—";
 
+        /// <summary>
+        /// Printed after an unforecast line. The model forecasts a man; whether the choice was his or the
+        /// alien tissue's is never answered (see the Theme tab).
+        /// </summary>
+        public const string ScopeNote = "Note: forecast scope is human behaviour. Decision source not attributable.";
+
         private ForecastReport(IReadOnlyList<ForecastLine> lines, int expected, int deviations, int unforecast)
         {
             Lines = lines;
