@@ -7,7 +7,7 @@ namespace QuietHull.Data.Editor
     /// four facings, and the three rooms the player needs (the T2 fabricator, the cryo vault, the armoury)
     /// are never all open at once, so the job takes several turns. Turning to facing 2 burns out the nest,
     /// and holding it there lets the belt vent the nest completely; holding facing 3 strips the reactor
-    /// housing away so the deep hold's radiation drops. Holding facing 0 too long collapses the spine.
+    /// housing away so the deep hold's radiation drops. Holding facing 0 for 15 minutes collapses the spine, the way back (the belt opens the armoury wall at facing 1 as the other way out).
     /// </summary>
     public static class SunwheelSampleBuilder
     {
@@ -50,7 +50,7 @@ namespace QuietHull.Data.Editor
                 new ErodingSection("nest_hull", 2, 300f, ErosionOutcome.Breach, string.Empty),
                 new ErodingSection("reactor_housing", 3, 600f, ErosionOutcome.StripRadiationSource, "deep_hold"),
                 new ErodingSection("armoury_wall", 1, 450f, ErosionOutcome.OpenPassage, "armoury"),
-                new ErodingSection("spine_truss", 0, 900f, ErosionOutcome.Collapse, "charging_bay")
+                new ErodingSection("spine_truss", 0, 900f, ErosionOutcome.Collapse, "spine")
             };
 
             make.WriteCatalog(CatalogId);
