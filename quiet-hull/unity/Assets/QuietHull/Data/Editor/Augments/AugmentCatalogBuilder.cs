@@ -61,8 +61,8 @@ namespace QuietHull.Data.Editor
             c.WorkerCurve = worker;
 
             var military = make.Def<UnitMarkCurveDefinition>("curve_military", UnitsFolder, "Military chassis marks",
-                "Mk I–V chassis. Augments carry most of a military unit's growth.", "curve");
-            military.maxMark = Mark.MkV;
+                "Mk I–VIII chassis, matching the augments. The chassis carries the frame; augments carry most of the power.", "curve");
+            military.maxMark = Mark.MkVIII;
             military.healthPerMark = 0.12f;
             military.armourPerMark = 4f;
             military.moveSpeedPerMark = 0.05f;
@@ -72,7 +72,7 @@ namespace QuietHull.Data.Editor
             military.minimumNoise = 0.5f;
             military.powerOutputPerMark = 40f;
             military.extraCarrySlotEvery = 0;
-            military.priceFactorPerMark = 1.6f;
+            military.priceFactorPerMark = 1.45f;
             military.hasFirmware = false;
             military.gen2FromMark = Mark.MkII;
             military.gen3FromMark = Mark.MkIII;

@@ -32,6 +32,8 @@ namespace QuietHull.Data
         [Min(0)] [SerializeField] internal int surgeCost = 1;
         [Min(0)] [SerializeField] internal int chitinBounty = 1;
         [Min(0)] [SerializeField] internal int experience = 1;
+        [Tooltip("Highest Heat intensity (0–3) it can stand. Above it, it burns: it flees if it can and dies if it can't.")]
+        [Range(0, 3)] [SerializeField] internal int heatTolerance = 1;
         [Tooltip("How much acid blood it sprays when killed, toward an amalgam deposit (0 = none, e.g. synthetics).")]
         [Min(0f)] [SerializeField] internal float amalgamWeight = 1f;
 
@@ -53,6 +55,20 @@ namespace QuietHull.Data
         public int ChitinBounty => chitinBounty;
         public int Experience => experience;
         public float AmalgamWeight => amalgamWeight;
+        public int HeatTolerance => heatTolerance;
+
+        /// <summary>Damage per second for each Heat level above tolerance.</summary>
+        public const float HeatBurnPerLevel = 20f;
+
+        /// <summary>Burn damage per second at a Heat intensity (0 when it can stand it).</summary>
+        public float HeatBurnPerSecond(int heatIntensity) => Math.Max(0, heatIntensity - heatTolerance) * HeatBurnPerLevel * ArmourMath.DamageMultiplier(armour);
+
+        /// <summary>Seconds it survives at a Heat intensity; infinity if it can stand it.</summary>
+        public float SecondsToBurn(int heatIntensity)
+        {
+            var burn = HeatBurnPerSecond(heatIntensity);
+            return burn > 0f ? maxHealth / burn : float.PositiveInfinity;
+        }
 
         /// <summary>Damage a hit of <paramref name="rawDamage"/> deals after armour.</summary>
         public float DamageTaken(float rawDamage) => rawDamage * ArmourMath.DamageMultiplier(armour);

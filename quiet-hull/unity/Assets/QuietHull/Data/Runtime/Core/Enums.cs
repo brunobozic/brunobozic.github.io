@@ -13,7 +13,7 @@ namespace QuietHull.Data
     }
 
     /// <summary>
-    /// Mark. Military chassis and equipment use Mk I–V, augments Mk I–VIII, worker androids Mk I–XII.
+    /// Mark. Equipment uses Mk I–V, military chassis and augments Mk I–VIII, worker androids and worker modules Mk I–XII.
     /// Prologue content is always <see cref="MkI"/>.
     /// </summary>
     public enum Mark
@@ -89,7 +89,23 @@ namespace QuietHull.Data
         Vehicle = 10,
         Key = 11,
         WeaponMod = 12,
-        Augment = 13
+        Augment = 13,
+        Mine = 14
+    }
+
+    /// <summary>What sets a mine off.</summary>
+    public enum MineTrigger
+    {
+        /// <summary>Anything that walks within the trigger radius, including your own units if friendly fire is on.</summary>
+        Proximity = 0,
+        /// <summary>A directional charge: a cone toward the facing set when it was planted.</summary>
+        Directional = 1,
+        /// <summary>Only alien acid blood sets it off: safe for your units and synths.</summary>
+        AcidSense = 2,
+        /// <summary>Goes off by itself on a timer (decoys).</summary>
+        Timed = 3,
+        /// <summary>Goes off when the commander triggers it.</summary>
+        Remote = 4
     }
 
     public enum FireMode
@@ -434,5 +450,18 @@ namespace QuietHull.Data
         Augment = 3,
         Item = 4,
         Blueprint = 5
+    }
+
+    /// <summary>What happens when the asteroid belt grinds through a section.</summary>
+    public enum ErosionOutcome
+    {
+        /// <summary>The section decompresses: aliens inside are blown out or die; unsealed units take damage.</summary>
+        Breach = 0,
+        /// <summary>A radiation source's housing is torn off and drifts away: the target room's Radiation drops.</summary>
+        StripRadiationSource = 1,
+        /// <summary>A wall is opened: a new passage to the target room.</summary>
+        OpenPassage = 2,
+        /// <summary>The section caves in: the passage to the target room is blocked for good.</summary>
+        Collapse = 3
     }
 }

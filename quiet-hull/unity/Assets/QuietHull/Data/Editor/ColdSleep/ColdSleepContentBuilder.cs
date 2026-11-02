@@ -53,6 +53,7 @@ namespace QuietHull.Data.Editor
             BuildOmens(c, make);
             BuildWorld(c, make);
             BuildCrafting(c, make);
+            c.Ordnance = OrdnanceCatalogBuilder.Build(factory, prologue, c.XenoalloyIngot);
             BuildHub(c, make);
             BuildTeasers(c, make);
             BuildScripts(c, make);
@@ -298,6 +299,7 @@ namespace QuietHull.Data.Editor
             leaper.chitinBounty = 3;
             leaper.experience = 4;
             leaper.amalgamWeight = 2f;
+            leaper.heatTolerance = 1;
             c.Leaper = leaper;
 
             var constable = make.Def<AlienDefinition>("enemy_constable", UnitsFolder, "Constable",
@@ -317,6 +319,7 @@ namespace QuietHull.Data.Editor
             constable.chitinBounty = 0;
             constable.experience = 20;
             constable.amalgamWeight = 0f; // Synthetic: no acid blood.
+            constable.heatTolerance = 2;
             c.Constable = constable;
         }
 
@@ -696,6 +699,40 @@ namespace QuietHull.Data.Editor
                 Teaser(module);
             }
 
+            // Advanced mines and the hidden compartment join the teaser shelf; the basic mines are for sale.
+            var mineOffers = new List<MarketOfferDefinition>(3);
+            foreach (var blueprint in c.Ordnance.MineBlueprints)
+            {
+                var mine = (MineDefinition)blueprint.Unlocks.Output;
+                var basic = mine == c.Ordnance.Frag || mine == c.Ordnance.Stun || mine == c.Ordnance.Lure;
+                var offer = make.Def<MarketOfferDefinition>($"offer_{blueprint.Id}", folder, blueprint.DisplayName, mine.Description, "offer", "patusan", "mine");
+                offer.kind = OfferKind.Blueprint;
+                offer.target = blueprint;
+                offer.priceScrip = basic ? (mine == c.Ordnance.Lure ? 400 : mine == c.Ordnance.Frag ? 600 : 700) : 3500;
+                offer.required = false;
+                offer.lentForContract = false;
+                offer.vendor = "Blueprint broker";
+                offer.teaserOnly = !basic;
+                offer.unlockRequirement = basic ? string.Empty
+                    : mine == c.Ordnance.Shredder ? "Military pattern: needs a Lane Authority licence, or Hollow Moon standing: Trusted."
+                    : mine == c.Ordnance.Bloodhound ? "Needs Hollow Moon standing: Trusted."
+                    : "Needs Drifters' Union standing: Friendly.";
+                (basic ? mineOffers : offers).Add(offer);
+            }
+
+            var compartmentOffer = make.Def<MarketOfferDefinition>("offer_mod_hidden_compartment", folder, "Hidden compartment",
+                c.Ordnance.HiddenCompartment.Description, "offer", "patusan", "module", "contraband");
+            compartmentOffer.kind = OfferKind.ShuttleModule;
+            compartmentOffer.target = c.Ordnance.HiddenCompartment;
+            compartmentOffer.priceScrip = c.Ordnance.HiddenCompartment.PriceScrip;
+            compartmentOffer.required = false;
+            compartmentOffer.lentForContract = false;
+            compartmentOffer.vendor = "The back room";
+            compartmentOffer.teaserOnly = true;
+            compartmentOffer.unlockRequirement = "Contraband: needs Hollow Moon standing: Trusted.";
+            offers.Add(compartmentOffer);
+
+            c.MineOffers = mineOffers;
             c.TeaserOffers = offers;
         }
 

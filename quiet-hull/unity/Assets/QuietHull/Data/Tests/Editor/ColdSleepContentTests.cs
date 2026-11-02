@@ -160,7 +160,8 @@ namespace QuietHull.Data.Tests
         public void Teasers_AtLeastFourPerMilitarySlot_AndPerWorkerSlot()
         {
             var bySlot = _c.TeaserOffers
-                .Select(o => ((BlueprintDefinition)o.Target).Unlocks.Output as AugmentDefinition)
+                .Select(o => o.Target is BlueprintDefinition bp ? bp.Unlocks.Output as AugmentDefinition : null)
+                .Where(a => a != null)
                 .GroupBy(a => a.Slot)
                 .ToDictionary(g => g.Key, g => g.Count());
 
@@ -176,7 +177,7 @@ namespace QuietHull.Data.Tests
             var missionEarnings = _c.Prologue.GravLatticeAlloy.TotalScripValue(6) + 3 * 100 + _c.Contract.TotalPay + _c.JudeaContract.TotalPay;
             var beyondMoney = _c.TeaserOffers.Count(o => o.PriceScrip > missionEarnings);
 
-            Assert.That(_c.TeaserOffers.All(o => o.TeaserOnly && !o.CanBuyNow && o.Kind == OfferKind.Blueprint), Is.True);
+            Assert.That(_c.TeaserOffers.All(o => o.TeaserOnly && !o.CanBuyNow), Is.True);
             Assert.That(_c.TeaserOffers.All(o => o.UnlockRequirement.Contains("standing") || o.UnlockRequirement.Contains("licence")), Is.True,
                 "every teaser needs standing or a licence the player can't have yet");
             Assert.That(beyondMoney, Is.GreaterThan(_c.TeaserOffers.Count / 2), $"{beyondMoney} of {_c.TeaserOffers.Count} cost more than the greedy path earns ({missionEarnings})");

@@ -129,6 +129,15 @@ namespace QuietHull.Data.Editor
             ContentGenerator.ShowResult("Prologue", ContentGenerator.Run("Prologue", ContentGenerator.DefaultRoot,
                 factory => PrologueContentBuilder.Build(factory).Catalog));
 
+        [MenuItem("Quiet Hull/Content/Generate Sample: Tremolino sun and belt", priority = 30)]
+        private static void GenerateSunwheel() =>
+            ContentGenerator.ShowResult("Tremolino sample", ContentGenerator.Run("Tremolino sample", ContentGenerator.DefaultRoot,
+                factory =>
+                {
+                    SunwheelSampleBuilder.Build(factory);
+                    return ((IDefinitionFactory)factory).GetOrCreateCatalog(SunwheelSampleBuilder.CatalogId);
+                }));
+
         [MenuItem("Quiet Hull/Content/Generate Mission 2 (Cold Sleep)", priority = 11)]
         private static void GenerateColdSleep() =>
             // Same root as the prologue, so shared definitions (materials, sentries, aliens) stay single assets.

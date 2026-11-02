@@ -7,6 +7,9 @@ namespace QuietHull.Data.Editor
     {
         public PrologueContent Prologue { get; internal set; }
         public AugmentCatalog Augs { get; internal set; }
+        public OrdnanceCatalog Ordnance { get; internal set; }
+        /// <summary>Mine blueprints for sale now (frag, stun, lure).</summary>
+        public IReadOnlyList<MarketOfferDefinition> MineOffers { get; internal set; }
 
         // Units
         public UnitDefinition Picket { get; internal set; }

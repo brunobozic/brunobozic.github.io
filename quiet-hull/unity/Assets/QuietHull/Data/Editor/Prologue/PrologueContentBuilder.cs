@@ -307,6 +307,7 @@ namespace QuietHull.Data.Editor
             crawler.chitinBounty = 2;
             crawler.experience = 2;
             crawler.amalgamWeight = 1f;
+            crawler.heatTolerance = 1;
             c.Crawler = crawler;
 
             var spitter = make.Def<AlienDefinition>("alien_spitter", UnitsFolder, "Spitter",
@@ -326,6 +327,7 @@ namespace QuietHull.Data.Editor
             spitter.chitinBounty = 3;
             spitter.experience = 4;
             spitter.amalgamWeight = 2f;
+            spitter.heatTolerance = 2;
             c.Spitter = spitter;
         }
 
