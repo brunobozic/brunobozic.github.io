@@ -1,0 +1,24 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <!--
+    Runs the engine-free simulation core and its tests outside Unity, so `dotnet test` works locally and in CI.
+    The sources live under unity/Assets so Unity compiles the same files (QuietHull.Sim.asmdef has noEngineReferences).
+    LangVersion 9 matches Unity 6's C# compiler.
+  -->
+  <PropertyGroup>
+    <TargetFramework>net8.0</TargetFramework>
+    <LangVersion>9.0</LangVersion>
+    <Nullable>disable</Nullable>
+    <IsPackable>false</IsPackable>
+    <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
+    <RootNamespace>QuietHull.Sim.Tests</RootNamespace>
+  </PropertyGroup>
+  <ItemGroup>
+    <Compile Include="../../unity/Assets/QuietHull/Sim/Runtime/**/*.cs" />
+    <Compile Include="../../unity/Assets/QuietHull/Sim/Tests/**/*.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <PackageReference Include="NUnit" Version="3.14.0" />
+    <PackageReference Include="NUnit3TestAdapter" Version="4.5.0" />
+    <PackageReference Include="Microsoft.NET.Test.Sdk" Version="17.9.0" />
+  </ItemGroup>
+</Project>
