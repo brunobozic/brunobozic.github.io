@@ -12,13 +12,15 @@ namespace QuietHull.Data
     {
         [SerializeField] internal string client = string.Empty;
         [SerializeField] internal string hulkName = string.Empty;
-        [Tooltip("What each part must deliver.")]
+        [Tooltip("What each part must deliver. Empty for retrieval jobs where you keep what you find.")]
         [SerializeField] internal CargoDefinition deliverable;
         [Tooltip("Pay per part, in order. Its length is the number of parts.")]
         [SerializeField] internal int[] payPerPart = Array.Empty<int>();
         [SerializeField] internal ShuttleModuleDefinition moduleGiven;
         [SerializeField] internal ItemStack[] itemsGiven = Array.Empty<ItemStack>();
         [SerializeField] internal MissionScriptDefinition[] partScripts = Array.Empty<MissionScriptDefinition>();
+        [Tooltip("Blueprints given when the whole contract is complete.")]
+        [SerializeField] internal BlueprintDefinition[] completionBlueprints = Array.Empty<BlueprintDefinition>();
 
         public string Client => client;
         public string HulkName => hulkName;
@@ -28,6 +30,7 @@ namespace QuietHull.Data
         public ShuttleModuleDefinition ModuleGiven => moduleGiven;
         public IReadOnlyList<ItemStack> ItemsGiven => itemsGiven ?? Array.Empty<ItemStack>();
         public IReadOnlyList<MissionScriptDefinition> PartScripts => partScripts ?? Array.Empty<MissionScriptDefinition>();
+        public IReadOnlyList<BlueprintDefinition> CompletionBlueprints => completionBlueprints ?? Array.Empty<BlueprintDefinition>();
 
         public int TotalPay
         {
@@ -58,7 +61,11 @@ namespace QuietHull.Data
 
         protected override void ValidateDefinition(ValidationReport report)
         {
-            report.NotNull(this, nameof(deliverable), deliverable);
+            if (deliverable == null && PartScripts.Count == 0)
+            {
+                report.Error(this, nameof(deliverable), "a contract needs a deliverable or a mission script.");
+            }
+
             report.NotEmpty(this, nameof(payPerPart), payPerPart);
             foreach (var pay in PayPerPart)
             {
@@ -68,6 +75,11 @@ namespace QuietHull.Data
             if (PartScripts.Count != 0 && PartScripts.Count != Parts)
             {
                 report.Error(this, nameof(partScripts), $"has {PartScripts.Count} scripts for {Parts} parts.");
+            }
+
+            foreach (var blueprint in CompletionBlueprints)
+            {
+                report.NotNull(this, nameof(completionBlueprints), blueprint);
             }
 
             if (string.IsNullOrWhiteSpace(client))

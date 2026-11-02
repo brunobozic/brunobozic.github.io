@@ -4,10 +4,10 @@ using System.Collections.Generic;
 namespace QuietHull.Data.Editor
 {
     /// <summary>
-    /// Mission 2, "Cold Sleep": Patusan (the hub) and the two-part cryo pod job on the Torrens.
-    /// Values mirror the "Mission 2: Cold Sleep" tab of the design doc. Shared definitions
-    /// (materials, sentries, Crawlers, Spitters, J1M) come from the prologue builder, so both
-    /// catalogs reference the same assets.
+    /// Mission 2, "Cold Sleep": Patusan (the hub), the two-part cryo pod job on the Torrens, and the
+    /// Judea side job that rewards the handgun conversion kit. Values mirror the "Mission 2: Cold Sleep"
+    /// tab of the design doc. Shared definitions (materials, sentries, the handgun, Crawlers, Spitters,
+    /// J1M) come from the prologue builder, so both catalogs reference the same assets.
     /// </summary>
     public static class ColdSleepContentBuilder
     {
@@ -16,7 +16,13 @@ namespace QuietHull.Data.Editor
         /// <summary>Spawn points on the Lane, the haul corridor both sentries cover.</summary>
         public const string LanePrefix = "lane_";
 
-        // Economy from the doc.
+        // Level layout facts the tuning depends on (the scene must match).
+        public const int LaneSegments = 6;
+        public const int LaneBulkheadSegments = 4;
+        public const int LaneConduitSegments = 2;
+        public const int JudeaKillZoneSegments = 3;
+
+        // Economy.
         public const int AugmentPrice = 450;
         public const int PodPayPerTrip = 600;
 
@@ -39,11 +45,13 @@ namespace QuietHull.Data.Editor
             var make = new DefinitionMaker(factory);
             var c = new ColdSleepContent { Prologue = prologue };
 
+            BuildMaterials(c, make);
             BuildWeapons(c, make);
             BuildGrowth(c, make);
             BuildUnits(c, make);
             BuildOmens(c, make);
             BuildWorld(c, make);
+            BuildCrafting(c, make);
             BuildHub(c, make);
             BuildScripts(c, make);
 
@@ -52,39 +60,62 @@ namespace QuietHull.Data.Editor
             return c;
         }
 
+        private static void BuildMaterials(ColdSleepContent c, DefinitionMaker make)
+        {
+            var chunk = make.Def<MaterialDefinition>("mat_amalgam_chunk", ItemsFolder, "Amalgam chunk",
+                "Half-melted ship metal fused with alien acid. Break it down at a station.", "material", "amalgam");
+            chunk.maxStack = 99;
+            c.AmalgamChunk = chunk;
+
+            var ingot = make.Def<MaterialDefinition>("mat_xenoalloy_ingot", ItemsFolder, "Xenoalloy ingot",
+                "Refined amalgam: three chunks pressed into something a fabricator can trust.", "material", "amalgam");
+            ingot.maxStack = 99;
+            c.XenoalloyIngot = ingot;
+
+            var myomer = make.Def<MaterialDefinition>("mat_synthetic_myomer", ItemsFolder, "Synthetic myomer bundle",
+                "Military-grade artificial muscle from a security synth.", "material", "exotic");
+            myomer.maxStack = 10;
+            c.SyntheticMyomer = myomer;
+        }
+
         private static void BuildWeapons(ColdSleepContent c, DefinitionMaker make)
         {
-            var carbine = make.Def<RangedWeaponDefinition>("itm_picket_carbine", ItemsFolder, "Picket carbine",
-                "Hollow Moon surplus. Reliable, unremarkable.", "weapon", "ranged");
-            carbine.damagePerShot = 14f;
-            carbine.fireIntervalSeconds = 0.2f;
-            carbine.range = 20f;
-            carbine.magazineSize = 30;
-            carbine.reloadSeconds = 2f;
-            carbine.noiseOnUse = 7f;
-            carbine.heatOnUse = 3f;
-            carbine.lightOnUse = LightEmission.Bright;
-            c.PicketCarbine = carbine;
+            var kit = make.Def<WeaponModDefinition>("itm_mod_pistol_conversion", ItemsFolder, "Micro-conversion kit",
+                "Converts the military handgun to automatic fire, with recoil damping and three extended caseless magazines. Still no machine gun.",
+                "weapon_mod", "automatic");
+            kit.fitsWeapon = c.Prologue.ServicePistol;
+            kit.fireMode = FireMode.Auto;
+            kit.burstLength = 1;
+            kit.fireIntervalMultiplier = 0.45f;  // 0.33 s → 0.15 s
+            kit.damageMultiplier = 0.64f;        // lighter caseless loads: 22 → 14
+            kit.magazineSize = 30;
+            kit.reloadMultiplier = 1.33f;        // longer magazines: 1.5 s → 2 s
+            kit.accuracyAdd = 0f;                // the damping cancels the spray
+            kit.spareMagazines = 3;
+            c.PistolConversionKit = kit;
 
+            // Later gear, defined now so the locked specializations can name what they need.
             var rifle = make.Def<RangedWeaponDefinition>("itm_long_rifle", ItemsFolder, "Long rifle",
-                "A Marksman's rifle. Slow, accurate, devastating on a weak point.", "weapon", "ranged", "marksman");
+                "A Marksman's rifle. Slow, accurate, devastating on a weak point. Not found until later.", "weapon", "ranged", "long_rifle");
             rifle.damagePerShot = 60f;
             rifle.fireIntervalSeconds = 1.5f;
             rifle.range = 28f;
             rifle.magazineSize = 5;
             rifle.reloadSeconds = 2.5f;
+            rifle.accuracy = 0.8f;
             rifle.noiseOnUse = 9f;
             rifle.heatOnUse = 3f;
             rifle.lightOnUse = LightEmission.Bright;
             c.LongRifle = rifle;
 
             var foam = make.Def<RangedWeaponDefinition>("itm_foam_projector", ItemsFolder, "Foam projector",
-                "Sprays hardening foam. Hurts nothing; stops everything.", "weapon", "controller");
+                "Sprays hardening foam. Hurts nothing; stops everything. Not found until later.", "weapon", "crowd_control_kit");
             foam.damagePerShot = 0f;
             foam.fireIntervalSeconds = 0.5f;
             foam.range = 14f;
             foam.magazineSize = 20;
             foam.reloadSeconds = 2f;
+            foam.accuracy = 0.9f;
             foam.slowFraction = 0.4f;
             foam.slowSeconds = 3f;
             foam.noiseOnUse = 3f;
@@ -95,48 +126,37 @@ namespace QuietHull.Data.Editor
 
         private static void BuildGrowth(ColdSleepContent c, DefinitionMaker make)
         {
-            var marksman = make.Def<SpecializationDefinition>("spec_marksman", GrowthFolder, "Marksman",
-                "Huge critical hits at long range.", "specialization");
-            marksman.archetype = Archetype.Marksman;
-            marksman.unlockExperience = 50;
-            marksman.weaponOverride = c.LongRifle;
-            marksman.passives = new[]
+            // The first choice is between two roles that work with what the player has now.
+            var burst = make.Def<SpecializationDefinition>("spec_burst_gunner", GrowthFolder, "Burst Gunner",
+                "Short, controlled bursts. Turns any gun into a swarm killer; grows into the Heavy Gunner.", "specialization");
+            burst.archetype = Archetype.HeavyGunner;
+            burst.unlockExperience = 50;
+            burst.weaponOverride = null;
+            burst.requiresEquipmentTag = string.Empty;
+            burst.lockedReason = string.Empty;
+            burst.passives = new[]
             {
-                StatModifier.Add(UnitStat.CritChance, 0.30f),
-                StatModifier.Add(UnitStat.CritMultiplier, 3f),
-                StatModifier.Add(UnitStat.WeakPointMultiplier, 2f)
+                StatModifier.Add(UnitStat.Accuracy, 0.15f),
+                StatModifier.Percent(UnitStat.ReloadTime, -0.25f),
+                StatModifier.Percent(UnitStat.FireRate, 0.10f)
             };
-            marksman.abilityId = "ab_overwatch";
-            marksman.abilityName = "Overwatch";
-            marksman.abilityDescription = "The first shot at anything entering a cone is a guaranteed critical.";
-            marksman.abilityCooldownSeconds = 8f;
-            marksman.abilityDurationSeconds = 0f;
-            marksman.abilityRadius = 28f;
-            marksman.strongAgainst = "Leapers: kills them during their 1 s crouch. Champions and Spitters at range.";
-            marksman.weakAgainst = "Swarms: one slow shot at a time.";
-            c.Marksman = marksman;
-
-            var controller = make.Def<SpecializationDefinition>("spec_controller", GrowthFolder, "Controller",
-                "Slows the swarm so the sentries can do the killing.", "specialization");
-            controller.archetype = Archetype.Controller;
-            controller.unlockExperience = 50;
-            controller.weaponOverride = c.FoamProjector;
-            controller.passives = new[] { StatModifier.Add(UnitStat.SentryHitRateVsSlowed, 0.25f) };
-            controller.abilityId = "ab_foam_field";
-            controller.abilityName = "Foam field";
-            controller.abilityDescription = "A 5 m area for 6 s: aliens inside are slowed 40% and can't jump.";
-            controller.abilityCooldownSeconds = 10f;
-            controller.abilityDurationSeconds = 6f;
-            controller.abilityRadius = 5f;
-            controller.strongAgainst = "Swarms and Leapers, next to sentries.";
-            controller.weakAgainst = "Anything the sentries can't reach: he can't kill on his own.";
-            c.Controller = controller;
+            burst.abilityId = "ab_suppressing_fire";
+            burst.abilityName = "Suppressing fire";
+            burst.abilityDescription = "For 5 s, every alien hit in a 30° cone within 15 m is staggered and slowed 30%; a crouching Leaper is knocked out of its jump.";
+            burst.abilityCooldownSeconds = 12f;
+            burst.abilityDurationSeconds = 5f;
+            burst.abilityRadius = 15f;
+            burst.strongAgainst = "Swarms and Leapers. Best with the conversion kit, useful without it.";
+            burst.weakAgainst = "Armoured targets; long reload windows.";
+            c.BurstGunner = burst;
 
             var bulwark = make.Def<SpecializationDefinition>("spec_bulwark", GrowthFolder, "Bulwark",
-                "Holds the line and regenerates faster than it takes damage.", "specialization");
+                "Holds the line and regenerates faster than a small pack can hurt it.", "specialization");
             bulwark.archetype = Archetype.Bulwark;
             bulwark.unlockExperience = 50;
             bulwark.weaponOverride = null;
+            bulwark.requiresEquipmentTag = string.Empty;
+            bulwark.lockedReason = string.Empty;
             bulwark.passives = new[]
             {
                 StatModifier.Add(UnitStat.Armour, 30f),
@@ -152,6 +172,48 @@ namespace QuietHull.Data.Editor
             bulwark.weakAgainst = "Spitters at range, and packs of four or more.";
             c.Bulwark = bulwark;
 
+            // Shown but locked until the gear exists, so nobody wastes the choice.
+            var marksman = make.Def<SpecializationDefinition>("spec_marksman", GrowthFolder, "Marksman",
+                "Huge critical hits at long range. Shines against elites.", "specialization");
+            marksman.archetype = Archetype.Marksman;
+            marksman.unlockExperience = 50;
+            marksman.weaponOverride = c.LongRifle;
+            marksman.requiresEquipmentTag = "long_rifle";
+            marksman.lockedReason = "Needs a long rifle.";
+            marksman.passives = new[]
+            {
+                StatModifier.Add(UnitStat.CritChance, 0.30f),
+                StatModifier.Add(UnitStat.CritMultiplier, 3f),
+                StatModifier.Add(UnitStat.WeakPointMultiplier, 2f)
+            };
+            marksman.abilityId = "ab_overwatch";
+            marksman.abilityName = "Overwatch";
+            marksman.abilityDescription = "The first shot at anything entering a cone is a guaranteed critical.";
+            marksman.abilityCooldownSeconds = 8f;
+            marksman.abilityDurationSeconds = 0f;
+            marksman.abilityRadius = 28f;
+            marksman.strongAgainst = "Elites, champions, Leapers, Spitters at range.";
+            marksman.weakAgainst = "Swarms: one slow shot at a time.";
+            c.Marksman = marksman;
+
+            var controller = make.Def<SpecializationDefinition>("spec_controller", GrowthFolder, "Controller",
+                "Slows the swarm so the sentries can do the killing.", "specialization");
+            controller.archetype = Archetype.Controller;
+            controller.unlockExperience = 50;
+            controller.weaponOverride = c.FoamProjector;
+            controller.requiresEquipmentTag = "crowd_control_kit";
+            controller.lockedReason = "Needs a foam projector or a control drone.";
+            controller.passives = new[] { StatModifier.Add(UnitStat.SentryHitRateVsSlowed, 0.25f) };
+            controller.abilityId = "ab_foam_field";
+            controller.abilityName = "Foam field";
+            controller.abilityDescription = "A 5 m area for 6 s: aliens inside are slowed 40% and can't jump.";
+            controller.abilityCooldownSeconds = 10f;
+            controller.abilityDurationSeconds = 6f;
+            controller.abilityRadius = 5f;
+            controller.strongAgainst = "Swarms and Leapers, next to sentries.";
+            controller.weakAgainst = "Anything the sentries can't reach: he can't kill on his own.";
+            c.Controller = controller;
+
             AugmentDefinition Aug(AugmentSlot slot, string name, string description, params StatModifier[] modifiers)
             {
                 var augment = make.Def<AugmentDefinition>($"aug_{slot.ToString().ToLowerInvariant()}_mk1", GrowthFolder,
@@ -159,6 +221,7 @@ namespace QuietHull.Data.Editor
                 augment.slot = slot;
                 augment.kind = AugmentKind.Cyber;
                 augment.mark = Mark.MkI;
+                augment.rarity = Rarity.Common;
                 augment.priceScrip = AugmentPrice;
                 augment.modifiers = modifiers;
                 return augment;
@@ -183,12 +246,29 @@ namespace QuietHull.Data.Editor
                 Aug(AugmentSlot.Brain, "Tactical cortex", "Learns faster, reacts faster, resists EMP and hacking.",
                     StatModifier.Percent(UnitStat.ExperienceGain, 0.20f), StatModifier.Percent(UnitStat.TargetAcquisitionTime, -0.30f), StatModifier.Add(UnitStat.EmpResistance, 1f))
             };
+
+            // The contract's real reward: a better augment you can't make yet.
+            var arms2 = make.Def<AugmentDefinition>("aug_arms_mk2", GrowthFolder, "Stabilized servo arms Mk II",
+                "Military pattern. Gyro-stabilized forearms that soak recoil. Needs a T2 fabricator.", "augment", "cyber", "crafted");
+            arms2.slot = AugmentSlot.Arms;
+            arms2.kind = AugmentKind.Cyber;
+            arms2.mark = Mark.MkII;
+            arms2.rarity = Rarity.Common;
+            arms2.priceScrip = 0;
+            arms2.modifiers = new[]
+            {
+                StatModifier.Percent(UnitStat.FireRate, 0.20f),
+                StatModifier.Percent(UnitStat.ReloadTime, -0.30f),
+                StatModifier.Percent(UnitStat.MeleeDamage, 0.25f),
+                StatModifier.Add(UnitStat.Accuracy, 0.10f)
+            };
+            c.StabilizedArmsMk2 = arms2;
         }
 
         private static void BuildUnits(ColdSleepContent c, DefinitionMaker make)
         {
             var picket = make.Def<UnitDefinition>("unit_picket", UnitsFolder, "Picket",
-                "A cheap Hollow Moon combat droid: a carbine, a chassis, no frills.", "unit", "combat", "synthetic");
+                "A cheap Hollow Moon combat droid with the standard military handgun. No frills.", "unit", "combat", "synthetic");
             picket.maxHealth = 260f;
             picket.armour = 15f;
             picket.canBeDestroyed = true;
@@ -202,9 +282,9 @@ namespace QuietHull.Data.Editor
             picket.lampRange = 10f;
             picket.handCarrySlots = 0;
             picket.abilities = UnitAbility.Move | UnitAbility.Interact | UnitAbility.Attack | UnitAbility.Patrol | UnitAbility.FireWeapon;
-            picket.startingItems = new ItemDefinition[] { c.PicketCarbine };
+            picket.startingItems = new ItemDefinition[] { c.Prologue.ServicePistol };
             picket.augmentSlots = (AugmentSlot[])Enum.GetValues(typeof(AugmentSlot));
-            picket.specializationOptions = new[] { c.Marksman, c.Controller, c.Bulwark };
+            picket.specializationOptions = new[] { c.BurstGunner, c.Bulwark, c.Marksman, c.Controller };
             c.Picket = picket;
 
             var j1m = c.Prologue.J1M;
@@ -242,6 +322,7 @@ namespace QuietHull.Data.Editor
             leaper.surgeCost = 4;
             leaper.chitinBounty = 3;
             leaper.experience = 4;
+            leaper.amalgamWeight = 2f;
             c.Leaper = leaper;
 
             var constable = make.Def<AlienDefinition>("enemy_constable", UnitsFolder, "Constable",
@@ -260,6 +341,7 @@ namespace QuietHull.Data.Editor
             constable.surgeCost = 0;
             constable.chitinBounty = 0;
             constable.experience = 20;
+            constable.amalgamWeight = 0f; // Synthetic: no acid blood.
             c.Constable = constable;
         }
 
@@ -309,14 +391,29 @@ namespace QuietHull.Data.Editor
         {
             var p = c.Prologue;
 
+            var amalgam = make.Def<AmalgamDefinition>("amalgam_acid_fused", WorldFolder, "Acid-fused amalgam",
+                "Alien blood eats into the bulkheads where they die. Enough kills in one place leave a deposit you can mine.", "amalgam");
+            amalgam.chunk = c.AmalgamChunk;
+            amalgam.weightPerDeposit = 25f;
+            amalgam.maxDepositsPerSegment = 3;
+            amalgam.mineSeconds = 8f;
+            amalgam.mineNoise = 2f;
+            amalgam.baseYield = new[] { new MaterialCost(p.Scrap, 1) };
+            amalgam.surfaceYields = new[]
+            {
+                new SurfaceYield(SurfaceKind.Bulkhead, p.Plating, 1),
+                new SurfaceYield(SurfaceKind.Conduit, p.Circuitry, 1),
+                new SurfaceYield(SurfaceKind.Munitions, p.Ordnance, 1),
+                new SurfaceYield(SurfaceKind.Machinery, p.Scrap, 1)
+            };
+            amalgam.breakdownSeconds = 6f;
+            c.Amalgam = amalgam;
+
             var pod = make.Def<CargoDefinition>("itm_cryo_pod", ItemsFolder, "Cryo pod",
                 "A colonial sleep pod. With one, a person can leave. That's why they're so scarce.", "cargo", "contract", "oversize");
             pod.slots = 6;
             pod.maxCondition = 100f;
             pod.conditionLossPerSecondByHeat = new[] { 0f, 0.5f, 1.5f, 3f };
-            pod.explodesWhenDestroyed = false;
-            pod.explosionDamage = 0f;
-            pod.explosionRadius = 0f;
             c.CryoPod = pod;
 
             var cell = make.Def<CargoDefinition>("itm_shuttle_power_cell", ItemsFolder, "Shuttle power cell",
@@ -353,39 +450,128 @@ namespace QuietHull.Data.Editor
             c.PodMount = mount;
 
             var store = make.Def<LootCacheDefinition>("cache_security_store", WorldFolder, "Security store",
-                "Opened by Constable. Riot gear, restraints and the acoustic panels.", "cache", "locked");
-            store.materials = new[] { new MaterialCost(panel, 8) };
+                "Opened by Constable. Riot gear, a crate of rounds and the acoustic panels.", "cache", "locked");
+            store.materials = new[] { new MaterialCost(panel, 8), new MaterialCost(p.Ordnance, 4) };
             store.items = Array.Empty<ItemStack>();
             store.accessRequires = Array.Empty<ToolActionKind>();
             store.placedCount = 1;
             c.SecurityStore = store;
 
+            var remains = make.Def<LootCacheDefinition>("cache_constable_remains", WorldFolder, "Constable's remains",
+                "Strip it: the myomer is worth more than the rest of the ship.", "cache", "synthetic");
+            remains.materials = new[] { new MaterialCost(c.SyntheticMyomer, 1), new MaterialCost(p.Circuitry, 2) };
+            remains.items = Array.Empty<ItemStack>();
+            remains.accessRequires = Array.Empty<ToolActionKind>();
+            remains.placedCount = 1;
+            c.ConstableRemains = remains;
+
             var bulkhead = make.Def<LootCacheDefinition>("cache_bulkhead_panel", WorldFolder, "Bulkhead panel",
-                "Ballast-deck plating. The only scrap on the Torrens; shared by both trips.", "cache", "salvage");
+                "Ballast-deck plating: the only loose scrap on the Torrens, shared by both trips.", "cache", "salvage");
             bulkhead.materials = new[] { new MaterialCost(p.Scrap, 6) };
             bulkhead.items = Array.Empty<ItemStack>();
             bulkhead.accessRequires = new[] { ToolActionKind.CutPanel };
-            bulkhead.placedCount = 10;
+            bulkhead.placedCount = 7;
             c.BulkheadPanel = bulkhead;
 
+            var coal = make.Def<HazardZoneDefinition>("hz_judea_coal_fire", WorldFolder, "Smouldering bunker",
+                "The Judea's coal bunker has been burning for years. Vent it to space to put it out.", "hazard", "heat");
+            coal.kind = HazardKind.Heat;
+            coal.intensity = 2;
+            coal.moveSpeedMultiplier = 0.85f;
+            coal.damagePerSecond = 4f;
+            coal.visionWithLamp = 0f;
+            coal.visionWithoutLamp = 0f;
+            coal.lampSpottedRangeMultiplier = 1f;
+            coal.clearedAtInteractionId = "vent_coal_bunker";
+            coal.clearSeconds = 5f;
+            coal.clearNoise = 8f;
+            coal.requiresKey = null;
+            coal.residualIntensity = 1;
+            coal.residualMoveSpeedMultiplier = 1f;
+            coal.residualDamagePerSecond = 0f;
+            c.JudeaCoalFire = coal;
+        }
+
+        private static void BuildCrafting(ColdSleepContent c, DefinitionMaker make)
+        {
+            var p = c.Prologue;
+
             var ammo = make.Def<RecipeDefinition>("rcp_sentry_ammo_salvage", WorldFolder, "Sentry ammo box (salvage)",
-                "The Torrens's fabricator prints rounds from scrap.", "recipe");
+                "Prints rounds from scrap.", "recipe");
             ammo.output = p.SentryAmmoBox;
             ammo.outputCount = 1;
             ammo.inputs = new[] { new MaterialCost(p.Scrap, 6) };
+            ammo.itemInputs = Array.Empty<ItemStack>();
+            ammo.minimumStationTier = 1;
             ammo.craftSeconds = 10f;
             ammo.requiresBlueprint = false;
             c.SalvageAmmoRecipe = ammo;
 
-            var fabricator = make.Def<WorkstationDefinition>("ws_torrens_fabricator", WorldFolder, "Torrens fabricator (T1)",
-                "Old, slow, still works.", "workstation", "fabricator");
-            fabricator.services = WorkstationService.Fabricate;
-            fabricator.recipes = new[] { ammo };
-            fabricator.repairHealthPerSecond = 0f;
-            fabricator.repairMaxSeconds = 0f;
-            fabricator.requiresHack = false;
-            fabricator.interactSeconds = 1f;
-            c.TorrensFabricator = fabricator;
+            var ingot = make.Def<RecipeDefinition>("rcp_xenoalloy_ingot", WorldFolder, "Xenoalloy ingot",
+                "Press three amalgam chunks into one ingot.", "recipe");
+            ingot.output = c.XenoalloyIngot;
+            ingot.outputCount = 1;
+            ingot.inputs = new[] { new MaterialCost(c.AmalgamChunk, 3) };
+            ingot.itemInputs = Array.Empty<ItemStack>();
+            ingot.minimumStationTier = 1;
+            ingot.craftSeconds = 12f;
+            ingot.requiresBlueprint = false;
+            c.XenoalloyRecipe = ingot;
+
+            var conversion = make.Def<RecipeDefinition>("rcp_pistol_conversion", WorldFolder, "Micro-conversion kit",
+                "Needs the blueprint from the Judea.", "recipe");
+            conversion.output = c.PistolConversionKit;
+            conversion.outputCount = 1;
+            conversion.inputs = new[] { new MaterialCost(p.Circuitry, 3), new MaterialCost(p.Plating, 2), new MaterialCost(c.XenoalloyIngot, 1) };
+            conversion.itemInputs = Array.Empty<ItemStack>();
+            conversion.minimumStationTier = 1;
+            conversion.craftSeconds = 20f;
+            conversion.requiresBlueprint = true;
+            c.PistolConversionRecipe = conversion;
+
+            var arms = make.Def<RecipeDefinition>("rcp_aug_arms_mk2", WorldFolder, "Stabilized servo arms Mk II",
+                "Military pattern. Needs a healthy T2 fabricator, which neither the Nellie nor the Torrens has.", "recipe");
+            arms.output = c.StabilizedArmsMk2;
+            arms.outputCount = 1;
+            arms.inputs = new[] { new MaterialCost(p.Circuitry, 6), new MaterialCost(c.XenoalloyIngot, 4), new MaterialCost(c.SyntheticMyomer, 1) };
+            arms.itemInputs = new[] { new ItemStack(p.GravLatticeAlloy, 1) };
+            arms.minimumStationTier = 2;
+            arms.craftSeconds = 60f;
+            arms.requiresBlueprint = true;
+            c.StabilizedArmsRecipe = arms;
+
+            var bpConversion = make.Def<BlueprintDefinition>("bp_pistol_conversion", WorldFolder, "Blueprint: micro-conversion kit",
+                "From the Judea's armoury locker.", "blueprint");
+            bpConversion.unlocks = conversion;
+            c.PistolConversionBlueprint = bpConversion;
+
+            var bpArms = make.Def<BlueprintDefinition>("bp_aug_arms_mk2", WorldFolder, "Blueprint: stabilized servo arms Mk II",
+                "Doramin's bonus for the pods. Gather the materials; find a T2 fabricator.", "blueprint");
+            bpArms.unlocks = arms;
+            c.StabilizedArmsBlueprint = bpArms;
+
+            var torrens = make.Def<WorkstationDefinition>("ws_torrens_fabricator", WorldFolder, "Torrens fabricator (T1)",
+                "Old, slow, still works. Prints ammo and breaks down amalgam.", "workstation", "fabricator");
+            torrens.services = WorkstationService.Fabricate | WorkstationService.Breakdown;
+            torrens.tier = 1;
+            torrens.recipes = new[] { ammo, ingot };
+            torrens.repairHealthPerSecond = 0f;
+            torrens.repairMaxSeconds = 0f;
+            torrens.requiresHack = false;
+            torrens.interactSeconds = 1f;
+            c.TorrensFabricator = torrens;
+
+            var workshop = make.Def<WorkstationDefinition>("ws_nellie_workshop", WorldFolder, "Nellie workshop (T1)",
+                "The shuttle's own fabricator. Marlow kept the sentry pattern from the Patna.", "workstation", "fabricator", "shuttle");
+            workshop.services = WorkstationService.Fabricate | WorkstationService.Breakdown | WorkstationService.RepairUnit;
+            workshop.tier = 1;
+            workshop.recipes = new[] { p.SentryRecipe, ammo, ingot, conversion };
+            workshop.repairHealthPerSecond = 20f;
+            workshop.repairMaxSeconds = 30f;
+            workshop.repairIsFree = false;
+            workshop.requiresHack = false;
+            workshop.interactSeconds = 1f;
+            c.NellieWorkshop = workshop;
         }
 
         private static void BuildHub(ColdSleepContent c, DefinitionMaker make)
@@ -439,7 +625,7 @@ namespace QuietHull.Data.Editor
             c.ConstableNoise = Wave("wave_constable_noise", "Drawn by the fight",
                 new WaveSpawn(p.Crawler, 3, "security_duct", 8f, 3f));
 
-            // Trip 1 stream, tuned to about 1,400 rounds: inside one load of both sentries (2,000).
+            // Trip 1: about 1,400 rounds, inside one load of both sentries (2,000).
             c.Trip1Stream = Wave("wave_trip1_stream", "The haul (trip 1)",
                 new WaveSpawn(p.Crawler, 150, LanePrefix + "far_vent", 0f, 1.2f),
                 new WaveSpawn(p.Spitter, 7, LanePrefix + "gallery", 30f, 20f));
@@ -450,14 +636,28 @@ namespace QuietHull.Data.Editor
             c.Trip2LeaperIntro = Wave("wave_trip2_leaper_intro", "The first Leaper",
                 new WaveSpawn(c.Leaper, 1, LanePrefix + "barricade_jump", 0f, 0f));
 
-            // Trip 2 stream, about 2,100 rounds: more than one load, so a worker must reload mid-stream.
+            // Trip 2: the hive is aware and never stops. About 2,550 rounds: more than a load, so
+            // the team must keep feeding the sentries from bulkheads and the amalgam the kills leave.
             c.Trip2Stream = Wave("wave_trip2_stream", "The haul (trip 2)",
-                new WaveSpawn(p.Crawler, 200, LanePrefix + "far_vent", 0f, 0.9f),
-                new WaveSpawn(p.Spitter, 6, LanePrefix + "gallery", 25f, 25f),
-                new WaveSpawn(c.Leaper, 11, LanePrefix + "near_vent", 15f, 14f));
+                new WaveSpawn(p.Crawler, 260, LanePrefix + "far_vent", 0f, 0.8f),
+                new WaveSpawn(p.Spitter, 8, LanePrefix + "gallery", 25f, 22f),
+                new WaveSpawn(c.Leaper, 11, LanePrefix + "near_vent", 15f, 16f));
 
-            var trip1Beats = new List<MissionBeatDefinition>(12);
-            var trip2Beats = new List<MissionBeatDefinition>(8);
+            // The Judea: a small kill zone in a conduit corridor, enough amalgam for the first ingot.
+            c.JudeaWaves = Wave("wave_judea", "The Judea's crew",
+                new WaveSpawn(p.Crawler, 70, "judea_conduit_vent", 0f, 1.3f),
+                new WaveSpawn(p.Spitter, 4, "judea_bunker_door", 20f, 20f));
+
+            ObjectiveEntry[] Obj(params (string id, string text, bool optional)[] entries)
+            {
+                var result = new ObjectiveEntry[entries.Length];
+                for (var i = 0; i < entries.Length; i++)
+                {
+                    result[i] = new ObjectiveEntry(entries[i].id, entries[i].text, entries[i].optional);
+                }
+
+                return result;
+            }
 
             void Beat(List<MissionBeatDefinition> into, string prefix, int order, string slug, int parSeconds, BeatTrigger trigger, string argument,
                 bool checkpoint, string title, string body, string teaches, ObjectiveEntry[] objectives, params WaveDefinition[] waves)
@@ -476,92 +676,105 @@ namespace QuietHull.Data.Editor
                 into.Add(beat);
             }
 
-            ObjectiveEntry[] Obj(params (string id, string text, bool optional)[] entries)
-            {
-                var result = new ObjectiveEntry[entries.Length];
-                for (var i = 0; i < entries.Length; i++)
-                {
-                    result[i] = new ObjectiveEntry(entries[i].id, entries[i].text, entries[i].optional);
-                }
-
-                return result;
-            }
-
+            var trip1 = new List<MissionBeatDefinition>(12);
             const string t1 = "beat_cs1";
-            Beat(trip1Beats, t1, 1, "dock", 1500, BeatTrigger.MissionStart, null, true,
+            Beat(trip1, t1, 1, "dock", 1500, BeatTrigger.MissionStart, null, true,
                 "The Torrens", "Dark for six years. The hive is Dormant. If you played The Ghost, the vow starts now.",
                 "Omen cards in play", Obj(("obj_reach_hold", "Reach the cryo hold", false)));
-            Beat(trip1Beats, t1, 2, "pods", 1440, BeatTrigger.EnterRoom, "room_cryo_hold", false,
+            Beat(trip1, t1, 2, "pods", 1440, BeatTrigger.EnterRoom, "room_cryo_hold", false,
                 "Bolted and wired", "Disconnecting a pod takes 90 s and it's loud. Insulate the hold first.",
                 "Reading a hazard before acting", Obj(("obj_find_insulation", "Find insulation", false)));
-            Beat(trip1Beats, t1, 3, "security", 1380, BeatTrigger.PreviousBeatCompleted, null, false,
+            Beat(trip1, t1, 3, "security", 1380, BeatTrigger.PreviousBeatCompleted, null, false,
                 "Only security can open it", "The panels are in the security store. Wake the security synth: bring a power cell from the Nellie.",
                 "Plans with steps", Obj(("obj_bring_cell", "Bring a power cell to the security office", false)));
-            Beat(trip1Beats, t1, 4, "revive", 1290, BeatTrigger.ItemDelivered, "itm_shuttle_power_cell", false,
+            Beat(trip1, t1, 4, "revive", 1290, BeatTrigger.ItemDelivered, "itm_shuttle_power_cell", false,
                 "Wake it up", "Repair the synth at the station (20 s).", "Reviving units",
                 Obj(("obj_revive", "Revive the security synth", false)));
-            Beat(trip1Beats, t1, 5, "theft", 1230, BeatTrigger.InteractionCompleted, "revive_constable", true,
-                "Removal of colonial property is theft", "Constable opened the store, then saw what you're taking. Bring it down.",
-                "A mini-boss; focus fire", Obj(("obj_defeat_constable", "Defeat Constable", false)), c.ConstableNoise);
-            Beat(trip1Beats, t1, 6, "insulate", 1140, BeatTrigger.WaveCleared, "wave_constable_noise", false,
+            Beat(trip1, t1, 5, "theft", 1230, BeatTrigger.InteractionCompleted, "revive_constable", true,
+                "Removal of colonial property is theft", "Constable opened the store, then saw what you're taking. Bring it down, then strip it.",
+                "A mini-boss; focus fire", Obj(("obj_defeat_constable", "Defeat Constable", false), ("obj_strip_constable", "Take the myomer", true)), c.ConstableNoise);
+            Beat(trip1, t1, 6, "insulate", 1140, BeatTrigger.WaveCleared, "wave_constable_noise", false,
                 "Line the hold", "Install the 8 acoustic panels. Two workers do it twice as fast.", "Room treatments",
                 Obj(("obj_install_panels", "Insulate the cryo hold", false)));
-            Beat(trip1Beats, t1, 7, "detach", 1050, BeatTrigger.InteractionCompleted, "rt_acoustic_insulation", false,
+            Beat(trip1, t1, 7, "detach", 1050, BeatTrigger.InteractionCompleted, "rt_acoustic_insulation", false,
                 "Contained", "Disconnect both pods. The meter says Contained: nothing outside can hear it.", "Contained noise",
                 Obj(("obj_detach_pods", "Disconnect both pods", false)));
-            Beat(trip1Beats, t1, 8, "ammo", 960, BeatTrigger.PreviousBeatCompleted, null, true,
-                "Feed the printer", "Cut bulkhead panels on the ballast deck and print ammo. There are 10 panels for both trips: plan.",
+            Beat(trip1, t1, 8, "ammo", 960, BeatTrigger.PreviousBeatCompleted, null, true,
+                "Feed the printer", "Cut bulkhead panels and print ammo. 7 panels must last both trips, and they are not enough on their own: plan.",
                 "Crafting from the hulk; planning ahead",
                 Obj(("obj_print_ammo", "Print at least 3 ammo boxes", false), ("obj_load_sentries", "Load both sentries on the Lane", false)));
-            Beat(trip1Beats, t1, 9, "haul", 780, BeatTrigger.PreviousBeatCompleted, null, false,
+            Beat(trip1, t1, 9, "haul", 780, BeatTrigger.PreviousBeatCompleted, null, false,
                 "Moving it", "The pod is heavy and loud. The hive wakes; the vow window closes.", "Hauling noise; the stream",
                 Obj(("obj_haul_pod", "Haul pod 1 to the docking collar", false)), c.Trip1Stream);
-            Beat(trip1Beats, t1, 10, "reload", 600, BeatTrigger.EnterRoom, "room_lane", false,
-                "Watch the counters", "A worker can reload a sentry mid-fight (5 s per box).", "Reloading under pressure",
-                Obj(("obj_keep_firing", "Keep both sentries firing", false)));
-            Beat(trip1Beats, t1, 11, "aboard", 300, BeatTrigger.ItemDelivered, "itm_cryo_pod", true,
+            Beat(trip1, t1, 10, "amalgam", 600, BeatTrigger.EnterRoom, "room_lane", false,
+                "What their blood leaves", "Where they die, their acid eats the bulkheads. Mine the deposits; break them down for scrap and parts.",
+                "Amalgam; kill zones as mines", Obj(("obj_mine_amalgam", "Mine an amalgam deposit", true), ("obj_keep_firing", "Keep both sentries firing", false)));
+            Beat(trip1, t1, 11, "aboard", 300, BeatTrigger.ItemDelivered, "itm_cryo_pod", true,
                 "One down", "Pod 1 is in the Cradle. Undock.", "Partial payout", Obj(("obj_undock", "Undock", false)));
-            Beat(trip1Beats, t1, 12, "paid", 120, BeatTrigger.PreviousBeatCompleted, null, false,
+            Beat(trip1, t1, 12, "paid", 120, BeatTrigger.PreviousBeatCompleted, null, false,
                 "600 Scrip", "Half the pay. Picket has learned enough to specialize.", "Payment; specialization",
                 Obj(("obj_return_patusan", "Return to Patusan", false)));
 
+            var judea = new List<MissionBeatDefinition>(6);
+            const string tj = "beat_jud";
+            Beat(judea, tj, 1, "dock", 900, BeatTrigger.MissionStart, null, true,
+                "The Judea", "A small collier, burning for years. The armoury officer's locker is past the bunker.",
+                "A short job", Obj(("obj_reach_bunker", "Reach the coal bunker", false)));
+            Beat(judea, tj, 2, "bunker", 840, BeatTrigger.EnterRoom, "room_judea_bunker", false,
+                "Still burning", "Heat 2. Vent the bunker to space to put it out. It's loud.", "Heat; venting",
+                Obj(("obj_vent", "Vent the coal bunker", false)));
+            Beat(judea, tj, 3, "crew", 720, BeatTrigger.InteractionCompleted, "vent_coal_bunker", true,
+                "Something heard that", "Hold the conduit corridor. Where they die, the amalgam forms.", "Kill zones as mines",
+                Obj(("obj_hold_conduit", "Hold the conduit corridor", false)), c.JudeaWaves);
+            Beat(judea, tj, 4, "mine", 480, BeatTrigger.WaveCleared, "wave_judea", false,
+                "Conduit amalgam", "Mine the deposits. Conduit amalgam breaks down into Circuitry.", "Surface yields",
+                Obj(("obj_mine_three", "Mine 3 amalgam chunks", false)));
+            Beat(judea, tj, 5, "locker", 360, BeatTrigger.EnterRoom, "room_judea_armoury", false,
+                "The armoury locker", "A blueprint: a micro-conversion kit for the military handgun.", "Blueprints as rewards",
+                Obj(("obj_take_blueprint", "Take the blueprint", false)));
+            Beat(judea, tj, 6, "home", 120, BeatTrigger.ItemPickedUp, "bp_pistol_conversion", true,
+                "Back to the Nellie", "Press an ingot and build the kit in the Nellie's workshop.", "Crafting a weapon mod",
+                Obj(("obj_craft_kit", "Craft the micro-conversion kit", true)));
+
+            var trip2 = new List<MissionBeatDefinition>(8);
             const string t2 = "beat_cs2";
-            Beat(trip2Beats, t2, 1, "restless", 1500, BeatTrigger.MissionStart, null, true,
-                "They're waiting", "The hive is Restless from the start: patrols doubled.", "A hive that remembers",
+            Beat(trip2, t2, 1, "aware", 1500, BeatTrigger.MissionStart, null, true,
+                "They're waiting", "The hive knows you're coming. It starts Restless and never stops sending.", "A hive that remembers",
                 Obj(("obj_reach_hold_2", "Reach the cryo hold", false)));
-            Beat(trip2Beats, t2, 2, "nest", 1380, BeatTrigger.EnterRoom, "room_cryo_hold", false,
+            Beat(trip2, t2, 2, "nest", 1380, BeatTrigger.EnterRoom, "room_cryo_hold", false,
                 "They moved in", "Crawlers have nested around the last pod.", "Clearing a room",
                 Obj(("obj_clear_nest", "Clear the hold", false)), c.Trip2Nest);
-            Beat(trip2Beats, t2, 3, "sleeper", 1320, BeatTrigger.WaveCleared, "wave_trip2_nest", false,
+            Beat(trip2, t2, 3, "sleeper", 1320, BeatTrigger.WaveCleared, "wave_trip2_nest", false,
                 "For later", "The sleeper is still in the third pod. Marlow logs its location.", "The rescue seed",
                 Obj(("obj_log_sleeper", "Log the sleeper's pod", true)));
-            Beat(trip2Beats, t2, 4, "ammo_2", 1200, BeatTrigger.PreviousBeatCompleted, null, true,
-                "What's left", "Cut the remaining panels and print what you can.", "Planning across trips",
-                Obj(("obj_print_ammo_2", "Load both sentries", false)));
-            Beat(trip2Beats, t2, 5, "leaper", 1020, BeatTrigger.PreviousBeatCompleted, null, false,
+            Beat(trip2, t2, 4, "foothold", 1200, BeatTrigger.PreviousBeatCompleted, null, true,
+                "Push the foothold", "Cut what's left of the bulkheads, mine the trip 1 kill zone, print. A third sentry is possible if you have the parts.",
+                "Planning across trips; amalgam", Obj(("obj_load_2", "Load both sentries", false), ("obj_third_sentry", "Build a third sentry", true)));
+            Beat(trip2, t2, 5, "leaper", 1020, BeatTrigger.PreviousBeatCompleted, null, false,
                 "It jumped", "A Leaper crouches, then jumps the barricade onto a sentry and knocks it over. A worker can set it up again (3 s).",
                 "The Leaper", Obj(("obj_right_sentry", "Set the sentry back up", false)), c.Trip2LeaperIntro);
-            Beat(trip2Beats, t2, 6, "haul_2", 900, BeatTrigger.PreviousBeatCompleted, null, false,
-                "Last load", "Haul the second pod. Picket's specialization is what holds this.", "Specializations in play",
+            Beat(trip2, t2, 6, "haul_2", 900, BeatTrigger.PreviousBeatCompleted, null, false,
+                "Last load", "Haul the second pod. Keep the sentries fed; mine as you go.", "Specializations in play",
                 Obj(("obj_haul_pod_2", "Haul pod 2 to the docking collar", false)), c.Trip2Stream);
-            Beat(trip2Beats, t2, 7, "aboard_2", 300, BeatTrigger.ItemDelivered, "itm_cryo_pod", true,
+            Beat(trip2, t2, 7, "aboard_2", 300, BeatTrigger.ItemDelivered, "itm_cryo_pod", true,
                 "Both pods", "Undock.", "Finishing a chain", Obj(("obj_undock_2", "Undock", false)));
-            Beat(trip2Beats, t2, 8, "complete", 120, BeatTrigger.PreviousBeatCompleted, null, false,
-                "Contract complete", "Doramin pays the rest, and mentions he has other work.", "Completing a contract",
-                Obj(("obj_return_patusan_2", "Return to Patusan", false)));
+            Beat(trip2, t2, 8, "complete", 120, BeatTrigger.PreviousBeatCompleted, null, false,
+                "Contract complete", "Doramin pays the rest and adds a blueprint you can't build yet: \"Find a better fabricator.\"",
+                "Completing a contract; the next goal", Obj(("obj_return_patusan_2", "Return to Patusan", false)));
 
-            MissionScriptDefinition Script(string id, string name, List<MissionBeatDefinition> beats)
+            MissionScriptDefinition Script(string id, string name, List<MissionBeatDefinition> beats, float parSeconds)
             {
                 var script = make.Def<MissionScriptDefinition>(id, ScriptFolder, name, name, "mission", "cold_sleep");
-                script.countdownSeconds = 1500f; // Par time, not a fail timer.
+                script.countdownSeconds = parSeconds; // Par time, not a fail timer.
                 script.countdownIsFailTimer = false;
                 script.pauseCountdownDuringPrompts = true;
                 script.beats = beats.ToArray();
                 return script;
             }
 
-            c.Trip1 = Script("mission_cold_sleep_1", "Cold Sleep (1/2)", trip1Beats);
-            c.Trip2 = Script("mission_cold_sleep_2", "Cold Sleep (2/2)", trip2Beats);
+            c.Trip1 = Script("mission_cold_sleep_1", "Cold Sleep (1/2)", trip1, 1500f);
+            c.Judea = Script("mission_judea", "The Judea", judea, 900f);
+            c.Trip2 = Script("mission_cold_sleep_2", "Cold Sleep (2/2)", trip2, 1500f);
 
             var contract = make.Def<ContractDefinition>("con_cold_sleep", HubFolder, "Cold Sleep",
                 "Two cryo pods from the Torrens for Doramin.", "contract", "starter");
@@ -572,7 +785,28 @@ namespace QuietHull.Data.Editor
             contract.moduleGiven = c.CargoCradle;
             contract.itemsGiven = new[] { new ItemStack(p.SentryMk1, 2) };
             contract.partScripts = new[] { c.Trip1, c.Trip2 };
+            contract.completionBlueprints = new[] { c.StabilizedArmsBlueprint };
             c.Contract = contract;
+
+            var judeaContract = make.Def<ContractDefinition>("con_judea", HubFolder, "The Judea",
+                "A side job from the board: recover an armoury locker's contents from a burning collier.", "contract", "side");
+            judeaContract.client = "Patusan board";
+            judeaContract.hulkName = "Judea";
+            judeaContract.deliverable = null;
+            judeaContract.payPerPart = new[] { 250 };
+            judeaContract.moduleGiven = null;
+            judeaContract.itemsGiven = Array.Empty<ItemStack>();
+            judeaContract.partScripts = new[] { c.Judea };
+            judeaContract.completionBlueprints = Array.Empty<BlueprintDefinition>();
+            c.JudeaContract = judeaContract;
+
+            var locker = make.Def<LootCacheDefinition>("cache_judea_armoury", WorldFolder, "Judea armoury locker",
+                "The blueprint, and the parts to build it once you've pressed an ingot.", "cache", "reward");
+            locker.materials = new[] { new MaterialCost(p.Circuitry, 3), new MaterialCost(p.Plating, 2) };
+            locker.items = new[] { new ItemStack(c.PistolConversionBlueprint, 1) };
+            locker.accessRequires = Array.Empty<ToolActionKind>();
+            locker.placedCount = 1;
+            c.JudeaArmoury = locker;
         }
     }
 }

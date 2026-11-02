@@ -10,6 +10,8 @@ namespace QuietHull.Data
     {
         [SerializeField] internal WorkstationService services = WorkstationService.Craft;
         [SerializeField] internal RecipeDefinition[] recipes = Array.Empty<RecipeDefinition>();
+        [Tooltip("Fabricator tier T1–T5; recipes above it can't be made here.")]
+        [Range(1, 5)] [SerializeField] internal int tier = 1;
 
         [Header("Repair service")]
         [Min(0f)] [SerializeField] internal float repairHealthPerSecond = 40f;
@@ -24,6 +26,8 @@ namespace QuietHull.Data
 
         public WorkstationService Services => services;
         public IReadOnlyList<RecipeDefinition> Recipes => recipes ?? Array.Empty<RecipeDefinition>();
+        public int Tier => tier;
+
         public float RepairHealthPerSecond => repairHealthPerSecond;
         public float RepairMaxSeconds => repairMaxSeconds;
         public bool RepairIsFree => repairIsFree;
@@ -31,6 +35,9 @@ namespace QuietHull.Data
         public float InteractSeconds => interactSeconds;
 
         public bool Offers(WorkstationService service) => (services & service) == service;
+
+        /// <summary>Whether this station can make <paramref name="recipe"/> (tier only; blueprints are checked elsewhere).</summary>
+        public bool CanMake(RecipeDefinition recipe) => recipe != null && recipe.MinimumStationTier <= tier;
 
         protected override void ValidateDefinition(ValidationReport report)
         {
@@ -58,6 +65,10 @@ namespace QuietHull.Data
             foreach (var recipe in Recipes)
             {
                 report.NotNull(this, nameof(recipes), recipe);
+                if (recipe != null && !CanMake(recipe))
+                {
+                    report.Error(this, nameof(recipes), $"'{recipe.Id}' needs T{recipe.MinimumStationTier}; this station is T{tier}.");
+                }
             }
         }
     }

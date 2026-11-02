@@ -11,6 +11,10 @@ namespace QuietHull.Data
         [SerializeField] internal ItemDefinition output;
         [Min(1)] [SerializeField] internal int outputCount = 1;
         [SerializeField] internal MaterialCost[] inputs = Array.Empty<MaterialCost>();
+        [Tooltip("Non-material inputs (a grav-lattice alloy unit, a myomer bundle).")]
+        [SerializeField] internal ItemStack[] itemInputs = Array.Empty<ItemStack>();
+        [Tooltip("Lowest fabricator tier (T1–T5) that can make it.")]
+        [Range(1, 5)] [SerializeField] internal int minimumStationTier = 1;
         [Min(0f)] [SerializeField] internal float craftSeconds = 5f;
 
         [Tooltip("If set, the recipe is locked until this blueprint is learned or the station is hacked.")]
@@ -19,6 +23,8 @@ namespace QuietHull.Data
         public ItemDefinition Output => output;
         public int OutputCount => outputCount;
         public IReadOnlyList<MaterialCost> Inputs => inputs ?? Array.Empty<MaterialCost>();
+        public IReadOnlyList<ItemStack> ItemInputs => itemInputs ?? Array.Empty<ItemStack>();
+        public int MinimumStationTier => minimumStationTier;
         public float CraftSeconds => craftSeconds;
         public bool RequiresBlueprint => requiresBlueprint;
 
@@ -41,7 +47,16 @@ namespace QuietHull.Data
         {
             report.NotNull(this, nameof(output), output);
             report.Positive(this, nameof(outputCount), outputCount);
-            report.NotEmpty(this, nameof(inputs), inputs);
+            if (Inputs.Count == 0 && ItemInputs.Count == 0)
+            {
+                report.Error(this, nameof(inputs), "a recipe needs at least one input.");
+            }
+
+            foreach (var stack in ItemInputs)
+            {
+                report.NotNull(this, $"{nameof(itemInputs)}.item", stack.item);
+                report.Positive(this, $"{nameof(itemInputs)}.count", stack.count);
+            }
 
             var seen = new HashSet<MaterialDefinition>();
             foreach (var cost in Inputs)

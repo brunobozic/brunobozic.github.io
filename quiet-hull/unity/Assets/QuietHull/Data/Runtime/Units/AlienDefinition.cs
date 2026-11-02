@@ -32,6 +32,8 @@ namespace QuietHull.Data
         [Min(0)] [SerializeField] internal int surgeCost = 1;
         [Min(0)] [SerializeField] internal int chitinBounty = 1;
         [Min(0)] [SerializeField] internal int experience = 1;
+        [Tooltip("How much acid blood it sprays when killed, toward an amalgam deposit (0 = none, e.g. synthetics).")]
+        [Min(0f)] [SerializeField] internal float amalgamWeight = 1f;
 
         public float MaxHealth => maxHealth;
         public float Armour => armour;
@@ -50,6 +52,7 @@ namespace QuietHull.Data
         public int SurgeCost => surgeCost;
         public int ChitinBounty => chitinBounty;
         public int Experience => experience;
+        public float AmalgamWeight => amalgamWeight;
 
         /// <summary>Damage a hit of <paramref name="rawDamage"/> deals after armour.</summary>
         public float DamageTaken(float rawDamage) => rawDamage * ArmourMath.DamageMultiplier(armour);

@@ -35,7 +35,28 @@ namespace QuietHull.Data
         Deployable = 8,
         Ammunition = 9,
         Vehicle = 10,
-        Key = 11
+        Key = 11,
+        WeaponMod = 12,
+        Augment = 13
+    }
+
+    public enum FireMode
+    {
+        SemiAuto = 0,
+        Burst = 1,
+        Auto = 2
+    }
+
+    /// <summary>
+    /// What a ship surface is made of. Acid-fused amalgam takes its extra yield from the surface
+    /// the blood ate into. (The outer hull is never minable.)
+    /// </summary>
+    public enum SurfaceKind
+    {
+        Bulkhead = 0,
+        Conduit = 1,
+        Munitions = 2,
+        Machinery = 3
     }
 
     /// <summary>Senses an alien can use. Matches the hive senses in the design doc.</summary>
@@ -112,7 +133,8 @@ namespace QuietHull.Data
         None = 0,
         RepairUnit = 1 << 0,
         Craft = 1 << 1,
-        Fabricate = 1 << 2
+        Fabricate = 1 << 2,
+        Breakdown = 1 << 3
     }
 
     /// <summary>How a loud room's ambient noise level behaves over time.</summary>
@@ -197,7 +219,9 @@ namespace QuietHull.Data
         TargetAcquisitionTime = 21,
         EmpResistance = 22,
         SeesThroughSmoke = 23,
-        SentryHitRateVsSlowed = 24
+        SentryHitRateVsSlowed = 24,
+        /// <summary>Expected hit rate, added as a fraction (0.15 = +15 points).</summary>
+        Accuracy = 25
     }
 
     public enum ModifierOperation

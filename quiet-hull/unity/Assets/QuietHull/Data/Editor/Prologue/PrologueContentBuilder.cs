@@ -69,13 +69,17 @@ namespace QuietHull.Data.Editor
             c.ShockProd = prod;
 
             var pistol = make.Def<RangedWeaponDefinition>("itm_service_pistol", ItemsFolder, "Service pistol",
-                "Standard-issue officer's sidearm from the cockpit locker.", "weapon", "ranged");
+                "The standard military-issue handgun: semi-automatic, caseless, 12-round magazine. Marlow's from the cockpit locker; Picket carries one too.",
+                "weapon", "ranged", "handgun");
             pistol.damagePerShot = 22f;
             pistol.fireIntervalSeconds = 0.33f;
             pistol.range = 15f;
             pistol.magazineSize = 12;
             pistol.reloadSeconds = 1.5f;
             pistol.unlimitedReserve = true;
+            pistol.fireMode = FireMode.SemiAuto;
+            pistol.burstLength = 1;
+            pistol.accuracy = 0.55f;
             pistol.noiseOnUse = 8f;
             pistol.heatOnUse = 2f;
             pistol.lightOnUse = LightEmission.Bright;
@@ -302,6 +306,7 @@ namespace QuietHull.Data.Editor
             crawler.surgeCost = 2;
             crawler.chitinBounty = 2;
             crawler.experience = 2;
+            crawler.amalgamWeight = 1f;
             c.Crawler = crawler;
 
             var spitter = make.Def<AlienDefinition>("alien_spitter", UnitsFolder, "Spitter",
@@ -320,6 +325,7 @@ namespace QuietHull.Data.Editor
             spitter.surgeCost = 4;
             spitter.chitinBounty = 3;
             spitter.experience = 4;
+            spitter.amalgamWeight = 2f;
             c.Spitter = spitter;
         }
 

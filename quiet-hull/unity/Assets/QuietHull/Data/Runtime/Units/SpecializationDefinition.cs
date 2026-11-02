@@ -17,6 +17,12 @@ namespace QuietHull.Data
         [Tooltip("Replaces the unit's weapon when chosen (null keeps the current one).")]
         [SerializeField] internal ItemDefinition weaponOverride;
 
+        [Header("Gate")]
+        [Tooltip("The choice stays locked until the player owns an item with this tag (e.g. long_rifle). Empty = always open.")]
+        [SerializeField] internal string requiresEquipmentTag = string.Empty;
+        [Tooltip("Shown on the locked choice, e.g. \"Needs a long rifle\".")]
+        [SerializeField] internal string lockedReason = string.Empty;
+
         [SerializeField] internal StatModifier[] passives = Array.Empty<StatModifier>();
 
         [Header("Ability")]
@@ -35,6 +41,9 @@ namespace QuietHull.Data
         public Archetype Archetype => archetype;
         public int UnlockExperience => unlockExperience;
         public ItemDefinition WeaponOverride => weaponOverride;
+        public string RequiresEquipmentTag => requiresEquipmentTag;
+        public string LockedReason => lockedReason;
+
         public IReadOnlyList<StatModifier> Passives => passives ?? Array.Empty<StatModifier>();
         public string AbilityId => abilityId;
         public string AbilityName => abilityName;
@@ -44,6 +53,41 @@ namespace QuietHull.Data
         public float AbilityRadius => abilityRadius;
         public string StrongAgainst => strongAgainst;
         public string WeakAgainst => weakAgainst;
+
+        /// <summary>
+        /// Whether the choice is open given what the player owns. Locked choices are shown but can't be
+        /// picked, so no one specializes into a role they have no gear for.
+        /// </summary>
+        public bool IsAvailable(IEnumerable<ItemDefinition> owned)
+        {
+            if (string.IsNullOrEmpty(requiresEquipmentTag))
+            {
+                return true;
+            }
+
+            if (owned == null)
+            {
+                return false;
+            }
+
+            foreach (var item in owned)
+            {
+                if (item == null)
+                {
+                    continue;
+                }
+
+                foreach (var tag in item.Tags)
+                {
+                    if (string.Equals(tag, requiresEquipmentTag, StringComparison.Ordinal))
+                    {
+                        return true;
+                    }
+                }
+            }
+
+            return false;
+        }
 
         protected override void ValidateDefinition(ValidationReport report)
         {
@@ -56,6 +100,11 @@ namespace QuietHull.Data
             if (Passives.Count == 0)
             {
                 report.Warning(this, nameof(passives), "has no passive effects.");
+            }
+
+            if (!string.IsNullOrEmpty(requiresEquipmentTag) && string.IsNullOrWhiteSpace(lockedReason))
+            {
+                report.Error(this, nameof(lockedReason), "a gated specialization must say what it needs.");
             }
 
             if (string.IsNullOrWhiteSpace(strongAgainst) || string.IsNullOrWhiteSpace(weakAgainst))

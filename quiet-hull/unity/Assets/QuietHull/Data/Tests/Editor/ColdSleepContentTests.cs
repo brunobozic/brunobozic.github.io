@@ -5,7 +5,7 @@ using QuietHull.Data.Editor;
 
 namespace QuietHull.Data.Tests
 {
-    /// <summary>Mission 2 (Cold Sleep) against the doc's tuning targets. In memory; no assets written.</summary>
+    /// <summary>Mission 2 (Cold Sleep and the Judea) against the doc's tuning targets. In memory; no assets written.</summary>
     public sealed class ColdSleepContentTests
     {
         private InMemoryDefinitionFactory _factory;
@@ -33,6 +33,7 @@ namespace QuietHull.Data.Tests
         {
             Assert.That(_c.Contract.ItemsGiven[0].item, Is.SameAs(_c.Prologue.SentryMk1));
             Assert.That(_c.SalvageAmmoRecipe.Output, Is.SameAs(_c.Prologue.SentryAmmoBox));
+            Assert.That(_c.Picket.StartingItems.Single(), Is.SameAs(_c.Prologue.ServicePistol), "Picket carries the standard military handgun");
         }
 
         // ---- Economy -------------------------------------------------------------------------
@@ -61,17 +62,129 @@ namespace QuietHull.Data.Tests
         }
 
         [Test]
-        public void Contract_PaysHalfPerTrip_AndGivesTheCradleAndTwoSentries()
+        public void Contract_PaysHalfPerTrip_AndRewardsAnAugmentBlueprint()
         {
             Assert.That(_c.Contract.Parts, Is.EqualTo(2));
             Assert.That(_c.Contract.TotalPay, Is.EqualTo(1200));
             Assert.That(_c.Contract.PayAfter(1), Is.EqualTo(600));
             Assert.That(_c.Contract.ModuleGiven.OversizeLoadCapacity, Is.EqualTo(1), "one pod per trip is why it's two trips");
             Assert.That(_c.Contract.ItemsGiven.Single().count, Is.EqualTo(2));
-            Assert.That(_c.PodMount.PlacedCount, Is.EqualTo(_c.Contract.Parts));
+            Assert.That(_c.Contract.CompletionBlueprints, Has.Member(_c.StabilizedArmsBlueprint));
         }
 
-        // ---- Ammo ----------------------------------------------------------------------------
+        // ---- Picket's first choice -------------------------------------------------------------
+
+        [Test]
+        public void FirstChoice_OnlyBurstGunnerAndBulwarkAreOpen_WithStartingGear()
+        {
+            var open = _c.Picket.SpecializationOptions.Where(s => s.IsAvailable(_c.Picket.StartingItems)).ToList();
+
+            Assert.That(open, Is.EquivalentTo(new[] { _c.BurstGunner, _c.Bulwark }));
+            Assert.That(_c.Marksman.LockedReason, Does.Contain("long rifle"));
+            Assert.That(_c.Controller.LockedReason, Is.Not.Empty);
+        }
+
+        [Test]
+        public void LockedChoices_OpenOnceTheGearExists()
+        {
+            Assert.That(_c.Marksman.IsAvailable(new ItemDefinition[] { _c.LongRifle }), Is.True);
+            Assert.That(_c.Controller.IsAvailable(new ItemDefinition[] { _c.FoamProjector }), Is.True);
+        }
+
+        private float SentryEffectiveDps => _c.Prologue.SentryMk1.PeakDamagePerSecond * _c.Prologue.SentryMk1.ExpectedHitRate;
+
+        [Test]
+        public void ConversionKit_BeatsTheHandgun_ButNotAMachineGun()
+        {
+            var pistol = _c.Prologue.ServicePistol.BaseStats;
+            var converted = _c.PistolConversionKit.Apply(pistol);
+
+            Assert.That(converted.FireMode, Is.EqualTo(FireMode.Auto));
+            Assert.That(converted.MagazineSize, Is.EqualTo(30));
+            Assert.That(converted.EffectiveDamagePerSecond, Is.GreaterThan(pistol.EffectiveDamagePerSecond * 1.25f), $"{converted} vs {pistol}");
+            Assert.That(converted.EffectiveDamagePerSecond, Is.LessThan(SentryEffectiveDps), $"{converted} vs sentry {SentryEffectiveDps:0.0}");
+        }
+
+        [Test]
+        public void BurstGunner_IsUsefulWithoutTheKit_AndMatchesASentryWithIt()
+        {
+            var pistol = _c.Prologue.ServicePistol.BaseStats;
+            var bare = pistol.WithUnitModifiers(_c.BurstGunner.Passives);
+            var kitted = _c.PistolConversionKit.Apply(pistol).WithUnitModifiers(_c.BurstGunner.Passives);
+
+            Assert.That(bare.EffectiveDamagePerSecond, Is.GreaterThan(pistol.EffectiveDamagePerSecond * 1.3f), $"{bare} vs {pistol}");
+            Assert.That(kitted.EffectiveDamagePerSecond, Is.GreaterThanOrEqualTo(SentryEffectiveDps), $"{kitted} vs sentry {SentryEffectiveDps:0.0}");
+        }
+
+        [Test]
+        public void Bulwark_OutHealsThreeCrawlers_ButNotFour()
+        {
+            var armour = _c.Picket.Armour + StatMath.SumFlat(UnitStat.Armour, _c.Bulwark.Passives);
+            var perCrawler = _c.Prologue.Crawler.Attack.DamagePerSecond * ArmourMath.DamageMultiplier(armour);
+            var regen = StatMath.SumFlat(UnitStat.HealthRegenPerSecond, _c.Bulwark.Passives);
+
+            Assert.That(regen, Is.GreaterThan(3 * perCrawler), $"regen {regen}/s vs {3 * perCrawler:0.0}/s");
+            Assert.That(regen, Is.LessThan(4 * perCrawler), "four Crawlers should still wear him down");
+        }
+
+        [Test]
+        public void Picket_CanSpecializeAfterTrip1_EvenWithATenthOfTheStreamKills()
+        {
+            var guaranteed = _c.Constable.Experience + _c.ConstableNoise.Spawns.Sum(s => s.count * s.alien.Experience);
+            var streamXp = _c.Trip1Stream.Spawns.Sum(s => s.count * s.alien.Experience);
+
+            Assert.That(guaranteed + 0.1f * streamXp, Is.GreaterThanOrEqualTo(_c.BurstGunner.UnlockExperience));
+        }
+
+        [Test]
+        public void Augments_EightSlotsAtTheClinic_PlusACraftOnlyMk2()
+        {
+            Assert.That(_c.Augments, Has.Count.EqualTo(8));
+            Assert.That(_c.Augments.All(_c.Picket.Accepts), Is.True);
+            Assert.That(_c.Augments.Select(a => a.Slot).Distinct().Count(), Is.EqualTo(8));
+            Assert.That(_c.Prologue.J1M.Accepts(_c.Augments[0]), Is.False, "workers take no augments");
+
+            Assert.That(_c.StabilizedArmsMk2.SoldAtClinic, Is.False);
+            Assert.That(_c.StabilizedArmsMk2.Upgrades(_c.Augments.Single(a => a.Slot == AugmentSlot.Arms)), Is.True);
+        }
+
+        // ---- The augment hook -------------------------------------------------------------------
+
+        [Test]
+        public void ArmsMk2_CantBeMadeAnywhereYet_SoTheNextGoalIsAT2Fabricator()
+        {
+            var stations = new[] { _c.NellieWorkshop, _c.TorrensFabricator, _c.Prologue.BayFabricator, _c.Prologue.MaintenanceStation };
+
+            Assert.That(_c.StabilizedArmsRecipe.MinimumStationTier, Is.EqualTo(2));
+            Assert.That(stations.Any(s => s.CanMake(_c.StabilizedArmsRecipe)), Is.False);
+        }
+
+        [Test]
+        public void ArmsMk2_PrerequisitesCanAllBeGathered()
+        {
+            var recipe = _c.StabilizedArmsRecipe;
+            Assert.That(_c.ConstableRemains.AmountOf(_c.SyntheticMyomer), Is.GreaterThanOrEqualTo(recipe.AmountOf(_c.SyntheticMyomer)));
+            Assert.That(recipe.ItemInputs.Single().item, Is.SameAs(_c.Prologue.GravLatticeAlloy), "keep one alloy unit instead of selling it");
+
+            var chunksNeeded = recipe.AmountOf(_c.XenoalloyIngot) * _c.XenoalloyRecipe.AmountOf(_c.AmalgamChunk);
+            Assert.That(TotalChunks(), Is.GreaterThanOrEqualTo(chunksNeeded + 3), "the kit's ingot and the augment's four");
+        }
+
+        // ---- Amalgam and ammo -----------------------------------------------------------------
+
+        private static float Weight(WaveDefinition wave, string prefix = null) =>
+            wave.Spawns.Where(s => prefix == null || s.spawnPointId.StartsWith(prefix, StringComparison.Ordinal))
+                .Sum(s => s.count * s.alien.AmalgamWeight);
+
+        private int Trip1Chunks => _c.Amalgam.DepositsFrom(Weight(_c.Trip1Stream, ColdSleepContentBuilder.LanePrefix), ColdSleepContentBuilder.LaneSegments);
+
+        private int Trip2Chunks => _c.Amalgam.DepositsFrom(
+            Weight(_c.Trip2Stream, ColdSleepContentBuilder.LanePrefix) + Weight(_c.Trip2LeaperIntro, ColdSleepContentBuilder.LanePrefix),
+            ColdSleepContentBuilder.LaneSegments);
+
+        private int JudeaChunks => _c.Amalgam.DepositsFrom(Weight(_c.JudeaWaves), ColdSleepContentBuilder.JudeaKillZoneSegments);
+
+        private int TotalChunks() => Trip1Chunks + Trip2Chunks + JudeaChunks;
 
         private float LaneRounds(WaveDefinition wave)
         {
@@ -81,102 +194,75 @@ namespace QuietHull.Data.Tests
                 .Sum(s => s.count * sentry.ExpectedRoundsToKill(s.alien.MaxHealth, s.alien.Armour));
         }
 
-        private int RoundsAvailableFromBulkheads()
+        private float RoundsPerScrap => (float)_c.Prologue.SentryAmmoBox.Rounds / _c.SalvageAmmoRecipe.AmountOf(_c.Prologue.Scrap);
+
+        [Test]
+        public void Judea_YieldsEnoughAmalgamForTheKitsIngot()
         {
-            var scrap = _c.BulkheadPanel.TotalAmountOf(_c.Prologue.Scrap);
-            var boxes = scrap / _c.SalvageAmmoRecipe.AmountOf(_c.Prologue.Scrap);
-            return boxes * _c.Prologue.SentryAmmoBox.Rounds;
+            Assert.That(JudeaChunks, Is.GreaterThanOrEqualTo(_c.XenoalloyRecipe.AmountOf(_c.AmalgamChunk)), $"{JudeaChunks} chunks");
+            Assert.That(_c.Amalgam.YieldOf(_c.Prologue.Circuitry, SurfaceKind.Conduit), Is.EqualTo(1), "conduit amalgam gives Circuitry");
+        }
+
+        [TestCase(1)]
+        [TestCase(2)]
+        public void KillZones_ReturnAThirdToAHalfOfTheirAmmo_NeverFundThemselves(int trip)
+        {
+            var spent = trip == 1 ? LaneRounds(_c.Trip1Stream) : LaneRounds(_c.Trip2Stream) + LaneRounds(_c.Trip2LeaperIntro);
+            var chunks = trip == 1 ? Trip1Chunks : Trip2Chunks;
+            var returned = chunks * _c.Amalgam.YieldOf(_c.Prologue.Scrap, SurfaceKind.Bulkhead) * RoundsPerScrap;
+
+            Assert.That(returned / spent, Is.InRange(0.30f, 0.50f), $"trip {trip}: {returned:0} of {spent:0} rounds come back");
         }
 
         [Test]
         public void Trip1_FitsInOneLoadOfBothSentries()
         {
             var rounds = LaneRounds(_c.Trip1Stream);
-            var oneLoad = 2 * _c.Prologue.SentryMk1.AmmoCapacity;
 
             Assert.That(rounds, Is.InRange(1300f, 1500f), $"{rounds:0} rounds");
-            Assert.That(rounds, Is.LessThan(oneLoad));
+            Assert.That(rounds, Is.LessThan(2 * _c.Prologue.SentryMk1.AmmoCapacity));
         }
 
         [Test]
-        public void Trip2_NeedsAReloadMidStream()
+        public void Trip2_IsHeavier_AndNeedsFeedingMidStream()
         {
             var rounds = LaneRounds(_c.Trip2Stream) + LaneRounds(_c.Trip2LeaperIntro);
-            var oneLoad = 2 * _c.Prologue.SentryMk1.AmmoCapacity;
 
-            Assert.That(rounds, Is.InRange(2000f, 2300f), $"{rounds:0} rounds");
-            Assert.That(rounds, Is.GreaterThan(oneLoad));
-        }
-
-        [Test]
-        public void BulkheadsCoverBothTrips_WithAMarginForMistakes()
-        {
-            var needed = LaneRounds(_c.Trip1Stream) + LaneRounds(_c.Trip2Stream) + LaneRounds(_c.Trip2LeaperIntro);
-            var available = RoundsAvailableFromBulkheads();
-
-            Assert.That(available, Is.EqualTo(5000));
-            Assert.That(available - needed, Is.InRange(1000f, 2000f), $"margin {available - needed:0} rounds");
-        }
-
-        [Test]
-        public void Trip2_HasTwelveLeapers()
-        {
+            Assert.That(rounds, Is.InRange(2400f, 2700f), $"{rounds:0} rounds");
+            Assert.That(rounds, Is.GreaterThan(2 * _c.Prologue.SentryMk1.AmmoCapacity));
             Assert.That(_c.Trip2Stream.CountOf(_c.Leaper) + _c.Trip2LeaperIntro.CountOf(_c.Leaper), Is.EqualTo(12));
         }
 
-        // ---- Picket ---------------------------------------------------------------------------
-
         [Test]
-        public void Picket_CanSpecializeAfterTrip1_EvenWithATenthOfTheStreamKills()
+        public void BulkheadsPlusAmalgamCoverBothTrips_WithAMarginForMistakes()
         {
-            var guaranteed = _c.Constable.Experience + _c.ConstableNoise.Spawns.Sum(s => s.count * s.alien.Experience);
-            var streamXp = _c.Trip1Stream.Spawns.Sum(s => s.count * s.alien.Experience);
+            var needed = LaneRounds(_c.Trip1Stream) + LaneRounds(_c.Trip2Stream) + LaneRounds(_c.Trip2LeaperIntro);
+            var fromBulkheads = _c.BulkheadPanel.TotalAmountOf(_c.Prologue.Scrap) * RoundsPerScrap;
+            var fromAmalgam = (Trip1Chunks + Trip2Chunks) * _c.Amalgam.YieldOf(_c.Prologue.Scrap, SurfaceKind.Bulkhead) * RoundsPerScrap;
 
-            Assert.That(guaranteed + 0.1f * streamXp, Is.GreaterThanOrEqualTo(_c.Marksman.UnlockExperience));
+            Assert.That(fromBulkheads, Is.EqualTo(3500f).Within(0.5f));
+            Assert.That(fromBulkheads, Is.LessThan(needed), "bulkheads alone aren't enough: the kill zones must be mined");
+            Assert.That(fromBulkheads + fromAmalgam - needed, Is.InRange(800f, 2000f), $"margin {fromBulkheads + fromAmalgam - needed:0} rounds");
         }
 
         [Test]
-        public void Picket_OffersThreeArchetypes_AndAcceptsAllEightAugments()
+        public void ThirdSentry_IsReachableFromLaneAmalgamAndTheStore()
         {
-            Assert.That(_c.Picket.SpecializationOptions.Select(s => s.Archetype),
-                Is.EquivalentTo(new[] { Archetype.Marksman, Archetype.Controller, Archetype.Bulwark }));
-            Assert.That(_c.Augments, Has.Count.EqualTo(8));
-            Assert.That(_c.Augments.All(_c.Picket.Accepts), Is.True);
-            Assert.That(_c.Augments.Select(a => a.Slot).Distinct().Count(), Is.EqualTo(8));
-            Assert.That(_c.Prologue.J1M.Accepts(_c.Augments[0]), Is.False, "workers take no augments");
+            var lane = Trip1Chunks + Trip2Chunks;
+            var bulkheadShare = (float)ColdSleepContentBuilder.LaneBulkheadSegments / ColdSleepContentBuilder.LaneSegments;
+            var plating = lane * bulkheadShare * _c.Amalgam.YieldOf(_c.Prologue.Plating, SurfaceKind.Bulkhead);
+            var circuitry = lane * (1f - bulkheadShare) * _c.Amalgam.YieldOf(_c.Prologue.Circuitry, SurfaceKind.Conduit)
+                            + _c.ConstableRemains.AmountOf(_c.Prologue.Circuitry);
+            var ordnance = _c.SecurityStore.AmountOf(_c.Prologue.Ordnance);
+            var sentry = _c.Prologue.SentryRecipe;
+
+            Assert.That(plating, Is.GreaterThanOrEqualTo(sentry.AmountOf(_c.Prologue.Plating)), $"plating {plating:0.#}");
+            Assert.That(circuitry, Is.GreaterThanOrEqualTo(sentry.AmountOf(_c.Prologue.Circuitry)), $"circuitry {circuitry:0.#}");
+            Assert.That(ordnance, Is.GreaterThanOrEqualTo(sentry.AmountOf(_c.Prologue.Ordnance)));
+            Assert.That(_c.NellieWorkshop.Recipes, Has.Member(sentry));
         }
 
-        [Test]
-        public void Marksman_OneShotsACrawler_AndTwoCritsKillALeaper()
-        {
-            var rifle = _c.LongRifle;
-            var crit = StatMath.SumFlat(UnitStat.CritMultiplier, _c.Marksman.Passives);
-
-            Assert.That(_c.Prologue.Crawler.DamageTaken(rifle.DamagePerShot), Is.GreaterThanOrEqualTo(_c.Prologue.Crawler.MaxHealth));
-            Assert.That(_c.Leaper.DamageTaken(rifle.DamagePerShot * crit), Is.GreaterThanOrEqualTo(_c.Leaper.MaxHealth),
-                "a crit during the 1 s crouch kills a Leaper");
-        }
-
-        [Test]
-        public void Controller_CantKill_ButSlowsAndStopsJumps()
-        {
-            Assert.That(_c.FoamProjector.DamagePerShot, Is.Zero);
-            Assert.That(_c.FoamProjector.SlowFraction, Is.GreaterThan(0f));
-            Assert.That(_c.Controller.AbilityDescription, Does.Contain("can't jump"));
-        }
-
-        [Test]
-        public void Bulwark_OutHealsAPackOfThreeCrawlers()
-        {
-            var armour = _c.Picket.Armour + StatMath.SumFlat(UnitStat.Armour, _c.Bulwark.Passives);
-            var incoming = 3 * _c.Prologue.Crawler.Attack.DamagePerSecond * ArmourMath.DamageMultiplier(armour);
-            var regen = StatMath.SumFlat(UnitStat.HealthRegenPerSecond, _c.Bulwark.Passives);
-
-            Assert.That(regen, Is.GreaterThan(incoming), $"regen {regen}/s vs {incoming:0.0}/s incoming");
-            Assert.That(regen, Is.LessThan(incoming * 4f / 3f), "four Crawlers should still wear him down");
-        }
-
-        // ---- Noise ----------------------------------------------------------------------------
+        // ---- Noise and Omens ------------------------------------------------------------------
 
         [Test]
         public void Insulation_ContainsPodDetaching()
@@ -185,8 +271,6 @@ namespace QuietHull.Data.Tests
             Assert.That(_c.SecurityStore.AmountOf(_c.AcousticPanel), Is.EqualTo(_c.AcousticInsulation.PanelsRequired));
             Assert.That(_c.AcousticInsulation.InstallSeconds(2), Is.EqualTo(_c.AcousticInsulation.InstallSeconds(1) / 2f));
         }
-
-        // ---- Omens ----------------------------------------------------------------------------
 
         [Test]
         public void StarterOmens_MatchTheDoc()
@@ -202,15 +286,7 @@ namespace QuietHull.Data.Tests
             Assert.That(_c.TheGhost.IsVow, Is.True);
             Assert.That(_c.TheGhost.ValueOf(OmenEffectKind.LootPercent), Is.EqualTo(30f));
             Assert.That(_c.TheGhost.BrokenValueOf(OmenEffectKind.AwarenessJumpPercent), Is.EqualTo(20f));
-        }
-
-        [Test]
-        public void TheGhost_PaysMoreThanThickHide_ForTheExtraSkill()
-        {
-            var ghostPay = _c.TheGhost.ValueOf(OmenEffectKind.ContractPayPercent);
-            var thickPay = _c.ThickHide.BrutalityPayoutPercent;
-
-            Assert.That(ghostPay, Is.GreaterThan(thickPay));
+            Assert.That(_c.TheGhost.ValueOf(OmenEffectKind.ContractPayPercent), Is.GreaterThan(_c.ThickHide.BrutalityPayoutPercent));
         }
 
         [TestCase(Rarity.Rare, 60f, 40f, 30f)]
