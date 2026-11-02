@@ -1,13 +1,22 @@
 # Owned Unity Asset Store packages
 
-> **Status: incomplete.** This list comes from the local Asset Store download cache
-> (`D:\UnityCache\Asset Store-5.x`), so it only includes packages that were downloaded at least once.
-> Packages that are owned but were never downloaded are missing.
-> To complete it, export both pages of https://assetstore.unity.com/account/assets (see the bottom of this file) and merge the results here.
->
-> Source: list provided by Bruno, 2 Nov 2026. Count: 130 packages (MicroSplat modules and EasyRoads3D editions counted separately).
+> **Status: page 1 of 2 merged.** The Asset Store account page lists **169 owned packages** (2 Nov 2026), plus a separate *UPM Packages* tab.
+> - 130 came from the local download cache (`D:\UnityCache\Asset Store-5.x`), listed by category below.
+> - Page 1 of https://assetstore.unity.com/account/assets (items 1–100) added **13 packages that were never downloaded**; see "Owned but never downloaded".
+> - **Still missing:** page 2 (items 101–169, about 26 more not in the cache) and the UPM Packages tab.
 
-Legend for the **Quiet Hull** column: **Use** = mapped to a feature in the design doc · **Greybox** = prototype only · **Toggle** = PC high-quality option only · **Out** = keep out of the project · **Placeholder** = never ship (IP risk).
+Legend for the **Quiet Hull** column: **Use** = mapped to a feature in the design doc · **Greybox** = prototype only · **Toggle** = PC high-quality option only · **Out** = keep out of the project · **Placeholder** = never ship (IP risk) · **Reference** = study its code or design, don't ship its content.
+
+## Gap check: what the account page changed
+
+| Gap in the design doc | Owned package that may fill it | Next step |
+| --- | --- | --- |
+| Alien creatures (Stalker, Crawler, Brood Mother) | **SCI FI CHARACTERS MEGA PACK Vol 1** (PROTOFACTOR) is 30 models, and its release notes list creatures: *Lucanops, Charcarosaurus, Gastaroid Queen, Gastarid, Alien Warrior, Tetrapuss, Hipposaurus* | Import and check silhouettes. Gastaroid Queen is a Brood Mother candidate; Lucanops or Gastarid could be Stalker or Crawler. Re-texture with Giger materials |
+| Small robots and drones | Same pack: *Explosive SpiderBot* (sentry pup), *Maintenance Orb* (repair drone), *Orb-OI*, *Droid-OI*, *Scientist Droid*, *Assault Robot*, *Mech Biped*, *Transport Mech* | Check scale and style against the synths. This may remove the robot gap entirely |
+| The shuttle itself | **Hi-Rez Spaceships Creator Free Sample** (Ebal Studios): modular ship and cockpit modules | Use for the shuttle exterior and cockpit; check the module count in the free sample |
+| Turrets and mechs | **Mech Combat Kit** (VSXGames) includes auto-turret scenes | Reference for sentry targeting code; possibly turret models |
+| Fire and smoke for burning rooms | **Fire & Smoke – Dynamic Nature** (NatureManufacture) | Use for Turn to Sun, Scorched Hull, burned-out rooms |
+| Performance on Steam Deck / Switch 2 | **FSR 3 – Upscaling for Unity**, **Atmospheric Height Fog** (cheap fog for consoles and mobile) | Use |
 
 ## Art Equilibrium
 
@@ -223,6 +232,28 @@ Legend for the **Quiet Hull** column: **Use** = mapped to a feature in the desig
 | Standard Assets 2018.4 | Unity | Out |
 | Starter Assets First Person URP | Unity | Out |
 | Starter Assets Third Person URP | Unity | Out |
+
+## Owned but never downloaded (from account page 1)
+
+| Package | Publisher | Category | Quiet Hull |
+| --- | --- | --- | --- |
+| Hi-Rez Spaceships Creator Free Sample | Ebal Studios | 3D | Use (shuttle exterior and cockpit) |
+| Mech Combat Kit | VSXGames | Templates | Reference (auto turrets); evaluate models |
+| Fire & Smoke – Dynamic Nature | NatureManufacture | VFX | Use (fires, burned rooms) |
+| FSR 3 – Upscaling for Unity | The Naked Dev | Tools | Use (performance on Steam Deck / Switch 2) |
+| Atmospheric Height Fog – Optimized Fog for Consoles, Mobile and VR | BOXOPHOBIC | VFX / shaders | Use (console and mobile fog fallback) |
+| NaughtyAttributes | Denis Rizov | Tools | Use (inspector tooling for data assets) |
+| Colony Simulator | Indie Marc | Templates | Reference (colonist jobs, gathering, towers: compare with the worker job system) |
+| Third Person Shooter Bundle | Vinicius Marques | Templates | Reference (enemy AI state machines, shooting for sorties) |
+| MC Greet & Talk – Believable 3D Animations | Mocap Central | Animation | Out (maybe hub idle animations later) |
+| Shatter Stone: Stylized Gemstones | NV3D Studio Ltd | 3D | Out (stylised); Reference for mining-node scripts |
+| Fast Food Rush – Hyper Casual Restaurant Management | Crying Snow | Templates | Out |
+| FishNet: Networking Evolved | FirstGearGames | Tools | Out (no multiplayer planned) |
+| Buto: Volumetric Fog… (URP) (2021) | OccaSoftware | Shaders | Out (deprecated; newer Buto is owned) |
+
+## Owned but never downloaded (from account page 2)
+
+*Pending: items 101–169.*
 
 ---
 
