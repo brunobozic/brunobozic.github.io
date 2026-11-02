@@ -59,7 +59,7 @@ namespace QuietHull.Data
                 {
                     case ForecastVerdict.Unforecast:
                         unforecast++;
-                        text = $"{decision.FileLabel}: {option.forecastLine}. Predicted {UnforecastMark}.";
+                        text = $"{decision.FileLabel}: {option.forecastLine}. Predicted {UnforecastMark}. {ScopeNote}";
                         break;
                     case ForecastVerdict.Deviation:
                         deviations++;
