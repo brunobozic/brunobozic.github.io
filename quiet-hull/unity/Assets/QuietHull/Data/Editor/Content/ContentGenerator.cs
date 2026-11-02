@@ -139,6 +139,11 @@ namespace QuietHull.Data.Editor
             ContentGenerator.ShowResult("Tarot rollout", ContentGenerator.Run("Tarot rollout", ContentGenerator.DefaultRoot,
                 factory => OmenRolloutBuilder.Build(factory).Catalog));
 
+        [MenuItem("Quiet Hull/Content/Generate Story Decisions (the forecast)", priority = 21)]
+        private static void GenerateStoryDecisions() =>
+            ContentGenerator.ShowResult("Story decisions", ContentGenerator.Run("Story decisions", ContentGenerator.DefaultRoot,
+                factory => StoryDecisionsBuilder.Build(factory).Catalog));
+
         [MenuItem("Quiet Hull/Content/Generate Sample: Tremolino sun and belt", priority = 30)]
         private static void GenerateSunwheel() =>
             ContentGenerator.ShowResult("Tremolino sample", ContentGenerator.Run("Tremolino sample", ContentGenerator.DefaultRoot,

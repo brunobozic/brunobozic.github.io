@@ -705,4 +705,15 @@ namespace QuietHull.Data
         /// <summary>Places sentries where the swarm comes from, moves them when routes change, restocks them.</summary>
         SentryTactics = 2
     }
+
+    /// <summary>How a recorded decision compares with the company's forecast.</summary>
+    public enum ForecastVerdict
+    {
+        /// <summary>The option the forecast rated most likely.</summary>
+        Expected = 0,
+        /// <summary>A forecast option, but not the most likely one: "acceptable deviation".</summary>
+        Deviation = 1,
+        /// <summary>An option the forecast has no number for: "—".</summary>
+        Unforecast = 2
+    }
 }

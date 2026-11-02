@@ -24,6 +24,11 @@ Drop `Assets/QuietHull/` into the Unity 6 (URP) project. C# 9, no .NET 8 APIs in
 4. **Quiet Hull ▸ Validate All Catalogs** validates every catalog in the project.
 5. Window ▸ General ▸ Test Runner ▸ EditMode ▸ Run All.
 
+**Generate Story Decisions (the forecast)** writes the company's forecast for every story decision. At runtime,
+`DecisionLog` records the player's choices (thread-safe, saved through `DecisionLogState`), and `ForecastReport`
+prints the file mission 10 shows. Register `TelemetryDecisionLogObserver` to log each decision to Serilog and as an
+OTEL span (`story.decision`, `quiethull.decision.*` tags).
+
 ## Telemetry
 
 - **Logs:** Serilog, enriched with Application, UnityVersion, ProductName, Platform, MachineName, ProcessId,
