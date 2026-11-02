@@ -36,6 +36,8 @@ namespace QuietHull.Data
         [Tooltip("After this many failures the reader offers the mercy card free (0 = never).")]
         [Min(0)] [SerializeField] internal int mercyAfterFailures;
         [SerializeField] internal OmenCardDefinition mercyOmen;
+        [Tooltip("A set-piece: the Major Omen slot is locked so the authored climax plays as designed (Minors still allowed).")]
+        [SerializeField] internal bool locksMajorOmen;
         [Tooltip("Events that autosave (e.g. every turn of the hulk).")]
         [SerializeField] internal string[] autosaveOnEvents = Array.Empty<string>();
 
@@ -68,6 +70,7 @@ namespace QuietHull.Data
         }
         public int MercyAfterFailures => mercyAfterFailures;
         public OmenCardDefinition MercyOmen => mercyOmen;
+        public bool LocksMajorOmen => locksMajorOmen;
         public IReadOnlyList<string> AutosaveOnEvents => autosaveOnEvents ?? Array.Empty<string>();
 
         public int CountPrompts(PromptStyle style)

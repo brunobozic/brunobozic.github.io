@@ -2,7 +2,7 @@ using System.Collections.Generic;
 
 namespace QuietHull.Data.Editor
 {
-    /// <summary>Handles to the tarot rollout for missions 1–10 and the Omen cards it adds after mission 3.</summary>
+    /// <summary>Handles to the tarot rollout for missions 1–10: Major and Minor cards, the Cartomancer and the Catalysts.</summary>
     public sealed class OmenRolloutContent
     {
         public TremolinoContent Previous { get; internal set; }
@@ -38,8 +38,25 @@ namespace QuietHull.Data.Editor
         public OmenCardDefinition BloodPrice { get; internal set; }
         public OmenCardDefinition PrismEclipse { get; internal set; }
 
-        /// <summary>The cards this pack adds (missions 4–10).</summary>
+        // Minor Arcana (suits); Gleaner's Moon (Cogs) comes from mission 2's pack
+        public OmenCardDefinition TheTithe { get; internal set; }
+        public OmenCardDefinition BrokersSeal { get; internal set; }
+        public OmenCardDefinition TheLamplighter { get; internal set; }
+        public OmenCardDefinition TheVeteran { get; internal set; }
+        public OmenCardDefinition TheVigil { get; internal set; }
+
+        // Act 3
+        public OmenCardDefinition TheAnchorite { get; internal set; }
+
+        // The Cartomancer's table and the Catalysts
+        public CartomancerDefinition Cartomancer { get; internal set; }
+        public CatalystCatalog Catalysts { get; internal set; }
+
+        /// <summary>The Major cards this pack adds (missions 4–10).</summary>
         public IReadOnlyList<OmenCardDefinition> NewCards { get; internal set; }
+
+        /// <summary>The Minor cards this pack adds (the ledger's three suits, Skulls and Candles).</summary>
+        public IReadOnlyList<OmenCardDefinition> MinorCards { get; internal set; }
         public DefinitionCatalog Catalog { get; internal set; }
         public IReadOnlyList<DefinitionBase> All { get; internal set; }
     }

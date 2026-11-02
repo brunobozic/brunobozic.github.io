@@ -418,7 +418,112 @@ namespace QuietHull.Data
         Culling = 6,
         Brutality = 7,
         Hybrid = 8,
-        Vow = 9
+        Vow = 9,
+        /// <summary>Minor Arcana: a suit card that pushes one reward stream (see <see cref="OmenSuit"/>).</summary>
+        Suit = 10
+    }
+
+    /// <summary>Major cards set the hulk's character (one per run); Minor cards each push one reward stream.</summary>
+    public enum OmenArcana
+    {
+        Major = 0,
+        Minor = 1
+    }
+
+    /// <summary>The six suits of the Minor Arcana, one per reward stream.</summary>
+    public enum OmenSuit
+    {
+        None = 0,
+        /// <summary>Contract pay and Scrip.</summary>
+        Coins = 1,
+        /// <summary>Automatic salvage and materials.</summary>
+        Cogs = 2,
+        /// <summary>Commander and specialization XP.</summary>
+        Skulls = 3,
+        /// <summary>Omen card and Catalyst drops.</summary>
+        Candles = 4,
+        /// <summary>Faction standing from the contract.</summary>
+        Seals = 5,
+        /// <summary>Intel: leads to charted hulks, logs, map reveals.</summary>
+        Lanterns = 6
+    }
+
+    /// <summary>What the Cartomancer can do to a card with a Catalyst.</summary>
+    public enum CardMutation
+    {
+        /// <summary>Reroll Catalyst: the handicap is redrawn from the family pool.</summary>
+        Reroll = 0,
+        /// <summary>Mastercraft Catalyst: a second handicap; benefit +25%, Threat +2.</summary>
+        Deepen = 1,
+        /// <summary>Refine Catalyst: +1 level without duplicates.</summary>
+        Refine = 2,
+        /// <summary>Hive-tainted Catalyst: irreversible corruption.</summary>
+        Corrupt = 3
+    }
+
+    /// <summary>What corruption did to a card.</summary>
+    public enum CardCorruption
+    {
+        None = 0,
+        Nothing = 1,
+        /// <summary>+1 rarity at once (a Legendary gains an extra twist instead).</summary>
+        Ascended = 2,
+        /// <summary>Both sides ×1.5; Threat counts double for the Brutality payout.</summary>
+        Doubled = 3,
+        /// <summary>Became the card's Heretic variant.</summary>
+        Heretic = 4
+    }
+
+    /// <summary>The Catalysts (orbs): 11 gear, 5 meta and the 3 bench-only ones.</summary>
+    public enum CatalystKind
+    {
+        Focus = 0,
+        Attune = 1,
+        Resonance = 2,
+        Ascension = 3,
+        Crown = 4,
+        Mastercraft = 5,
+        Imprint = 6,
+        Refine = 7,
+        Socket = 8,
+        Reroll = 9,
+        HiveTainted = 10,
+        Lodestone = 11,
+        Prism = 12,
+        Augury = 13,
+        Magnet = 14,
+        Twin = 15,
+        /// <summary>Bench: removes one affix (Rare and up: a chosen one).</summary>
+        Strip = 16,
+        /// <summary>Bench: rerolls the numbers within each affix's tier.</summary>
+        Temper = 17,
+        /// <summary>Bench: locks up to 2 affixes against the next Reroll or Strip.</summary>
+        Seal = 18
+    }
+
+    /// <summary>Where a Catalyst can be used.</summary>
+    [System.Flags]
+    public enum CatalystUse
+    {
+        None = 0,
+        /// <summary>In the Reliquary: shapes the drop before it rolls.</summary>
+        Reliquary = 1,
+        /// <summary>At the fabricator bench: changes an item already owned.</summary>
+        Bench = 2,
+        /// <summary>At the Cartomancer's table: mutates an Omen card.</summary>
+        Card = 4
+    }
+
+    /// <summary>Amalgam infusion (Hive-tainted on owned gear): irreversible, 25% each.</summary>
+    public enum InfusionOutcome
+    {
+        Nothing = 0,
+        /// <summary>+1 Mark past the item's normal maximum.</summary>
+        Overgrowth = 1,
+        /// <summary>An alien implicit affix no crafting can roll.</summary>
+        Xenomorphic = 2,
+        /// <summary>One affix becomes a drawback; augments +1 signature.</summary>
+        Rot = 3
     }
 
     /// <summary>Which rarity factor scales an effect: the benefit (m) or the handicap (h).</summary>
@@ -482,7 +587,23 @@ namespace QuietHull.Data
         /// <summary>The hulk is guaranteed a fabricator of at least this tier (ScalingRule.None).</summary>
         FabricatorTierMinimum = 19,
         /// <summary>Extra Omen card drops from Requisition.</summary>
-        OmenDropCount = 20
+        OmenDropCount = 20,
+        /// <summary>Percent more commander and specialization XP (Skulls).</summary>
+        CommanderXpPercent = 21,
+        /// <summary>Percent more faction standing progress from the contract (Seals).</summary>
+        StandingPercent = 22,
+        /// <summary>Extra leads to charted hulks (Lanterns).</summary>
+        IntelLeads = 23,
+        /// <summary>Fraction of the hulk's map revealed at the start (Lanterns); Chance rule.</summary>
+        MapRevealFraction = 24,
+        /// <summary>Extra card-or-Catalyst rolls at Requisition (Candles).</summary>
+        DropRolls = 25,
+        /// <summary>The run's total Threat is at least this (the Anchorite).</summary>
+        ThreatFloor = 26,
+        /// <summary>No Common items drop this run (ScalingRule.None, value 1).</summary>
+        NoCommonDrops = 27,
+        /// <summary>Percent more chance of Rare-and-better drops.</summary>
+        RareDropChancePercent = 28
     }
 
     public enum VowCondition

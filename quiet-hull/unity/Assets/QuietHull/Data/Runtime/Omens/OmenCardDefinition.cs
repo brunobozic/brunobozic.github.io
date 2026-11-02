@@ -26,6 +26,9 @@ namespace QuietHull.Data
         }
 
         public float ValueAt(Rarity rarity) => RarityMath.Scale(commonValue, rule, RarityMath.Factor(side, rarity));
+
+        /// <summary>The value at a rarity and card level (Level I equals <see cref="ValueAt(Rarity)"/>).</summary>
+        public float ValueAt(Rarity rarity, int level) => RarityMath.Scale(commonValue, rule, RarityMath.Factor(side, rarity, level));
     }
 
     /// <summary>
@@ -37,6 +40,8 @@ namespace QuietHull.Data
     public sealed class OmenCardDefinition : DefinitionBase
     {
         [SerializeField] internal OmenFamily family;
+        [Tooltip("Minor Arcana only: the reward stream this card pushes. None = a Major card.")]
+        [SerializeField] internal OmenSuit suit = OmenSuit.None;
         [SerializeField] internal Rarity rarity = Rarity.Common;
         [Tooltip("Threat at Common; scaled by h and rounded half away from zero.")]
         [SerializeField] internal int commonThreat;
@@ -57,11 +62,21 @@ namespace QuietHull.Data
         [Tooltip("Applied only when the vow is broken.")]
         [SerializeField] internal OmenEffect[] brokenEffects = Array.Empty<OmenEffect>();
 
+        [Header("Corruption")]
+        [Tooltip("What a corrupted copy can become (the Heretic outcome). Without one, Heretic falls back to Doubled.")]
+        [SerializeField] internal OmenCardDefinition hereticVariant;
+        [Tooltip("True for a Heretic variant: only corruption makes it, it never drops.")]
+        [SerializeField] internal bool isHeretic;
+
         [Header("Text")]
         [SerializeField] internal string epicLine = string.Empty;
         [SerializeField] internal string legendaryTwist = string.Empty;
 
         public OmenFamily Family => family;
+        public OmenSuit Suit => suit;
+        public OmenArcana Arcana => suit == OmenSuit.None ? OmenArcana.Major : OmenArcana.Minor;
+        public OmenCardDefinition HereticVariant => hereticVariant;
+        public bool IsHeretic => isHeretic;
         public Rarity Rarity => rarity;
         public int CommonThreat => commonThreat;
         public int Threat => RarityMath.ScaleThreat(commonThreat, rarity);
@@ -124,6 +139,23 @@ namespace QuietHull.Data
             else if (family == OmenFamily.Vow)
             {
                 report.Error(this, nameof(vowCondition), "a Vow card needs a condition.");
+            }
+
+            if ((family == OmenFamily.Suit) != (suit != OmenSuit.None))
+            {
+                report.Error(this, nameof(suit), "Minor Arcana cards (family Suit) need a suit, and only they have one.");
+            }
+
+            if (hereticVariant != null)
+            {
+                if (hereticVariant == this || !hereticVariant.isHeretic)
+                {
+                    report.Error(this, nameof(hereticVariant), "the Heretic variant must be another card marked isHeretic.");
+                }
+                else if (hereticVariant.family != family)
+                {
+                    report.Error(this, nameof(hereticVariant), "the Heretic variant keeps the card's family.");
+                }
             }
 
             if (family == OmenFamily.Culling)

@@ -67,9 +67,18 @@ namespace QuietHull.Data
         [UnityEngine.Tooltip("A card of this rarity is guaranteed once (the Sephora's Rare), if set.")]
         public bool guaranteesRarity;
         public Rarity guaranteedRarity;
-        public bool combiningOpen;
-        [UnityEngine.Tooltip("Highest rarity the Cartomancer's table can make.")]
-        public Rarity combineCeiling;
+        [UnityEngine.Tooltip("The Cartomancer levels cards (I–V) and ascends Level V cards.")]
+        public bool cartomancerOpen;
+        [UnityEngine.Tooltip("Highest rarity a card can ascend to.")]
+        public Rarity ascendCeiling;
+        [UnityEngine.Tooltip("Catalysts work on owned gear at the fabricator bench (Strip, Temper, Seal drop).")]
+        public bool benchOpen;
+        [UnityEngine.Tooltip("Catalysts mutate Omen cards: Reroll, Deepen, Refine.")]
+        public bool mutationsOpen;
+        [UnityEngine.Tooltip("Hive-tainted corrupts cards and infuses gear with amalgam.")]
+        public bool corruptionOpen;
+        [UnityEngine.Tooltip("The mission has a set-piece whose script locks the Major slot.")]
+        public bool hasSetPieceLockingMajor;
         [UnityEngine.Tooltip("Commander countermeasure cards in hand (Vent, Seal Door, ...).")]
         public int countermeasureHand;
 

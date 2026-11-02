@@ -35,6 +35,8 @@ namespace QuietHull.Data.Editor
         public OmenCardDefinition ThinSwarm { get; internal set; }
         public OmenCardDefinition ThickHide { get; internal set; }
         public OmenCardDefinition TheGhost { get; internal set; }
+        /// <summary>Thin Swarm's Heretic variant: only corruption makes it.</summary>
+        public OmenCardDefinition ThinSwarmHeretic { get; internal set; }
 
         // Amalgam and materials
         public AmalgamDefinition Amalgam { get; internal set; }

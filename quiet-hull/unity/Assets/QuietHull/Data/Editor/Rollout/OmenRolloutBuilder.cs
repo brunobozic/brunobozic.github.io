@@ -4,8 +4,10 @@ using System.Collections.Generic;
 namespace QuietHull.Data.Editor
 {
     /// <summary>
-    /// The tarot rollout for missions 1–10: the schedule (slots, drops, rarity ceilings, the Cartomancer's table)
-    /// and every card's arrival. Cards for missions 1–3 come from the earlier packs; missions 4–10 add 16.
+    /// The tarot rollout for missions 1–10: the schedule (Major and Minor slots, drops, rarity ceilings, the
+    /// Cartomancer's table, the bench, mutations, corruption) and every card's arrival. Cards for missions 1–3
+    /// come from the earlier packs; this pack adds 16 Major and 5 Minor cards, the Anchorite (Act 3), the
+    /// Cartomancer's rules and the 19 Catalysts.
     /// Values mirror the "Tarot rollout: missions 1–10" tab of the design doc.
     /// </summary>
     public static class OmenRolloutBuilder
@@ -38,6 +40,10 @@ namespace QuietHull.Data.Editor
             var c = new OmenRolloutContent { Previous = previous };
 
             BuildCards(c, make);
+            BuildMinorArcana(c, make);
+            BuildAnchorite(c, make);
+            BuildCartomancer(c, make);
+            c.Catalysts = CatalystCatalogBuilder.Build(make);
             BuildRollout(c, make);
 
             c.Catalog = make.WriteCatalog(CatalogId);
@@ -187,8 +193,98 @@ namespace QuietHull.Data.Editor
             };
         }
 
+        private static OmenCardDefinition Minor(DefinitionMaker make, string id, string name, string description, OmenSuit suit,
+            string legendaryTwist, params OmenEffect[] effects)
+        {
+            var card = make.Def<OmenCardDefinition>(id, Folder, name, description, "omen", "minor", suit.ToString().ToLowerInvariant());
+            card.family = OmenFamily.Suit;
+            card.suit = suit;
+            card.rarity = Rarity.Common;
+            card.commonThreat = 1;
+            card.effects = effects;
+            card.legendaryTwist = legendaryTwist;
+            return card;
+        }
+
+        /// <summary>
+        /// The Minor Arcana: one card per reward stream, each with a small handicap (+1 Threat and one enemy buff).
+        /// The ledger's choice in mission 3 hands out the first: Coins (sold to the Lane), Seals (returned to Doramin),
+        /// Lanterns (kept). Gleaner's Moon (Cogs) is mission 2's.
+        /// </summary>
+        private static void BuildMinorArcana(OmenRolloutContent c, DefinitionMaker make)
+        {
+            c.TheTithe = Minor(make, "omen_the_tithe", "The Tithe", "Coins: +20% contract pay; the aliens hit a little harder.", OmenSuit.Coins,
+                "Pay is doubled if no unit is Wrecked.",
+                Benefit(OmenEffectKind.ContractPayPercent, ScalingRule.Linear, 20f),
+                Handicap(OmenEffectKind.AlienDamagePercent, ScalingRule.Linear, 5f));
+
+            c.BrokersSeal = Minor(make, "omen_brokers_seal", "The Broker's Seal", "Seals: +50% standing from the contract; the hive notices sooner.", OmenSuit.Seals,
+                "Standing can't drop this run.",
+                Benefit(OmenEffectKind.StandingPercent, ScalingRule.Linear, 50f),
+                Handicap(OmenEffectKind.AwarenessJumpPercent, ScalingRule.Linear, 10f));
+
+            c.TheLamplighter = Minor(make, "omen_the_lamplighter", "The Lamplighter", "Lanterns: +1 lead to a charted hulk and 20% of the map revealed; tougher aliens.", OmenSuit.Lanterns,
+                "The whole map is revealed, caches included.",
+                Benefit(OmenEffectKind.IntelLeads, ScalingRule.Count, 1f),
+                Benefit(OmenEffectKind.MapRevealFraction, ScalingRule.Chance, 0.2f),
+                Handicap(OmenEffectKind.AlienHealthPercent, ScalingRule.Linear, 5f));
+
+            c.TheVeteran = Minor(make, "omen_the_veteran", "The Veteran", "Skulls: +20% commander and specialization XP; champions a little more common.", OmenSuit.Skulls,
+                "Every specialization in the crew gains a level's worth of XP.",
+                Benefit(OmenEffectKind.CommanderXpPercent, ScalingRule.Linear, 20f),
+                Handicap(OmenEffectKind.ChampionMultiplier, ScalingRule.Multiplier, 1.1f));
+
+            c.TheVigil = Minor(make, "omen_the_vigil", "The Vigil", "Candles: +1 card-or-Catalyst roll at Requisition; the hive stirs a minute sooner.", OmenSuit.Candles,
+                "Every roll at Requisition is at least Uncommon.",
+                Benefit(OmenEffectKind.DropRolls, ScalingRule.Count, 1f),
+                Handicap(OmenEffectKind.HiveClockSeconds, ScalingRule.Linear, -60f));
+
+            c.MinorCards = new[] { c.TheTithe, c.BrokersSeal, c.TheLamplighter, c.TheVeteran, c.TheVigil };
+        }
+
+        /// <summary>Our answer to Martyr's endgame card: a high Threat floor, no Commons, more of the best. Act 3, from Rank 12.</summary>
+        private static void BuildAnchorite(OmenRolloutContent c, DefinitionMaker make)
+        {
+            var anchorite = Card(make, "omen_the_anchorite", "The Anchorite",
+                "Some go into the dark to be found by it. Threat at least 12; no Common drops; Rare and better far more likely.",
+                OmenFamily.Fortune, Rarity.Common, 0,
+                "One Reliquary item is guaranteed Epic and carries the hulk's Condition affix.",
+                Handicap(OmenEffectKind.ThreatFloor, ScalingRule.Linear, 12f),
+                Handicap(OmenEffectKind.NoCommonDrops, ScalingRule.None, 1f),
+                Benefit(OmenEffectKind.RareDropChancePercent, ScalingRule.Linear, 50f));
+            c.TheAnchorite = anchorite;
+        }
+
+        private static void BuildCartomancer(OmenRolloutContent c, DefinitionMaker make)
+        {
+            var table = make.Def<CartomancerDefinition>("cartomancer_patusan", Folder, "The Cartomancer's table",
+                "Levels cards from duplicates, ascends Level V cards, and mutates cards with Catalysts.", "omen", "cartomancer");
+            table.copiesPerLevel = new[] { 1, 2, 3, 4 };
+            table.levelFees = new[] { 25, 50, 100, 200 };
+            table.trustedDiscountFromLevel = 3;
+            table.ascendFees = new[] { 50, 150, 400, 1000 };
+            table.corruptionWeights = new[] { 1f, 1f, 1f, 1f };
+
+            OmenEffect H(OmenEffectKind kind, ScalingRule rule, float value) => Handicap(kind, rule, value);
+            table.handicapPools = new[]
+            {
+                new OmenHandicapPool(OmenFamily.Hive, H(OmenEffectKind.SurgeSizePercent, ScalingRule.Linear, 20f), H(OmenEffectKind.ChampionMultiplier, ScalingRule.Multiplier, 1.3f), H(OmenEffectKind.HiveClockSeconds, ScalingRule.Linear, -90f)),
+                new OmenHandicapPool(OmenFamily.Ship, H(OmenEffectKind.WeldDurationPercent, ScalingRule.Linear, -30f), H(OmenEffectKind.HiveClockSeconds, ScalingRule.Linear, -120f), H(OmenEffectKind.AwarenessJumpPercent, ScalingRule.Linear, 15f)),
+                new OmenHandicapPool(OmenFamily.Condition, H(OmenEffectKind.ConditionIntensity, ScalingRule.Linear, 1f), H(OmenEffectKind.AlienHealthPercent, ScalingRule.Linear, 15f)),
+                new OmenHandicapPool(OmenFamily.Fabrication, H(OmenEffectKind.SurgeSizePercent, ScalingRule.Linear, 15f), H(OmenEffectKind.WeldDurationPercent, ScalingRule.Linear, -25f)),
+                new OmenHandicapPool(OmenFamily.Expedition, H(OmenEffectKind.LootPercent, ScalingRule.Linear, -20f), H(OmenEffectKind.ContractPayPercent, ScalingRule.Linear, -20f)),
+                new OmenHandicapPool(OmenFamily.Fortune, H(OmenEffectKind.AlienDamagePercent, ScalingRule.Linear, 15f), H(OmenEffectKind.AlienHealthPercent, ScalingRule.Linear, 15f), H(OmenEffectKind.SurgeSizePercent, ScalingRule.Linear, 15f)),
+                new OmenHandicapPool(OmenFamily.Culling, H(OmenEffectKind.LootPercent, ScalingRule.Linear, -15f), H(OmenEffectKind.SurgeSizePercent, ScalingRule.Linear, 10f)),
+                new OmenHandicapPool(OmenFamily.Brutality, H(OmenEffectKind.AlienHealthPercent, ScalingRule.Linear, 20f), H(OmenEffectKind.AlienDamagePercent, ScalingRule.Linear, 20f), H(OmenEffectKind.ChampionMultiplier, ScalingRule.Multiplier, 1.5f)),
+                new OmenHandicapPool(OmenFamily.Hybrid, H(OmenEffectKind.AlienHealthPercent, ScalingRule.Linear, 25f), H(OmenEffectKind.AwarenessJumpPercent, ScalingRule.Linear, 20f)),
+                new OmenHandicapPool(OmenFamily.Vow, H(OmenEffectKind.AwarenessJumpPercent, ScalingRule.Linear, 20f), H(OmenEffectKind.HiveClockSeconds, ScalingRule.Linear, -90f)),
+                new OmenHandicapPool(OmenFamily.Suit, H(OmenEffectKind.AlienDamagePercent, ScalingRule.Linear, 5f), H(OmenEffectKind.AlienHealthPercent, ScalingRule.Linear, 5f), H(OmenEffectKind.SurgeSizePercent, ScalingRule.Linear, 10f))
+            };
+            c.Cartomancer = table;
+        }
+
         private static MissionOmenSchedule Row(int mission, string title, int slots, int slotsAfter, int dropsMin, int dropsMax,
-            Rarity dropCeiling, bool combining, Rarity combineCeiling, int hand) =>
+            Rarity dropCeiling, bool cartomancer, Rarity ascendCeiling, int hand) =>
             new MissionOmenSchedule
             {
                 mission = mission,
@@ -198,10 +294,20 @@ namespace QuietHull.Data.Editor
                 dropsMin = dropsMin,
                 dropsMax = dropsMax,
                 dropCeiling = dropCeiling,
-                combiningOpen = combining,
-                combineCeiling = combineCeiling,
-                countermeasureHand = hand
+                cartomancerOpen = cartomancer,
+                ascendCeiling = ascendCeiling,
+                countermeasureHand = hand,
+                benchOpen = mission >= BenchOpensAtMission,
+                mutationsOpen = mission >= MutationsOpenAtMission,
+                corruptionOpen = mission >= InfusionMath.OpensAtMission,
+                hasSetPieceLockingMajor = mission == 8 || mission == 10
             };
+
+        /// <summary>Catalysts on owned gear: from mission 4 (the T2 fabricator arrives in mission 3).</summary>
+        public const int BenchOpensAtMission = CatalystCatalogBuilder.BenchCatalystsFromMission;
+
+        /// <summary>Card mutations (Reroll, Deepen, Refine) at the Cartomancer's table.</summary>
+        public const int MutationsOpenAtMission = 7;
 
         private static void BuildRollout(OmenRolloutContent c, DefinitionMaker make)
         {
@@ -232,7 +338,8 @@ namespace QuietHull.Data.Editor
             // Cards found or won in a mission are slotted from the next one; the reader's free reading is slotted at once.
             rollout.entries = new List<OmenRolloutEntry>
             {
-                new OmenRolloutEntry(1, cs.GleanersMoon, OmenSource.FaceDown, 2),
+                // Gleaner's Moon is a Minor (Cogs): playable once the first Minor slot opens, after mission 3.
+                new OmenRolloutEntry(1, cs.GleanersMoon, OmenSource.FaceDown, 4),
 
                 new OmenRolloutEntry(2, cs.ThinSwarm, OmenSource.Reading),
                 new OmenRolloutEntry(2, cs.ThickHide, OmenSource.Reading),
@@ -241,12 +348,16 @@ namespace QuietHull.Data.Editor
 
                 new OmenRolloutEntry(3, t.SolarFlare, OmenSource.Found, 4),
                 new OmenRolloutEntry(3, t.QuietDecks, OmenSource.Found, 4),
+                new OmenRolloutEntry(3, c.TheTithe, OmenSource.Reward, 4, LedgerSoldFlag),
+                new OmenRolloutEntry(3, c.BrokersSeal, OmenSource.Reward, 4, LedgerReturnedFlag),
+                new OmenRolloutEntry(3, c.TheLamplighter, OmenSource.Reward, 4, LedgerKeptFlag),
 
                 new OmenRolloutEntry(4, c.IronVow, OmenSource.Reward, 5),
                 new OmenRolloutEntry(4, c.HungryHive, OmenSource.Found, 5),
 
                 new OmenRolloutEntry(5, c.CullingLeaper, OmenSource.Reward, 6),
                 new OmenRolloutEntry(5, c.IonStorm, OmenSource.Found, 6),
+                new OmenRolloutEntry(5, c.TheVeteran, OmenSource.Found, 6),
 
                 new OmenRolloutEntry(6, c.BrittleWelds, OmenSource.Reward, 7),
                 new OmenRolloutEntry(6, c.TheDeck, OmenSource.Reward, 7, LedgerReturnedFlag, LedgerKeptFlag),
@@ -254,6 +365,7 @@ namespace QuietHull.Data.Editor
 
                 new OmenRolloutEntry(7, c.EngineeringDeck, OmenSource.Reward, 8),
                 new OmenRolloutEntry(7, c.TheFortress, OmenSource.Found, 8),
+                new OmenRolloutEntry(7, c.TheVigil, OmenSource.Found, 8),
 
                 new OmenRolloutEntry(8, c.TheWatcher, OmenSource.Reward, 9),
                 new OmenRolloutEntry(8, c.LongNight, OmenSource.Found, 9),

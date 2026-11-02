@@ -57,10 +57,11 @@ namespace QuietHull.Data.Tests
         }
 
         [Test]
-        public void ColdSleep_TheReaderOpensOmens_WithThreeCardsAndTheMoon()
+        public void ColdSleep_TheReaderOpensOmens_WithThreeMajorCards()
         {
             var cs = _r.Previous.Previous;
-            Assert.That(Rollout.PlayableIn(2), Is.EquivalentTo(new[] { cs.GleanersMoon, cs.ThinSwarm, cs.ThickHide, cs.TheGhost }));
+            Assert.That(Rollout.PlayableIn(2), Is.EquivalentTo(new[] { cs.ThinSwarm, cs.ThickHide, cs.TheGhost }));
+            Assert.That(Rollout.PlayableIn(4), Has.Member(cs.GleanersMoon), "the Moon is a Minor: playable once the first Minor slot opens");
             Assert.That(Rollout.SlotsFor(2, 3, false), Is.EqualTo(1));
             Assert.That(Rollout.ArrivingIn(2).Where(e => e.source == OmenSource.Reading).Select(e => e.card),
                 Is.EquivalentTo(new[] { cs.ThinSwarm, cs.ThickHide, cs.TheGhost }));
@@ -140,12 +141,12 @@ namespace QuietHull.Data.Tests
         [Test]
         public void TheCartomancersTable_OpensInMissionSix_UpToRare_ThenEpicAtTen()
         {
-            Assert.That(Rollout.Schedule.Where(s => s.mission < 6), Has.All.Matches<MissionOmenSchedule>(s => !s.combiningOpen));
+            Assert.That(Rollout.Schedule.Where(s => s.mission < 6), Has.All.Matches<MissionOmenSchedule>(s => !s.cartomancerOpen));
             Rollout.TryGetSchedule(6, out var m6);
             Rollout.TryGetSchedule(10, out var m10);
-            Assert.That(m6.combiningOpen, Is.True);
-            Assert.That(m6.combineCeiling, Is.EqualTo(Rarity.Rare));
-            Assert.That(m10.combineCeiling, Is.EqualTo(Rarity.Epic));
+            Assert.That(m6.cartomancerOpen, Is.True);
+            Assert.That(m6.ascendCeiling, Is.EqualTo(Rarity.Rare));
+            Assert.That(m10.ascendCeiling, Is.EqualTo(Rarity.Epic));
         }
 
         [TestCase(6, false)]
@@ -178,6 +179,7 @@ namespace QuietHull.Data.Tests
         [Test]
         public void TheLedger_ChoosesTheMissionSixReward()
         {
+            // Mission 3's ledger reward (a Minor) is checked in OmenArcanaTests.
             var lane = Rollout.ArrivingIn(6, Lane).Select(e => e.card).ToList();
             var hollow = Rollout.ArrivingIn(6, HollowMoon).Select(e => e.card).ToList();
             var kept = Rollout.ArrivingIn(6, Path(OmenRolloutBuilder.LedgerKeptFlag)).Select(e => e.card).ToList();
@@ -189,11 +191,12 @@ namespace QuietHull.Data.Tests
         }
 
         [Test]
-        public void ByMissionTen_AboutTwentyCards_InNineFamilies()
+        public void ByMissionTen_AboutTwentyFiveCards_AcrossTheFamiliesAndFourSuits()
         {
             var met = Rollout.MetBy(10, Lane);
-            Assert.That(met.Count, Is.InRange(19, 22));
-            Assert.That(met.Select(c => c.Family).Distinct().Count(), Is.GreaterThanOrEqualTo(9));
+            Assert.That(met.Count, Is.InRange(22, 26));
+            Assert.That(met.Select(c => c.Family).Distinct().Count(), Is.GreaterThanOrEqualTo(10));
+            Assert.That(met.Where(c => c.Arcana == OmenArcana.Minor).Select(c => c.Suit).Distinct().Count(), Is.EqualTo(4));
         }
 
         [Test]

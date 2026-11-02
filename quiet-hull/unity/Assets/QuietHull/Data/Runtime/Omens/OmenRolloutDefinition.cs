@@ -19,7 +19,7 @@ namespace QuietHull.Data
         [SerializeField] internal OmenRolloutEntry[] entries = Array.Empty<OmenRolloutEntry>();
 
         [Header("Slots")]
-        [Tooltip("Commander rank that opens the third slot (replaces 'the first Omens at Rank 7').")]
+        [Tooltip("Commander rank that opens the third slot, the second Minor (replaces 'the first Omens at Rank 7').")]
         [Min(1)] [SerializeField] internal int thirdSlotRank = 7;
         [Tooltip("The 4th slot comes from the Reliquarian skill node, not from the schedule.")]
         [SerializeField] internal string fourthSlotNode = "Reliquarian";
@@ -103,6 +103,14 @@ namespace QuietHull.Data
             return slots;
         }
 
+        /// <summary>The Major slot: 1 once any slot is open, 0 on a set-piece that locks it.</summary>
+        public int MajorSlotsFor(int mission, bool setPieceLocksMajor) =>
+            !setPieceLocksMajor && TryGetSchedule(mission, out var s) && s.slots > 0 ? 1 : 0;
+
+        /// <summary>Minor slots: every open slot after the first (rank gate and Reliquarian node applied).</summary>
+        public int MinorSlotsFor(int mission, int commanderRank, bool hasFourthSlotNode) =>
+            Math.Max(0, SlotsFor(mission, commanderRank, hasFourthSlotNode) - 1);
+
         public bool MercyAvailable(int mission, int failuresInARow) =>
             mercyCard != null && mission >= mercyFromMission && failuresInARow >= mercyAfterFailures;
 
@@ -164,6 +172,11 @@ namespace QuietHull.Data
                     report.Error(this, nameof(schedule), $"mission {s.mission}: slots {s.slots} → {s.slotsAfter} must stay within 0..3 and never shrink (the 4th is the Reliquarian node).");
                 }
 
+                if ((s.mutationsOpen || s.corruptionOpen) && !s.cartomancerOpen)
+                {
+                    report.Error(this, nameof(schedule), $"mission {s.mission}: card mutations happen at the Cartomancer's table, which isn't open.");
+                }
+
                 if (s.dropsMin < 0 || s.dropsMin > s.dropsMax)
                 {
                     report.Error(this, nameof(schedule), $"mission {s.mission}: drops {s.dropsMin}–{s.dropsMax} are out of order.");
@@ -185,9 +198,14 @@ namespace QuietHull.Data
                     report.Error(this, nameof(schedule), $"mission {s.mission}: drops and their rarity ceiling never go back down.");
                 }
 
-                if (p.combiningOpen && (!s.combiningOpen || s.combineCeiling < p.combineCeiling))
+                if (p.cartomancerOpen && (!s.cartomancerOpen || s.ascendCeiling < p.ascendCeiling))
                 {
                     report.Error(this, nameof(schedule), $"mission {s.mission}: the Cartomancer's table never closes or lowers its ceiling.");
+                }
+
+                if ((p.benchOpen && !s.benchOpen) || (p.mutationsOpen && !s.mutationsOpen) || (p.corruptionOpen && !s.corruptionOpen))
+                {
+                    report.Error(this, nameof(schedule), $"mission {s.mission}: the bench, mutations and corruption never close once open.");
                 }
 
                 if (s.countermeasureHand < p.countermeasureHand)

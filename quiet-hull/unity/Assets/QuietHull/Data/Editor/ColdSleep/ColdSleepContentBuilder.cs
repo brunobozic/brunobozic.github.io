@@ -352,6 +352,24 @@ namespace QuietHull.Data.Editor
             thin.legendaryTwist = "No champions spawn.";
             c.ThinSwarm = thin;
 
+            // Only corruption makes it: half as many aliens, and every one of them a champion.
+            var heretic = make.Def<OmenCardDefinition>("omen_thin_swarm_heretic", OmensFolder, "Heretic Thin Swarm",
+                "Half as many aliens. All of them champions.", "omen", "expedition", "heretic");
+            heretic.family = OmenFamily.Expedition;
+            heretic.rarity = Rarity.Common;
+            heretic.isHeretic = true;
+            heretic.commonThreat = 2;
+            heretic.effects = new[]
+            {
+                new OmenEffect(OmenEffectKind.SurgeSizePercent, OmenSide.Benefit, ScalingRule.Reduction, 0.5f),
+                // Base champion rate is 1 in 15 at Threat 0, so ×15 makes every alien a champion.
+                new OmenEffect(OmenEffectKind.ChampionMultiplier, OmenSide.Handicap, ScalingRule.None, 15f),
+                new OmenEffect(OmenEffectKind.CatalystMultiplier, OmenSide.Benefit, ScalingRule.Multiplier, 2f)
+            };
+            heretic.legendaryTwist = "Champions drop two Catalysts.";
+            thin.hereticVariant = heretic;
+            c.ThinSwarmHeretic = heretic;
+
             var thick = make.Def<OmenCardDefinition>("omen_thick_hide", OmensFolder, "Thick Hide",
                 "Tougher aliens; choose the reward: more loot or more pay.", "omen", "brutality", "starter");
             thick.family = OmenFamily.Brutality;
@@ -909,9 +927,11 @@ namespace QuietHull.Data.Editor
             c.Judea.baseAutoSalvageScrip = 120;
             c.Trip2.baseAutoSalvageScrip = 250;
 
+            // Minor Arcana, suit of Cogs: the first Minor card. Found face-down in the prologue, playable once the first Minor slot opens.
             var gleaner = make.Def<OmenCardDefinition>("omen_gleaners_moon", folder, "Gleaner's Moon",
-                "Fortune: more automatic salvage; the crew works harder for it.", "omen", "fortune");
-            gleaner.family = OmenFamily.Fortune;
+                "Cogs: more automatic salvage; the crew works harder for it.", "omen", "minor", "cogs");
+            gleaner.family = OmenFamily.Suit;
+            gleaner.suit = OmenSuit.Cogs;
             gleaner.rarity = Rarity.Common;
             gleaner.commonThreat = 1;
             gleaner.effects = new[]
