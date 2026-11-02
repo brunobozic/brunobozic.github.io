@@ -47,6 +47,15 @@ namespace QuietHull.Sim
             }
         }
 
+        /// <summary>Moves the hive straight to <paramref name="stage"/> (scripted beats, tests). Never backwards.</summary>
+        public void ForceStage(HiveStage stage)
+        {
+            while (Stage < stage)
+            {
+                Advance(Stage + 1);
+            }
+        }
+
         private void Advance(HiveStage to)
         {
             var from = Stage;

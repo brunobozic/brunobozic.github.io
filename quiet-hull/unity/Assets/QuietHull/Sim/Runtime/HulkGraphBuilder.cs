@@ -9,6 +9,7 @@ namespace QuietHull.Sim
         private readonly List<Room> _rooms = new List<Room>();
         private readonly Dictionary<string, RoomId> _byKey = new Dictionary<string, RoomId>(StringComparer.Ordinal);
         private readonly List<(string A, string B)> _doors = new List<(string A, string B)>();
+        private readonly List<(string A, string B)> _ducts = new List<(string A, string B)>();
 
         public HulkGraphBuilder Room(string key, string name, int ambientNoise = 0, int ambientVibration = 0, int ambientHeat = 0)
         {
@@ -39,32 +40,46 @@ namespace QuietHull.Sim
             return this;
         }
 
+        /// <summary>A crawlspace between two rooms, used only by alien kinds that fit (Crawlers).</summary>
+        public HulkGraphBuilder Duct(string a, string b)
+        {
+            _ducts.Add((a, b));
+            return this;
+        }
+
         public HulkGraph Build()
         {
-            var doors = new List<(int A, int B)>(_doors.Count);
+            var doors = Resolve(_doors, "door");
+            var ducts = Resolve(_ducts, "duct");
+            return new HulkGraph(_rooms.ToArray(), new Dictionary<string, RoomId>(_byKey, StringComparer.Ordinal), doors, ducts);
+        }
+
+        private List<(int A, int B)> Resolve(List<(string A, string B)> links, string what)
+        {
+            var resolved = new List<(int A, int B)>(links.Count);
             var seen = new HashSet<(int, int)>();
-            foreach (var (a, b) in _doors)
+            foreach (var (a, b) in links)
             {
                 if (!_byKey.TryGetValue(a ?? string.Empty, out var ra) || !_byKey.TryGetValue(b ?? string.Empty, out var rb))
                 {
-                    throw new ArgumentException($"door {a}–{b} leads to a room that doesn't exist.");
+                    throw new ArgumentException($"{what} {a}–{b} leads to a room that doesn't exist.");
                 }
 
                 if (ra == rb)
                 {
-                    throw new ArgumentException($"door {a}–{b} connects a room to itself.");
+                    throw new ArgumentException($"{what} {a}–{b} connects a room to itself.");
                 }
 
                 var pair = ra.Index < rb.Index ? (ra.Index, rb.Index) : (rb.Index, ra.Index);
                 if (!seen.Add(pair))
                 {
-                    throw new ArgumentException($"door {a}–{b} is defined twice.");
+                    throw new ArgumentException($"{what} {a}–{b} is defined twice.");
                 }
 
-                doors.Add((ra.Index, rb.Index));
+                resolved.Add((ra.Index, rb.Index));
             }
 
-            return new HulkGraph(_rooms.ToArray(), new Dictionary<string, RoomId>(_byKey, StringComparer.Ordinal), doors);
+            return resolved;
         }
     }
 }

@@ -23,6 +23,8 @@ namespace QuietHull.Sim
         private AlienKind[] _kind;
         private int[] _room;
         private int[] _health;
+        private int[] _next;      // room being moved into, or -1
+        private int[] _progress;  // ticks left on the current crossing
 
         public SwarmStore(int capacity)
         {
@@ -38,6 +40,8 @@ namespace QuietHull.Sim
             _kind = new AlienKind[capacity];
             _room = new int[capacity];
             _health = new int[capacity];
+            _next = new int[capacity];
+            _progress = new int[capacity];
         }
 
         public int Count { get; private set; }
@@ -71,6 +75,8 @@ namespace QuietHull.Sim
             _kind[dense] = kind;
             _room[dense] = room.Index;
             _health[dense] = health;
+            _next[dense] = -1;
+            _progress[dense] = 0;
             return new AlienHandle(slot, _generation[slot]);
         }
 
@@ -94,6 +100,8 @@ namespace QuietHull.Sim
                 _kind[dense] = _kind[last];
                 _room[dense] = _room[last];
                 _health[dense] = _health[last];
+                _next[dense] = _next[last];
+                _progress[dense] = _progress[last];
                 _denseOf[movedSlot] = dense;
             }
 
@@ -135,6 +143,38 @@ namespace QuietHull.Sim
         public RoomId DenseRoom(int i) => new RoomId(_room[i]);
         public int DenseHealth(int i) => _health[i];
 
+        /// <summary>True while the alien is crossing into another room.</summary>
+        public bool IsMoving(AlienHandle handle) => _next[DenseOf(handle)] >= 0;
+
+        // Movement state for the swarm systems (dense index).
+        internal int NextRoom(int dense) => _next[dense];
+        internal int Progress(int dense) => _progress[dense];
+
+        internal void BeginCrossing(int dense, int room, int ticks)
+        {
+            _next[dense] = room;
+            _progress[dense] = ticks;
+        }
+
+        /// <summary>Advances a crossing by one tick; returns true when the alien arrives (and moves it).</summary>
+        internal bool AdvanceCrossing(int dense)
+        {
+            if (_next[dense] < 0)
+            {
+                return false;
+            }
+
+            if (--_progress[dense] > 0)
+            {
+                return false;
+            }
+
+            _room[dense] = _next[dense];
+            _next[dense] = -1;
+            _progress[dense] = 0;
+            return true;
+        }
+
         public int CountIn(RoomId room)
         {
             var n = 0;
@@ -162,6 +202,8 @@ namespace QuietHull.Sim
             Array.Resize(ref _kind, size);
             Array.Resize(ref _room, size);
             Array.Resize(ref _health, size);
+            Array.Resize(ref _next, size);
+            Array.Resize(ref _progress, size);
         }
     }
 }

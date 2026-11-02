@@ -5,7 +5,7 @@ Built test-first: every rule has a test in `Tests/`.
 
 | Piece | What it does |
 | --- | --- |
-| `HulkGraph` / `HulkGraphBuilder` | Rooms (with ambient noise) and doors. Immutable once built; share it freely. |
+| `HulkGraph` / `HulkGraphBuilder` | Rooms (with ambient levels), doors and ducts. Immutable once built; share it freely. |
 | `DoorStates` | Open / Closed (muffles) / Sealed (blocks) per door, per run. |
 | `NoisePropagation` | Spreads a sound room by room: −2 per hop, −3 more through a closed door, stopped by a sealed one; each room keeps the loudest path. `HeardAt` subtracts the room's ambient noise (masking). |
 | `SenseField` / `SenseRules` | One solver for every sense channel. Sound: −2/hop, −3 more through a closed door, stopped by sealed. Vibration: −1/hop through the hull, doors don't matter. Heat: −3/hop, −2 more through any shut door, never fully blocked. Rooms have ambient levels per channel (masking). |
@@ -13,6 +13,8 @@ Built test-first: every rule has a test in `Tests/`.
 | `Emission` | What a working Joe, a cart or a fire gives off on each channel. |
 | `PlaceSensor` / `SensorOverlay` | Sentry pups in sensor mode: cover rooms within a hop range; the map overlay shows each channel's level and whether it's masked, and nothing where no pup reads. |
 | `AwarenessGauge` | Heard noise fills it, silence drains it; Dormant → Restless (40) → Hunt (80), never back. Fixed-point, so runs replay exactly. |
+| `SwarmRules` | Per alien kind: ticks to cross a room, to force a closed door, to breach a sealed one; whether it fits ducts (Crawlers). |
+| `FlowField` / `FlowStep` | Shared pathfinding: one Dijkstra per goal set over the room graph (doors cost more when closed, far more when sealed), read by every alien of a mobility class. Walkers use doors; Crawlers also use ducts. Recomputed only when doors, goals or the hive stage change. |
 | `Simulation` | One run: noise sources (working Joes), the hive's listening rooms, doors, the tick, and the event log. One thread per simulation; run many in parallel. |
 
 Run the tests outside Unity: `cd quiet-hull/dotnet/QuietHull.Sim.Tests && dotnet test`.
@@ -31,4 +33,8 @@ In Unity: Test Runner ▸ EditMode (the `QuietHull.Sim.Tests` assembly).
 - **Telemetry by interface:** `IRunTelemetry` gets per-tick measurements for the fun gates; the Serilog /
   OpenTelemetry adapter lives outside the core, so the core stays dependency-free and Burst-friendly.
 - **Determinism:** fixed tick, integer and fixed-point maths, ordered iteration. Same inputs, same run.
+- **Swarm movement:** Dormant aliens stay put; Restless ones investigate rooms emitting sound or vibration; Hunt goes for
+  the shuttle (`SetShuttle`). Each alien reads `NextStep` from its class's flow field, so 500 aliens cost one field
+  lookup each, not 500 path searches (500 aliens on a 200-room hulk: ~0.03 ms per tick, zero allocation).
+  `AlienEnteredRoom` events are transient (dispatched, not journalled); `Events` is the journal (stage changes).
 - **One simulation, one thread:** no locks in the tick. Scale by running many simulations in parallel (the bots).

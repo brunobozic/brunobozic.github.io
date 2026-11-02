@@ -18,9 +18,17 @@ namespace QuietHull.Sim
         private readonly SimRules _rules;
         private readonly HiveListener[] _listeners;
         private readonly DoorStates _doors;
-        private readonly List<SimEvent> _events = new List<SimEvent>(256);
+        private readonly List<SimEvent> _journal = new List<SimEvent>(64);
+        private readonly List<SimEvent> _tickEvents;
         private readonly List<ISimEventHandler> _handlers = new List<ISimEventHandler>(4);
-        private int _dispatched;
+
+        // Routing: one shared flow field per mobility class, recomputed only when doors or goals change.
+        private readonly FlowField _walkers;
+        private readonly FlowField _crawlers;
+        private readonly int[] _goals;
+        private int _goalCount;
+        private int _shuttle = -1;
+        private bool _routesDirty = true;
 
         // Emitters: a pooled table indexed by id (ids never reused within a run, so handles stay unambiguous).
         private int[] _emitterRoom = new int[InitialPool];
@@ -68,6 +76,10 @@ namespace QuietHull.Sim
             _queued = new bool[graph.RoomCount];
             _distance = new int[graph.RoomCount];
             Swarm = new SwarmStore(swarmCapacity);
+            _tickEvents = new List<SimEvent>(swarmCapacity + 16);
+            _walkers = new FlowField(graph, rules.Swarm, useDucts: false);
+            _crawlers = new FlowField(graph, rules.Swarm, useDucts: true);
+            _goals = new int[graph.RoomCount];
             Awareness = new AwarenessGauge(rules.Awareness);
             Awareness.StageChanged += OnStageChanged;
         }
@@ -76,7 +88,18 @@ namespace QuietHull.Sim
         public int Tick { get; private set; }
         public AwarenessGauge Awareness { get; }
         public SwarmStore Swarm { get; }
-        public IReadOnlyList<SimEvent> Events => _events;
+        /// <summary>The run's journal: major events (stage changes) for replays and the results screen. Moves aren't journalled.</summary>
+        public IReadOnlyList<SimEvent> Events => _journal;
+
+        /// <summary>Where the shuttle is docked: what the swarm hunts.</summary>
+        public void SetShuttle(RoomId room)
+        {
+            _shuttle = room.Index;
+            _routesDirty = true;
+        }
+
+        /// <summary>Moves the hive straight to a stage (scripted beats, tests). Never backwards.</summary>
+        public void ForceStage(HiveStage stage) => Awareness.ForceStage(stage);
 
         /// <summary>Optional per-tick measurements (the fun gates). Null = off.</summary>
         public IRunTelemetry Telemetry { get; set; }
@@ -98,6 +121,7 @@ namespace QuietHull.Sim
 
             _doors.Set(a, b, state);
             _signalsDirty = true;
+            _routesDirty = true;
         }
 
         // ---- Emitters --------------------------------------------------------------------------
@@ -136,6 +160,7 @@ namespace QuietHull.Sim
             }
 
             _signalsDirty = true;
+            _routesDirty = true;
             return new NoiseSourceId(id + 1);
         }
 
@@ -150,6 +175,7 @@ namespace QuietHull.Sim
             {
                 _emitterOutput[(int)channel][i] = value;
                 _signalsDirty = true;
+                _routesDirty = true;
             }
         }
 
@@ -157,6 +183,7 @@ namespace QuietHull.Sim
         {
             _emitterActive[IndexOf(source)] = false;
             _signalsDirty = true;
+            _routesDirty = true;
         }
 
         // ---- Sensors ---------------------------------------------------------------------------
@@ -234,23 +261,113 @@ namespace QuietHull.Sim
             Tick++;
             var heard = HeardByHive;
             Awareness.Tick(heard);
+            MoveSwarm();
             Telemetry?.OnTick(Tick, heard, Awareness.Value);
             Dispatch();
         }
 
         private void Dispatch()
         {
-            for (; _dispatched < _events.Count; _dispatched++)
+            for (var i = 0; i < _tickEvents.Count; i++)
             {
-                var e = _events[_dispatched];
+                var e = _tickEvents[i];
                 for (var h = 0; h < _handlers.Count; h++)
                 {
                     _handlers[h].Handle(in e);
                 }
             }
+
+            _tickEvents.Clear();
         }
 
-        private void OnStageChanged(HiveStage from, HiveStage to) => _events.Add(new SimEvent(Tick, SimEventKind.HiveStageChanged, to));
+        private void OnStageChanged(HiveStage from, HiveStage to)
+        {
+            var e = new SimEvent(Tick, SimEventKind.HiveStageChanged, to);
+            _journal.Add(e);
+            _tickEvents.Add(e);
+            _routesDirty = true;
+        }
+
+        // ---- The swarm -------------------------------------------------------------------------
+
+        /// <summary>
+        /// Dormant: the swarm stays put. Restless: it investigates what's emitting sound or vibration. Hunt: it goes
+        /// for the shuttle (or, with no shuttle, the noise). Each alien reads its class's shared flow field.
+        /// </summary>
+        private void MoveSwarm()
+        {
+            var swarm = Swarm;
+            if (swarm.Count == 0)
+            {
+                return;
+            }
+
+            RefreshRoutes();
+            var rules = _rules.Swarm;
+            for (var i = 0; i < swarm.Count; i++)
+            {
+                if (swarm.NextRoom(i) < 0)
+                {
+                    if (_goalCount == 0)
+                    {
+                        continue;
+                    }
+
+                    var kind = swarm.DenseKind(i);
+                    var field = rules.UsesDucts(kind) ? _crawlers : _walkers;
+                    var step = field.NextStep(swarm.DenseRoom(i), _doors);
+                    if (!step.HasStep)
+                    {
+                        continue;
+                    }
+
+                    swarm.BeginCrossing(i, step.Room.Index, rules.CrossingTicks(kind, step.ViaDuct, step.Door));
+                }
+
+                if (swarm.AdvanceCrossing(i))
+                {
+                    _tickEvents.Add(new SimEvent(Tick, SimEventKind.AlienEnteredRoom, Awareness.Stage, swarm.DenseRoom(i), swarm.DenseHandle(i)));
+                }
+            }
+        }
+
+        private void RefreshRoutes()
+        {
+            if (!_routesDirty)
+            {
+                return;
+            }
+
+            _goalCount = 0;
+            var stage = Awareness.Stage;
+            if (stage == HiveStage.Hunt && _shuttle >= 0)
+            {
+                _goals[_goalCount++] = _shuttle;
+            }
+            else if (stage != HiveStage.Dormant)
+            {
+                for (var e = 0; e < _emitterCount; e++)
+                {
+                    if (!_emitterActive[e] || (_emitterOutput[(int)SenseChannel.Sound][e] <= 0 && _emitterOutput[(int)SenseChannel.Vibration][e] <= 0))
+                    {
+                        continue;
+                    }
+
+                    var room = _emitterRoom[e];
+                    var seen = false;
+                    for (var g = 0; g < _goalCount; g++) seen |= _goals[g] == room;
+                    if (!seen) _goals[_goalCount++] = room;
+                }
+            }
+
+            if (_goalCount > 0)
+            {
+                _walkers.Compute(_doors, _goals, _goalCount);
+                _crawlers.Compute(_doors, _goals, _goalCount);
+            }
+
+            _routesDirty = false;
+        }
 
         private int IndexOf(NoiseSourceId source)
         {

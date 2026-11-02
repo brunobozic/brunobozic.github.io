@@ -15,8 +15,9 @@ namespace QuietHull.Sim
         private readonly RoomId[][] _neighbours;
         private readonly int[][] _doorOf;
         private readonly Dictionary<long, int> _doorIndex;
+        private readonly RoomId[][] _ducts;
 
-        internal HulkGraph(Room[] rooms, Dictionary<string, RoomId> byKey, List<(int A, int B)> doors)
+        internal HulkGraph(Room[] rooms, Dictionary<string, RoomId> byKey, List<(int A, int B)> doors, List<(int A, int B)> ducts)
         {
             _rooms = rooms;
             _byKey = byKey;
@@ -41,6 +42,25 @@ namespace QuietHull.Sim
                 _doorIndex[Key(a, b)] = d;
             }
 
+            var ductLists = new List<RoomId>[rooms.Length];
+            for (var i = 0; i < rooms.Length; i++)
+            {
+                ductLists[i] = new List<RoomId>(2);
+            }
+
+            foreach (var (a, b) in ducts)
+            {
+                ductLists[a].Add(new RoomId(b));
+                ductLists[b].Add(new RoomId(a));
+            }
+
+            DuctCount = ducts.Count;
+            _ducts = new RoomId[rooms.Length][];
+            for (var i = 0; i < rooms.Length; i++)
+            {
+                _ducts[i] = ductLists[i].ToArray();
+            }
+
             _neighbours = new RoomId[rooms.Length][];
             _doorOf = new int[rooms.Length][];
             for (var i = 0; i < rooms.Length; i++)
@@ -52,6 +72,11 @@ namespace QuietHull.Sim
 
         public int RoomCount => _rooms.Length;
         public int DoorCount { get; }
+
+        /// <summary>Ducts: crawlspaces between rooms that only some alien kinds use. They don't carry sound (yet).</summary>
+        public int DuctCount { get; }
+
+        public IReadOnlyList<RoomId> DuctNeighbours(RoomId id) => _ducts[id.Index];
 
         public Room Room(RoomId id) => _rooms[id.Index];
 

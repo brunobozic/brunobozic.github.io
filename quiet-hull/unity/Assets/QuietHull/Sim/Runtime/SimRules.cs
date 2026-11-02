@@ -6,9 +6,15 @@ namespace QuietHull.Sim
     public sealed class SimRules
     {
         public SimRules(SenseRules senses, AwarenessRules awareness)
+            : this(senses, awareness, SwarmRules.Default)
+        {
+        }
+
+        public SimRules(SenseRules senses, AwarenessRules awareness, SwarmRules swarm)
         {
             Senses = senses ?? throw new ArgumentNullException(nameof(senses));
             Awareness = awareness ?? throw new ArgumentNullException(nameof(awareness));
+            Swarm = swarm ?? throw new ArgumentNullException(nameof(swarm));
         }
 
         /// <summary>Sound tuned by <paramref name="noise"/>; vibration and heat at their defaults.</summary>
@@ -21,5 +27,6 @@ namespace QuietHull.Sim
 
         public SenseRules Senses { get; }
         public AwarenessRules Awareness { get; }
+        public SwarmRules Swarm { get; }
     }
 }
