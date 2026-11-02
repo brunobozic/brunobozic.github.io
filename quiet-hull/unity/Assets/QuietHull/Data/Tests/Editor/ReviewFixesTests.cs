@@ -71,6 +71,10 @@ namespace QuietHull.Data.Tests
             Assert.That(_t.SecuritySynthRemains.AmountOf(_c.SyntheticMyomer), Is.GreaterThanOrEqualTo(recipe.AmountOf(_c.SyntheticMyomer)));
             Assert.That(circuitry, Is.GreaterThanOrEqualTo(recipe.AmountOf(_p.Circuitry)));
             Assert.That(_t.DeepHold.Items.Any(i => i.item == _p.GravLatticeAlloy), Is.True);
+
+            // Review 2: the alloy is in the parts store too, so the optional deep hold stays pure greed.
+            var alloyInPartsStore = _t.PartsStore.Items.Where(i => i.item == _p.GravLatticeAlloy).Sum(i => i.count);
+            Assert.That(alloyInPartsStore, Is.GreaterThanOrEqualTo(recipe.itemInputs.Where(i => i.item == _p.GravLatticeAlloy).Sum(i => i.count)));
         }
 
         // 3. The commander's cards: one or two new per mission.

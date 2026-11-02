@@ -148,7 +148,8 @@ namespace QuietHull.Data.Editor
                 "Plating and Circuitry, and old amalgam from a fight nobody survived.",
                 // Review fix 2: enough here for all four ingots, so the Mk II craft can't fail on mission 2 choices.
                 new[] { new MaterialCost(p.Plating, 8), new MaterialCost(p.Circuitry, 6), new MaterialCost(cs.AmalgamChunk, 12) },
-                Array.Empty<ItemStack>(), "cache", "parts");
+                // Review 2: one unit of alloy, so the Mk II arms never depend on the optional deep hold.
+                new[] { new ItemStack(p.GravLatticeAlloy, 1) }, "cache", "parts");
             c.CryoVault = Cache("cache_tremolino_cryo_vault", "Cryo vault",
                 "Open only at facing 2. The regulator core, and the smugglers' ledger.",
                 Array.Empty<MaterialCost>(), new[] { new ItemStack(core, 1) }, "cache", "story");
