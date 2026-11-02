@@ -144,6 +144,11 @@ namespace QuietHull.Data.Editor
             ContentGenerator.ShowResult("Story decisions", ContentGenerator.Run("Story decisions", ContentGenerator.DefaultRoot,
                 factory => StoryDecisionsBuilder.Build(factory).Catalog));
 
+        [MenuItem("Quiet Hull/Content/Generate UI Theme (the drifting interface)", priority = 22)]
+        private static void GenerateUiTheme() =>
+            ContentGenerator.ShowResult("UI theme", ContentGenerator.Run("UI theme", ContentGenerator.DefaultRoot,
+                factory => UiThemeBuilder.Build(factory).Catalog));
+
         [MenuItem("Quiet Hull/Content/Generate Sample: Tremolino sun and belt", priority = 30)]
         private static void GenerateSunwheel() =>
             ContentGenerator.ShowResult("Tremolino sample", ContentGenerator.Run("Tremolino sample", ContentGenerator.DefaultRoot,
