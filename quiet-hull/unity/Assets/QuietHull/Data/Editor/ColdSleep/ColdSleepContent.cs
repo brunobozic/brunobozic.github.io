@@ -95,6 +95,9 @@ namespace QuietHull.Data.Editor
         public CountermeasureCardDefinition CutLightsCard { get; internal set; }
         public GoalDefinition ServoArmsGoal { get; internal set; }
         public ShopDefinition Stall { get; internal set; }
+        public OmenCardDefinition GleanersMoon { get; internal set; }
+        public ContractDefinition BrokerFavour { get; internal set; }
+        public IReadOnlyList<BrokerLoanDefinition> Loans { get; internal set; }
         public IReadOnlyList<LoreLogDefinition> Logs { get; internal set; }
         public DefinitionCatalog Catalog { get; internal set; }
         public IReadOnlyList<DefinitionBase> All { get; internal set; }

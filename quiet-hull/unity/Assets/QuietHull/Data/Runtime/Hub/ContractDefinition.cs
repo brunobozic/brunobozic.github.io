@@ -26,6 +26,8 @@ namespace QuietHull.Data
         [SerializeField] internal string rewardSummary = string.Empty;
         [Tooltip("Flags set when the contract completes (they open hub counters).")]
         [SerializeField] internal string[] completionFlags = Array.Empty<string>();
+        [Tooltip("Flags cleared when the contract completes (a repaid favour clears the debt).")]
+        [SerializeField] internal string[] clearsFlags = Array.Empty<string>();
 
         public string Client => client;
         public string HulkName => hulkName;
@@ -39,6 +41,8 @@ namespace QuietHull.Data
         public IReadOnlyList<StandingChange> CompletionStanding => completionStanding ?? Array.Empty<StandingChange>();
         public string RewardSummary => rewardSummary;
         public IReadOnlyList<string> CompletionFlags => completionFlags ?? Array.Empty<string>();
+        public IReadOnlyList<string> ClearsFlags => clearsFlags ?? Array.Empty<string>();
+        public bool IsProBono => TotalPay == 0;
 
         /// <summary>Applies the completion standing and flags to the player.</summary>
         public void Complete(PlayerStanding standing)
@@ -56,6 +60,11 @@ namespace QuietHull.Data
             foreach (var flag in CompletionFlags)
             {
                 standing.SetFlag(flag);
+            }
+
+            foreach (var flag in ClearsFlags)
+            {
+                standing.ClearFlag(flag);
             }
 
             standing.AddScrip(TotalPay);
@@ -95,7 +104,7 @@ namespace QuietHull.Data
                 report.Error(this, nameof(deliverable), "a contract needs a deliverable or a mission script.");
             }
 
-            report.NotEmpty(this, nameof(payPerPart), payPerPart);
+            report.NotEmpty(this, nameof(payPerPart), payPerPart); // A pro bono favour lists a single 0.
             foreach (var pay in PayPerPart)
             {
                 report.NonNegative(this, nameof(payPerPart), pay);

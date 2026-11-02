@@ -290,7 +290,9 @@ namespace QuietHull.Data
         Frame = 8,
         Hardening = 9,
         Maintenance = 10,
-        ToolMount = 11
+        ToolMount = 11,
+        /// <summary>Worker brain: autonomy (scavenging, sentry tactics) and salvage sense.</summary>
+        Processor = 12
     }
 
     public enum AugmentKind
@@ -361,6 +363,10 @@ namespace QuietHull.Data
         SentryReloadSpeed = 45,
         /// <summary>Speed of placing and picking up sentries and mines, as a percent change.</summary>
         DeploySpeed = 48,
+        /// <summary>Share of extra automatic salvage a worker adds (0.25 = +25%).</summary>
+        SalvageYield = 49,
+        /// <summary>How much a worker can do on its own: 2 = scavenge, 3 = sentry tactics.</summary>
+        Autonomy = 50,
         BatteryCapacity = 46,
         /// <summary>Charge drained by every activity, as a percent change.</summary>
         ChargeDrain = 47
@@ -458,7 +464,9 @@ namespace QuietHull.Data
         /// <summary>Percent more of the card's currency (Plating, Circuitry, ...).</summary>
         CurrencyPercent = 10,
         /// <summary>Fewer patrols in Stages 1–2 (Expedition Omens).</summary>
-        PatrolReduction = 11
+        PatrolReduction = 11,
+        /// <summary>Percent more automatic salvage at the end of the mission.</summary>
+        SalvagePercent = 12
     }
 
     public enum VowCondition

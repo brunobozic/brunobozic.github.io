@@ -313,6 +313,21 @@ namespace QuietHull.Data.Editor
                 AugmentSlot.ToolMount, AugmentLine.Fine, Legality.Legal, 6f, 50f, 0f, 0.5f, 0f, 0f, 500,
                 StatModifier.Percent(UnitStat.ConstructionSpeed, 0.30f), StatModifier.Percent(UnitStat.ToolEnergyCost, -0.20f));
 
+            // Processor: how smart the worker is. Autonomy 2 lets a quiet worker scavenge on its own;
+            // autonomy 3 lets it place and restock sentries where it sees the swarm coming.
+            c.SwarmTracker = W("wmod_proc_swarm_tracker", "Swarm tracker", "Tracks swarm movement actively. Smart, and it pings.",
+                AugmentSlot.Processor, AugmentLine.Assault, Legality.Legal, 2f, 50f, 0.5f, 0.5f, 0f, 0.05f, 550,
+                StatModifier.Add(UnitStat.Autonomy, 1.5f), StatModifier.Add(UnitStat.ContactDetectionRange, 10f));
+            c.SalvageScanner = W("wmod_proc_salvage", "Salvage scanner", "Spots what's worth taking. More automatic salvage every run.",
+                AugmentSlot.Processor, AugmentLine.Standard, Legality.Legal, 1f, 25f, 0f, 0f, 0f, 0f, 350,
+                StatModifier.Add(UnitStat.SalvageYield, 0.25f), StatModifier.Add(UnitStat.Autonomy, 1f));
+            c.SurveyAi = W("wmod_proc_survey", "Survey AI", "Plans its own work: opens rooms, searches, salvages. The smartest legal brain.",
+                AugmentSlot.Processor, AugmentLine.Fine, Legality.Legal, 1f, 30f, 0f, 0f, 0f, 0f, 500,
+                StatModifier.Add(UnitStat.Autonomy, 2f), StatModifier.Add(UnitStat.SalvageYield, 0.10f), StatModifier.Percent(UnitStat.WorkSpeed, 0.05f));
+            c.GhostRoutine = W("wmod_proc_ghost", "Ghost routine", "Smuggler's firmware: moves like it's not there.",
+                AugmentSlot.Processor, AugmentLine.Shadow, Legality.Contraband, 1f, 30f, 0f, 0f, 0f, -0.05f, 1600,
+                StatModifier.Add(UnitStat.Autonomy, 1f), StatModifier.Add(UnitStat.Visibility, -0.10f), StatModifier.Percent(UnitStat.ActionNoise, -0.20f));
+
             c.WorkerModules = modules;
             c.HardeningModules = hardening;
         }

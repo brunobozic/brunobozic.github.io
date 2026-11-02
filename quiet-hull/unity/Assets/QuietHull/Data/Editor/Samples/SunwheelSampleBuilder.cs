@@ -36,7 +36,19 @@ namespace QuietHull.Data.Editor
                 new RoomExposure("armoury",         0, 1, 3, 3),
                 new RoomExposure("cryo_vault",      3, 3, 0, 3),
                 new RoomExposure("charging_bay",    1, 3, 3, 0),
-                new RoomExposure("nest",            2, 1, 3, 3)
+                new RoomExposure("nest",            2, 1, 3, 3),
+                new RoomExposure("cargo_bay",       0, 0, 1, 2),
+                new RoomExposure("crew_decks",      0, 1, 2, 2),
+                new RoomExposure("spine",           1, 1, 2, 1)
+            };
+
+            // Where the swarm comes from. Aliens won't path through rooms hotter than they can stand,
+            // so each turn changes which routes are live, and the kill zone has to move with them.
+            sun.swarmRoutes = new[]
+            {
+                new SwarmRoute("nest_duct", "cargo_bay", "nest", "cargo_bay"),
+                new SwarmRoute("crew_corridor", "spine", "crew_decks", "spine"),
+                new SwarmRoute("armoury_run", "cargo_bay", "armoury", "cargo_bay")
             };
             var belt = make.Def<BeltErosionDefinition>("belt_tremolino", "Samples", "Tremolino belt erosion",
                 "The Tremolino is drifting through a debris belt. Turn the nest into it to vent the nest; turn the reactor housing into it to strip the radiation from the deep hold.",

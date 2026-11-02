@@ -50,6 +50,9 @@ namespace QuietHull.Data
         public Mark Gen2FromMark => gen2FromMark;
         public Mark Gen3FromMark => gen3FromMark;
 
+        /// <summary>Autonomy newer firmware adds on its own: Gen 2 +1, Gen 3 +2.</summary>
+        public int FirmwareAutonomyAt(Mark mark) => !hasFirmware ? 0 : (int)FirmwareAt(mark) - 1;
+
         public FirmwareGeneration FirmwareAt(Mark mark) =>
             !hasFirmware || mark >= gen3FromMark ? FirmwareGeneration.Gen3 : mark >= gen2FromMark ? FirmwareGeneration.Gen2 : FirmwareGeneration.Gen1;
 

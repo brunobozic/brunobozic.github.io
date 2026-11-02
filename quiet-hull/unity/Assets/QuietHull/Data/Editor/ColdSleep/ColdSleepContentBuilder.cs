@@ -53,7 +53,7 @@ namespace QuietHull.Data.Editor
 
             // From mission 2, J1M is a Gen 1, Mk I worker like any other (and its old firmware will matter).
             prologue.J1M.markCurve = augs.WorkerCurve;
-            prologue.J1M.augmentSlots = new[] { AugmentSlot.Frame, AugmentSlot.Hardening, AugmentSlot.Hardening, AugmentSlot.Maintenance, AugmentSlot.ToolMount };
+            prologue.J1M.augmentSlots = AugmentCatalog.WorkerSlots;
             prologue.J1M.combatRole = CombatRole.DefendOnly;
             prologue.J1M.defendRadius = 6f;
             prologue.J1M.augmentCapacityKg = 30f;
@@ -282,7 +282,7 @@ namespace QuietHull.Data.Editor
             worker.handCarrySlots = j1m.HandCarrySlots;
             worker.abilities = j1m.Abilities | UnitAbility.SupplySentries | UnitAbility.Guard | UnitAbility.StaffStation | UnitAbility.Harvest | UnitAbility.AutoRecharge;
             worker.startingItems = Array.Empty<ItemDefinition>();
-            worker.augmentSlots = new[] { AugmentSlot.Frame, AugmentSlot.Hardening, AugmentSlot.Hardening, AugmentSlot.Maintenance, AugmentSlot.ToolMount };
+            worker.augmentSlots = AugmentCatalog.WorkerSlots;
             worker.specializationOptions = new[] { c.Augs.Hauler, c.Augs.Miner, c.Augs.Constructor, c.Augs.Technician, c.Augs.Sapper };
             worker.charge = AugmentCatalog.WorkerCharge;
             worker.combatRole = CombatRole.DefendOnly;
@@ -903,6 +903,69 @@ namespace QuietHull.Data.Editor
             c.Trip2.mercyAfterFailures = 2;
             c.Trip2.mercyOmen = c.ThinSwarm;
             c.Trip2.completionFlags = new[] { "torrens_sleeper_logged" };
+
+            // Automatic salvage: something every run, more with every worker and every salvage upgrade.
+            c.Trip1.baseAutoSalvageScrip = 250;
+            c.Judea.baseAutoSalvageScrip = 120;
+            c.Trip2.baseAutoSalvageScrip = 250;
+
+            var gleaner = make.Def<OmenCardDefinition>("omen_gleaners_moon", folder, "Gleaner's Moon",
+                "Fortune: more automatic salvage; the crew works harder for it.", "omen", "fortune");
+            gleaner.family = OmenFamily.Fortune;
+            gleaner.rarity = Rarity.Common;
+            gleaner.commonThreat = 1;
+            gleaner.effects = new[]
+            {
+                new OmenEffect(OmenEffectKind.SalvagePercent, OmenSide.Benefit, ScalingRule.Linear, 40f),
+                new OmenEffect(OmenEffectKind.AlienHealthPercent, OmenSide.Handicap, ScalingRule.Linear, 10f)
+            };
+            gleaner.legendaryTwist = "Every worker present counts double for salvage.";
+            c.GleanersMoon = gleaner;
+
+            // The bail-out: borrow from the broker, repay with a favour.
+            var package = make.Def<CargoDefinition>("itm_broker_package", folder, "Doramin's package",
+                "Sealed, heavy, and none of your business.", "cargo", "favour");
+            package.slots = 2;
+            package.maxCondition = 100f;
+            package.conditionLossPerSecondByHeat = new[] { 0f, 0f, 0.5f, 1f };
+
+            var favour = make.Def<ContractDefinition>("con_broker_favour", folder, "A favour for Doramin",
+                "Pro bono: collect a package from a drifting hulk and bring it back unopened.", "contract", "favour");
+            favour.client = "Doramin";
+            favour.hulkName = "varies";
+            favour.deliverable = package;
+            favour.payPerPart = new[] { 0 };
+            favour.itemsGiven = Array.Empty<ItemStack>();
+            favour.partScripts = Array.Empty<MissionScriptDefinition>();
+            favour.completionBlueprints = Array.Empty<BlueprintDefinition>();
+            favour.completionStanding = new[] { StandingChange.By(c.Factions.HollowMoon, 0) };
+            favour.rewardSummary = "No pay. Clears what you owe the broker.";
+            favour.completionFlags = Array.Empty<string>();
+            favour.clearsFlags = new[] { BrokerLoanDefinition.FavourOwedFlag };
+            c.BrokerFavour = favour;
+
+            BrokerLoanDefinition Loan(string id, string name, string description, ItemStack[] items, UnitDefinition unit, Mark mark, int penalty)
+            {
+                var loan = make.Def<BrokerLoanDefinition>(id, folder, name, description, "loan", "bailout");
+                loan.broker = "Doramin";
+                loan.itemsLent = items;
+                loan.unitLent = unit;
+                loan.unitMark = mark;
+                loan.favour = favour;
+                loan.lossPenaltyScrip = penalty;
+                loan.faction = c.Factions.HollowMoon;
+                loan.minimumStanding = Standing.Neutral;
+                return loan;
+            }
+
+            c.Loans = new[]
+            {
+                Loan("loan_military_synth", "Borrow a combat synth", "A Mk III Picket-pattern droid with Standard augments, for one mission.", Array.Empty<ItemStack>(), c.Picket, Mark.MkIII, 1500),
+                Loan("loan_sentry_pair", "Borrow two sentries and ammo", "Two Sentry Mk I and 2,000 rounds, for one mission.",
+                    new[] { new ItemStack(p.SentryMk1, 2), new ItemStack(p.SentryAmmoBox, 4) }, null, Mark.MkI, 800),
+                Loan("loan_mines", "Borrow a crate of mines", "Six frag mines and two stun mines, for one mission.",
+                    new[] { new ItemStack(c.Ordnance.Frag, 6), new ItemStack(c.Ordnance.Stun, 2) }, null, Mark.MkI, 400)
+            };
         }
 
         private static void BuildScripts(ColdSleepContent c, DefinitionMaker make)

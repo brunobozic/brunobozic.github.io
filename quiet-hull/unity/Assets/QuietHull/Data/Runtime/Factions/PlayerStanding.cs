@@ -99,6 +99,8 @@ namespace QuietHull.Data
             }
         }
 
+        public void ClearFlag(string flag) => _flags.Remove(flag ?? string.Empty);
+
         public void SetFlag(string flag)
         {
             if (!string.IsNullOrWhiteSpace(flag))

@@ -380,6 +380,7 @@ namespace QuietHull.Data.Editor
             c.RescueGoal = rescue;
 
             mission.commanderXp = 150;
+            mission.baseAutoSalvageScrip = 400;
             mission.cardsGranted = new[] { turn };
             mission.nextGoal = rescue;
             mission.loreLogs = logs;

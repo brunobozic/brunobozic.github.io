@@ -21,6 +21,16 @@ namespace QuietHull.Data.Editor
         public AugmentDefinition BreachingCutter { get; internal set; }
         public AugmentDefinition SilentTools { get; internal set; }
         public AugmentDefinition MiningBeam { get; internal set; }
+        public AugmentDefinition SalvageScanner { get; internal set; }
+        public AugmentDefinition SurveyAi { get; internal set; }
+        public AugmentDefinition GhostRoutine { get; internal set; }
+        public AugmentDefinition SwarmTracker { get; internal set; }
+
+        /// <summary>Worker slots: frame, two hardening sockets, maintenance, tool mount, processor.</summary>
+        public static AugmentSlot[] WorkerSlots => new[]
+        {
+            AugmentSlot.Frame, AugmentSlot.Hardening, AugmentSlot.Hardening, AugmentSlot.Maintenance, AugmentSlot.ToolMount, AugmentSlot.Processor
+        };
         public AugmentDefinition ConstructionRig { get; internal set; }
 
         public SpecializationDefinition Hauler { get; internal set; }

@@ -28,6 +28,10 @@ namespace QuietHull.Data
         [Tooltip("Workers drain charge (off in the prologue, where the lesson load is already high).")]
         [SerializeField] internal bool chargeEnabled = true;
 
+        [Header("Automatic salvage")]
+        [Tooltip("Scrip of salvage the crew gathers on its own every run, before workers, upgrades and cards.")]
+        [Min(0)] [SerializeField] internal int baseAutoSalvageScrip;
+
         [Header("Safety nets")]
         [Tooltip("After this many failures the reader offers the mercy card free (0 = never).")]
         [Min(0)] [SerializeField] internal int mercyAfterFailures;
@@ -40,6 +44,7 @@ namespace QuietHull.Data
         public bool CountdownIsFailTimer => countdownIsFailTimer;
         public IReadOnlyList<MissionBeatDefinition> Beats => beats ?? Array.Empty<MissionBeatDefinition>();
         public int CommanderXp => commanderXp;
+        public int BaseAutoSalvageScrip => baseAutoSalvageScrip;
         public IReadOnlyList<CountermeasureCardDefinition> CardsGranted => cardsGranted ?? Array.Empty<CountermeasureCardDefinition>();
         public GoalDefinition NextGoal => nextGoal;
         public IReadOnlyList<LoreLogDefinition> LoreLogs => loreLogs ?? Array.Empty<LoreLogDefinition>();

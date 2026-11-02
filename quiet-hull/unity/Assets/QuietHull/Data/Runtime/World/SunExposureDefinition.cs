@@ -19,6 +19,23 @@ namespace QuietHull.Data
         }
     }
 
+    /// <summary>A way the swarm can come: the rooms it passes through, in order.</summary>
+    [Serializable]
+    public struct SwarmRoute
+    {
+        public string routeId;
+        public string[] roomIds;
+        [Tooltip("Where it ends (the kill zone it feeds), for the player and for smart workers.")]
+        public string arrivesAt;
+
+        public SwarmRoute(string routeId, string arrivesAt, params string[] roomIds)
+        {
+            this.routeId = routeId;
+            this.arrivesAt = arrivesAt;
+            this.roomIds = roomIds;
+        }
+    }
+
     /// <summary>
     /// How a hulk sits toward the sun. Restoring the attitude thrusters lets the player turn it to
     /// another facing; each turn cools some rooms (unlocking the sun-locked ones) and heats others
@@ -36,6 +53,8 @@ namespace QuietHull.Data
         [Tooltip("Interaction id of the attitude thruster console.")]
         [SerializeField] internal string thrusterConsoleId = string.Empty;
         [SerializeField] internal RoomExposure[] rooms = Array.Empty<RoomExposure>();
+        [Tooltip("Swarm routes. Aliens won't path through a room hotter than their tolerance, so turning the hulk reroutes the swarm.")]
+        [SerializeField] internal SwarmRoute[] swarmRoutes = Array.Empty<SwarmRoute>();
 
         public int Facings => facings;
         public int StartFacing => startFacing;
@@ -43,6 +62,32 @@ namespace QuietHull.Data
         public int LockIntensity => lockIntensity;
         public string ThrusterConsoleId => thrusterConsoleId;
         public IReadOnlyList<RoomExposure> Rooms => rooms ?? Array.Empty<RoomExposure>();
+        public IReadOnlyList<SwarmRoute> SwarmRoutes => swarmRoutes ?? Array.Empty<SwarmRoute>();
+
+        /// <summary>Routes an alien with <paramref name="heatTolerance"/> can use at <paramref name="facing"/>.</summary>
+        public List<string> OpenRoutes(int facing, int heatTolerance)
+        {
+            var open = new List<string>(SwarmRoutes.Count);
+            foreach (var route in SwarmRoutes)
+            {
+                var passable = true;
+                foreach (var room in route.roomIds ?? Array.Empty<string>())
+                {
+                    if (HeatOf(room, facing) > heatTolerance)
+                    {
+                        passable = false;
+                        break;
+                    }
+                }
+
+                if (passable)
+                {
+                    open.Add(route.routeId);
+                }
+            }
+
+            return open;
+        }
 
         public int HeatOf(string roomId, int facing)
         {
@@ -132,6 +177,17 @@ namespace QuietHull.Data
                 if (!reachable)
                 {
                     report.Error(this, nameof(rooms), $"'{room.roomId}' is sun-locked at every facing.");
+                }
+            }
+
+            foreach (var route in SwarmRoutes)
+            {
+                foreach (var room in route.roomIds ?? Array.Empty<string>())
+                {
+                    if (!ids.Contains(room))
+                    {
+                        report.Error(this, nameof(swarmRoutes), $"route '{route.routeId}' passes through unknown room '{room}'.");
+                    }
                 }
             }
         }
