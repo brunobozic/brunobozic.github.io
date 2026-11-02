@@ -466,7 +466,23 @@ namespace QuietHull.Data
         /// <summary>Fewer patrols in Stages 1–2 (Expedition Omens).</summary>
         PatrolReduction = 11,
         /// <summary>Percent more automatic salvage at the end of the mission.</summary>
-        SalvagePercent = 12
+        SalvagePercent = 12,
+        /// <summary>Fewer spawns of the card's culled alien (Culling Omens); a fraction, Reduction rule.</summary>
+        CulledSpawnReduction = 13,
+        /// <summary>Percent change to how long welds hold (negative = weaker welds).</summary>
+        WeldDurationPercent = 14,
+        /// <summary>Seconds added to Stage 1 of the hive clock (negative = the hive stirs sooner).</summary>
+        HiveClockSeconds = 15,
+        /// <summary>Multiplier on how often champions spawn.</summary>
+        ChampionMultiplier = 16,
+        /// <summary>Extra hive spawn points on the hulk.</summary>
+        ExtraHiveSpawns = 17,
+        /// <summary>Multiplier on Catalyst (orb) drops.</summary>
+        CatalystMultiplier = 18,
+        /// <summary>The hulk is guaranteed a fabricator of at least this tier (ScalingRule.None).</summary>
+        FabricatorTierMinimum = 19,
+        /// <summary>Extra Omen card drops from Requisition.</summary>
+        OmenDropCount = 20
     }
 
     public enum VowCondition
@@ -526,5 +542,18 @@ namespace QuietHull.Data
         HaveFlag = 2,
         StandingAtLeast = 3,
         HaveScrip = 4
+    }
+
+    /// <summary>How a card from the tarot rollout reaches the player.</summary>
+    public enum OmenSource
+    {
+        /// <summary>Found face-down; not playable until it is read (Gleaner's Moon in the prologue).</summary>
+        FaceDown = 0,
+        /// <summary>The Quiet Choir reader's free reading at Patusan.</summary>
+        Reading = 1,
+        /// <summary>Given for completing the mission.</summary>
+        Reward = 2,
+        /// <summary>Found on the hulk (a cache, a body, the crew's effects).</summary>
+        Found = 3
     }
 }

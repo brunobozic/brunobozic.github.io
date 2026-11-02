@@ -1,4 +1,4 @@
-# Quiet Hull — Unity data layer (prologue, missions 2 and 3)
+# Quiet Hull — Unity data layer (prologue, missions 2 and 3, tarot rollout 1–10)
 
 Drop `Assets/QuietHull/` into the Unity 6 (URP) project. C# 9, no .NET 8 APIs in runtime code.
 
@@ -17,7 +17,8 @@ Drop `Assets/QuietHull/` into the Unity 6 (URP) project. C# 9, no .NET 8 APIs in
    - `System.Diagnostics.DiagnosticSource` (8.0+; provides `ActivitySource` for OpenTelemetry spans)
 2. Make sure the Test Framework package is installed (Window ▸ Package Manager ▸ Test Framework).
 3. **Quiet Hull ▸ Content ▸ Generate Prologue**, **Generate Mission 2 (Cold Sleep)** and **Generate Mission 3 (The Tremolino)** write everything under
-   `Assets/QuietHull/Content/`. Running them again updates assets in place (GUIDs stay stable); shared
+   `Assets/QuietHull/Content/`. **Generate Tarot Rollout (Missions 1-10)** adds the Omen schedule (slots, drops,
+   rarity ceilings, the Cartomancer's table) and the 16 cards of missions 4–10. Running them again updates assets in place (GUIDs stay stable); shared
    definitions (materials, sentries, aliens) stay single assets.
 4. **Quiet Hull ▸ Validate All Catalogs** validates every catalog in the project.
 5. Window ▸ General ▸ Test Runner ▸ EditMode ▸ Run All.

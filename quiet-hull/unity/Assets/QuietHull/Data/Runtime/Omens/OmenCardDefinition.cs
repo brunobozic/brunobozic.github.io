@@ -48,6 +48,10 @@ namespace QuietHull.Data
         [Tooltip("Pays Threat × 4/6/8/10/12% as Spoils or Bounty, chosen when played.")]
         [SerializeField] internal bool brutalityPayout;
 
+        [Header("Culling")]
+        [Tooltip("The alien a Culling card thins out (CulledSpawnReduction).")]
+        [SerializeField] internal AlienDefinition culledAlien;
+
         [Header("Vow")]
         [SerializeField] internal VowCondition vowCondition = VowCondition.None;
         [Tooltip("Applied only when the vow is broken.")]
@@ -63,6 +67,7 @@ namespace QuietHull.Data
         public int Threat => RarityMath.ScaleThreat(commonThreat, rarity);
         public IReadOnlyList<OmenEffect> Effects => effects ?? Array.Empty<OmenEffect>();
         public bool BrutalityPayout => brutalityPayout;
+        public AlienDefinition CulledAlien => culledAlien;
         public bool IsVow => vowCondition != VowCondition.None;
         public VowCondition VowCondition => vowCondition;
         public IReadOnlyList<OmenEffect> BrokenEffects => brokenEffects ?? Array.Empty<OmenEffect>();
@@ -119,6 +124,19 @@ namespace QuietHull.Data
             else if (family == OmenFamily.Vow)
             {
                 report.Error(this, nameof(vowCondition), "a Vow card needs a condition.");
+            }
+
+            if (family == OmenFamily.Culling)
+            {
+                report.NotNull(this, nameof(culledAlien), culledAlien);
+                if (ValueOf(OmenEffectKind.CulledSpawnReduction) <= 0f)
+                {
+                    report.Error(this, nameof(effects), "a Culling card needs a CulledSpawnReduction effect.");
+                }
+            }
+            else if (culledAlien != null)
+            {
+                report.Warning(this, nameof(culledAlien), "only Culling cards cull an alien.");
             }
 
             if (brutalityPayout && family != OmenFamily.Brutality)
