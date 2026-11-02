@@ -1,9 +1,7 @@
 # Owned Unity Asset Store packages
 
-> **Status: page 1 of 2 merged.** The Asset Store account page lists **169 owned packages** (2 Nov 2026), plus a separate *UPM Packages* tab.
-> - 130 came from the local download cache (`D:\UnityCache\Asset Store-5.x`), listed by category below.
-> - Page 1 of https://assetstore.unity.com/account/assets (items 1–100) added **13 packages that were never downloaded**; see "Owned but never downloaded".
-> - **Still missing:** page 2 (items 101–169, about 26 more not in the cache) and the UPM Packages tab.
+> **Status: complete for the Assets tab.** The Asset Store account page lists **169 owned packages** (2 Nov 2026): 130 found in the local download cache (`D:\UnityCache\Asset Store-5.x`, listed by category below) + 13 never-downloaded packages from page 1 + 26 from page 2 (see "Owned but never downloaded").
+> - **Not yet checked:** the separate *UPM Packages* tab at https://assetstore.unity.com/account/assets/upm.
 
 Legend for the **Quiet Hull** column: **Use** = mapped to a feature in the design doc · **Greybox** = prototype only · **Toggle** = PC high-quality option only · **Out** = keep out of the project · **Placeholder** = never ship (IP risk) · **Reference** = study its code or design, don't ship its content.
 
@@ -11,6 +9,9 @@ Legend for the **Quiet Hull** column: **Use** = mapped to a feature in the desig
 
 | Gap in the design doc | Owned package that may fill it | Next step |
 | --- | --- | --- |
+| **Realistic modular sci-fi interior kit (was the #1 purchase)** | **Sci-Fi Facility** (Triplebrick) and **3D Scifi Kit Starter Kit** (Creepy Cat), plus 3D Free Modular Kit and Modern Laboratory | Build one test room with each; pick one as the base for all three hulks. Likely no purchase needed |
+| Hulk layouts from room prefabs | **GridForge – Procedural Level Generator** (nappin) | Evaluate against a custom room-graph assembler; at minimum a reference |
+| Arc / electrical VFX | **Procedural Lightning** (Digital Ruby) | Use |
 | Alien creatures (Stalker, Crawler, Brood Mother) | **SCI FI CHARACTERS MEGA PACK Vol 1** (PROTOFACTOR) is 30 models, and its release notes list creatures: *Lucanops, Charcarosaurus, Gastaroid Queen, Gastarid, Alien Warrior, Tetrapuss, Hipposaurus* | Import and check silhouettes. Gastaroid Queen is a Brood Mother candidate; Lucanops or Gastarid could be Stalker or Crawler. Re-texture with Giger materials |
 | Small robots and drones | Same pack: *Explosive SpiderBot* (sentry pup), *Maintenance Orb* (repair drone), *Orb-OI*, *Droid-OI*, *Scientist Droid*, *Assault Robot*, *Mech Biped*, *Transport Mech* | Check scale and style against the synths. This may remove the robot gap entirely |
 | The shuttle itself | **Hi-Rez Spaceships Creator Free Sample** (Ebal Studios): modular ship and cockpit modules | Use for the shuttle exterior and cockpit; check the module count in the free sample |
@@ -253,7 +254,36 @@ Legend for the **Quiet Hull** column: **Use** = mapped to a feature in the desig
 
 ## Owned but never downloaded (from account page 2)
 
-*Pending: items 101–169.*
+| Package | Publisher | Category | Quiet Hull |
+| --- | --- | --- | --- |
+| Sci-Fi Facility | Triplebrick | 3D environment | **Use: base environment candidate** (realistic, Unity 6 Shader Graph) |
+| 3D Scifi Kit Starter Kit | Creepy Cat | 3D environment | **Use: base environment candidate** (Unity 6.7 URP, SSR + global GI) |
+| 3D Free Modular Kit | Barking Dog (Creepy Cat) | 3D environment | Use (extra corridor modules, same author as above) |
+| Modern Laboratory | AndragorInc | 3D environment | Use (Research Vessel hulk: labs) |
+| Corridor Lighting Example | Unity | Sample | Reference (sci-fi corridor lighting setup; deprecated) |
+| Procedural Lightning | Digital Ruby | VFX | Use (Arc sentries, Electrify, electrical faults) |
+| GridForge – Procedural Level Generator | nappin | Tools | Use or Reference (assembling hulks from room prefabs) |
+| Whiskey Structure Builder | Waldemarst | Tools | Optional (pipes, cables, scaffolding along hull) |
+| Spline Mesh Deform | elseforty | Tools | Optional (pipes, biomass tendrils) |
+| Asset Inventory | Impossible Robert | Tools | Use (indexes every owned package; can export the list to CSV) |
+| Asset Cleaner PRO | GameDev Tools | Tools | Use (find unused assets before builds) |
+| Component Names | Sisus | Tools | Use (editor readability) |
+| Geometry Algorithms | Jobberwocky | Tools | Optional (convex hulls for room bounds) |
+| Combat Framework | Mario Lelas | Templates | Reference (melee for Loader and Mk IV workers) |
+| Gravity Engine | Nbody Physics | Tools | Out (orbital physics not needed) |
+| Voxelica – Voxel Engine | Fraktalia | Tools | Out |
+| File Browser PRO | crosstales | Tools | Out |
+| InteliMap AI Tilemap Generator | Tigpan | Tools (2D) | Out |
+| Starbase Constructor – Modular Lowpoly Sci-Fi Station Kit | Zerin Labs | 3D | Out (low poly) |
+| Free LowPoly SciFi | Cuboom | 3D | Out (low poly) |
+| Terrain Textures – Snow – Free Samples | Stroboskop | 2D textures | Out |
+| Winter Zone Mini | meshzone3d | 3D | Out |
+| Top-Down Assets: Futuristic Pack | Hippo | 2D | Out |
+| 4 Maps 2D Tiles Set | Beatheart Creative Studio | 2D | Out |
+| Tiny RPG – Forest | Ansimuz | 2D | Out |
+| 2D Game Kit | Unity | Templates (2D) | Out |
+
+Note: *Starter Assets Third Person URP* from the cache list now appears on the store as **First Person + Third Person | Character Controllers** (Unity); it's counted as the same package.
 
 ---
 
