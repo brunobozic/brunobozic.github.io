@@ -1,0 +1,21 @@
+{
+    "name": "QuietHull.Data.Editor",
+    "rootNamespace": "QuietHull.Data.Editor",
+    "references": [
+        "QuietHull.Data"
+    ],
+    "includePlatforms": [
+        "Editor"
+    ],
+    "excludePlatforms": [],
+    "allowUnsafeCode": false,
+    "overrideReferences": true,
+    "precompiledReferences": [
+        "Serilog.dll",
+        "System.Diagnostics.DiagnosticSource.dll"
+    ],
+    "autoReferenced": true,
+    "defineConstraints": [],
+    "versionDefines": [],
+    "noEngineReferences": false
+}
