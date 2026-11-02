@@ -13,3 +13,18 @@ Built test-first: every rule has a test in `Tests/`.
 
 Run the tests outside Unity: `cd quiet-hull/dotnet/QuietHull.Sim.Tests && dotnet test`.
 In Unity: Test Runner ▸ EditMode (the `QuietHull.Sim.Tests` assembly).
+
+## Architecture rules
+
+- **Event-driven:** everything that happens is a `SimEvent` (a struct), appended to the run log and dispatched to
+  `ISimEventHandler`s at the end of its tick, in order. UI, audio, telemetry and replays subscribe; nothing polls.
+- **Data-oriented swarm (ECS-shaped):** `SwarmStore` keeps aliens as struct-of-arrays, densely packed, with pooled
+  slots and generation-checked `AlienHandle`s. Plain value types only, so the layout ports to Unity DOTS
+  (Burst jobs over NativeArrays) mechanically if profiling says the swarm needs it. Rendering is Unity's job:
+  Entities Graphics or GPU instancing, reading a per-frame snapshot.
+- **Pools, not allocations:** the tick allocates nothing in steady state (a test proves it with
+  `GC.GetAllocatedBytesForCurrentThread`). Noise solving reuses scratch buffers; pools grow by doubling only.
+- **Telemetry by interface:** `IRunTelemetry` gets per-tick measurements for the fun gates; the Serilog /
+  OpenTelemetry adapter lives outside the core, so the core stays dependency-free and Burst-friendly.
+- **Determinism:** fixed tick, integer and fixed-point maths, ordered iteration. Same inputs, same run.
+- **One simulation, one thread:** no locks in the tick. Scale by running many simulations in parallel (the bots).
