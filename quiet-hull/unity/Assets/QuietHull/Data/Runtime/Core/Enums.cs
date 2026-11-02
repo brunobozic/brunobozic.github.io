@@ -34,7 +34,8 @@ namespace QuietHull.Data
         Blueprint = 7,
         Deployable = 8,
         Ammunition = 9,
-        Vehicle = 10
+        Vehicle = 10,
+        Key = 11
     }
 
     /// <summary>Senses an alien can use. Matches the hive senses in the design doc.</summary>
@@ -132,6 +133,14 @@ namespace QuietHull.Data
         TimerReached = 6,
         WaveCleared = 7,
         PreviousBeatCompleted = 8
+    }
+
+    /// <summary>A room hazard that can be switched off (power restored, valve shut).</summary>
+    public enum HazardKind
+    {
+        Dark = 0,
+        Cold = 1,
+        Heat = 2
     }
 
     public enum ValidationSeverity

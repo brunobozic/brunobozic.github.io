@@ -28,6 +28,8 @@ namespace QuietHull.Data
         [Range(0f, 10f)] [SerializeField] internal float heatIdle = 2f;
         [Range(0f, 10f)] [SerializeField] internal float heatAfterExertion = 5f;
         [Min(0f)] [SerializeField] internal float exertionCooldownSeconds = 6f;
+        [Tooltip("Shoulder lamp range in metres; 0 = no lamp. A lit lamp is a bright light source for alien vision.")]
+        [Min(0f)] [SerializeField] internal float lampRange;
 
         [Header("Capabilities")]
         [Tooltip("Light items carried by hand. Heavy cargo needs a cart.")]
@@ -45,6 +47,8 @@ namespace QuietHull.Data
         public float HeatIdle => heatIdle;
         public float HeatAfterExertion => heatAfterExertion;
         public float ExertionCooldownSeconds => exertionCooldownSeconds;
+        public float LampRange => lampRange;
+        public bool HasLamp => lampRange > 0f;
         public int HandCarrySlots => handCarrySlots;
         public UnitAbility Abilities => abilities;
         public IReadOnlyList<ItemDefinition> StartingItems => startingItems ?? Array.Empty<ItemDefinition>();

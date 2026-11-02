@@ -153,6 +153,12 @@ namespace QuietHull.Data.Editor
             alloy.premiumScripValue = 600;
             c.GravLatticeAlloy = alloy;
 
+            var keycard = make.Def<KeyItemDefinition>("itm_keycard_valve_control", ItemsFolder, "Valve control keycard",
+                "Chief engineer Okafor's card. Opens valve control.", "key", "story");
+            keycard.opensDoorId = "door_valve_control";
+            keycard.consumedOnUse = false;
+            c.ValveKeycard = keycard;
+
             var sentry = make.Def<SentryDefinition>("itm_sentry_mk1", ItemsFolder, "Sentry Mk I",
                 "A machine-gun sentry from a hacked fabricator pattern. Watch the counter.", "deployable", "sentry");
             sentry.maxHealth = 250f;
@@ -261,6 +267,7 @@ namespace QuietHull.Data.Editor
             j1m.heatIdle = 2f;
             j1m.heatAfterExertion = 5f;
             j1m.exertionCooldownSeconds = 6f;
+            j1m.lampRange = 8f;
             j1m.handCarrySlots = 1;
             j1m.abilities = UnitAbility.Move | UnitAbility.Interact | UnitAbility.Attack | UnitAbility.Patrol | UnitAbility.PushCart | UnitAbility.Throw;
             j1m.startingItems = Array.Empty<ItemDefinition>();
@@ -278,6 +285,7 @@ namespace QuietHull.Data.Editor
             marlow.heatIdle = 4f;
             marlow.heatAfterExertion = 5f;
             marlow.exertionCooldownSeconds = 6f;
+            marlow.lampRange = 0f;
             marlow.handCarrySlots = 0;
             marlow.abilities = UnitAbility.Move | UnitAbility.Interact | UnitAbility.RepairShuttle | UnitAbility.HackFabricator | UnitAbility.FireWeapon;
             marlow.startingItems = new ItemDefinition[] { c.ServicePistol };
@@ -368,6 +376,50 @@ namespace QuietHull.Data.Editor
             cage.items = Array.Empty<ItemStack>();
             cage.accessRequires = new[] { ToolActionKind.CutBolt, ToolActionKind.RemoveDebris };
             c.QuartermasterCage = cage;
+
+            var engineer = make.Def<LootCacheDefinition>("cache_chess_engineer", WorldFolder, "Chief engineer Okafor",
+                "Torn half apart at the chess table in the crew mess. The board shows the winning move he never played: queen takes bishop.",
+                "cache", "corpse", "story");
+            engineer.materials = Array.Empty<MaterialCost>();
+            engineer.items = new[] { new ItemStack(c.ValveKeycard, 1) };
+            engineer.accessRequires = Array.Empty<ToolActionKind>();
+            c.ChessEngineer = engineer;
+
+            var dark = make.Def<HazardZoneDefinition>("hz_dark_reactor_corridor", WorldFolder, "Dark reactor corridor",
+                "No power. J1M's lamp shows the way and shows J1M to everything else.", "hazard", "dark");
+            dark.kind = HazardKind.Dark;
+            dark.intensity = 1;
+            dark.moveSpeedMultiplier = 1f;
+            dark.damagePerSecond = 0f;
+            dark.visionWithLamp = 8f;
+            dark.visionWithoutLamp = 2f;
+            dark.lampSpottedRangeMultiplier = 2f;
+            dark.clearedAtInteractionId = "junction_reactor_corridor";
+            dark.clearSeconds = 6f;
+            dark.clearNoise = 4f;
+            dark.requiresKey = null;
+            dark.residualIntensity = 0;
+            dark.residualMoveSpeedMultiplier = 1f;
+            dark.residualDamagePerSecond = 0f;
+            c.DarkReactorCorridor = dark;
+
+            var flood = make.Def<HazardZoneDefinition>("hz_coolant_flood", WorldFolder, "Coolant junction flood",
+                "A ruptured coolant main. Anything that walks in freezes before it reaches the far side. A frozen J1M is dragged back out by the level script.", "hazard", "cold");
+            flood.kind = HazardKind.Cold;
+            flood.intensity = 3;
+            flood.moveSpeedMultiplier = 0.4f;
+            flood.damagePerSecond = 20f;
+            flood.visionWithLamp = 0f;
+            flood.visionWithoutLamp = 0f;
+            flood.lampSpottedRangeMultiplier = 1f;
+            flood.clearedAtInteractionId = "valve_coolant_main";
+            flood.clearSeconds = 5f;
+            flood.clearNoise = 3f;
+            flood.requiresKey = c.ValveKeycard;
+            flood.residualIntensity = 1;
+            flood.residualMoveSpeedMultiplier = 0.9f;
+            flood.residualDamagePerSecond = 0f;
+            c.CoolantFlood = flood;
         }
 
         private static void BuildScript(PrologueContent c, DefinitionMaker make)
@@ -414,7 +466,17 @@ namespace QuietHull.Data.Editor
                 new WaveSpawn(c.Crawler, 16, "bay_door_right", 3f, 3f),
                 new WaveSpawn(c.Spitter, 2, "bay_door_right", 20f, 15f));
 
-            var beats = new List<MissionBeatDefinition>(23);
+            // Three Crawlers standing perfectly still in the dark corridor: revealed when the power comes back.
+            var still = Wave("wave_dark_corridor_still", "Standing in the dark",
+                new WaveSpawn(c.Crawler, 3, "reactor_corridor_still", 0f, 0f));
+            c.StillCrawlers = still;
+
+            // Frozen mid-leap in the coolant junction; they thaw when the Patna turns to the sun.
+            var thawing = Wave("wave_coolant_thaw", "The frozen ones",
+                new WaveSpawn(c.Crawler, 3, "coolant_junction_frozen", 20f, 4f));
+            c.ThawingCrawlers = thawing;
+
+            var beats = new List<MissionBeatDefinition>(27);
 
             void Beat(int order, string slug, int countdownSeconds, BeatTrigger trigger, string argument, bool checkpoint,
                 string promptTitle, string promptBody, string teaches, ObjectiveEntry[] objectives, params WaveDefinition[] waves)
@@ -445,80 +507,117 @@ namespace QuietHull.Data.Editor
                 return result;
             }
 
+            // Act 1: the fuel run.
             Beat(1, "wake_j1m", 1800, BeatTrigger.MissionStart, null, true,
-                "Your only crew", "Select J1M and move him. Marlow can't leave the cockpit yet.",
+                "Your only crew", "Select J1M and move it. Marlow can't leave the cockpit yet.",
                 "Selecting and moving a unit; the camera", Obj(("obj_move_j1m", "Move J1M out of the bay", false)));
             Beat(2, "armory", 1740, BeatTrigger.EnterRoom, "room_armory", false,
                 "Authorised equipment", "Take the shock prod. Everything else is locked to security staff.",
                 "Interacting; equipping", Obj(("obj_take_prod", "Take the shock prod", false)));
-            Beat(3, "patrol", 1650, BeatTrigger.ItemPickedUp, "itm_shock_prod", false,
+            Beat(3, "patrol", 1680, BeatTrigger.ItemPickedUp, "itm_shock_prod", false,
                 "It hasn't seen you", "Watch its cone and the icons over its head. Wait for it to turn, or fight.",
                 "Patrols, vision cones, sense icons", Obj(("obj_pass_patrol", "Get past the patrol", false)), patrol);
-            Beat(4, "first_contact", 1590, BeatTrigger.EnterRoom, "room_corridor_b", false,
+            Beat(4, "first_contact", 1620, BeatTrigger.EnterRoom, "room_corridor_b", false,
                 "It called the others", "A shriek pulls every alien within 15 m. Fight with the prod; the third hit stuns.",
                 "Melee; signalling; ducts", Obj(("obj_survive_contact", "Kill the Crawlers", false)), firstContact);
-            Beat(5, "too_heavy", 1500, BeatTrigger.EnterRoom, "room_reactor", true,
+            Beat(5, "lights_out", 1560, BeatTrigger.EnterRoom, "room_reactor_corridor", false,
+                "Lights out", "Your lamp lets you see, and lets them see you. Restore power at the junction box.",
+                "Light as a sense; restoring power",
+                Obj(("obj_restore_power", "Restore power at the junction", false), ("obj_walk_past", "Walk past without touching them", true)), still);
+            Beat(6, "too_heavy", 1500, BeatTrigger.EnterRoom, "room_reactor", true,
                 "Too heavy", "The fuel cylinders are too heavy to carry. J1M needs a cart.",
                 "Why tools matter", Obj(("obj_find_cart", "Find a way to move the cylinders", false)));
-            Beat(6, "maintenance", 1440, BeatTrigger.EnterRoom, "room_android_maintenance", false,
+            Beat(7, "maintenance", 1440, BeatTrigger.EnterRoom, "room_android_maintenance", false,
                 "Patch yourself up", "Repair J1M at the station, then build a hand cart from the scrap on the shelves.",
                 "Workstations; healing; crafting",
                 Obj(("obj_repair", "Repair J1M", false), ("obj_craft_cart", "Craft a hand cart", false)));
-            Beat(7, "squeal", 1290, BeatTrigger.CraftCompleted, "rcp_hand_cart", true,
+            Beat(8, "squeal", 1350, BeatTrigger.CraftCompleted, "rcp_hand_cart", true,
                 "You're loud now", "The wheels squeal. The ring around J1M is how far that carries.",
                 "Your own noise", Obj(("obj_load_cylinders", "Load both fuel cylinders", false)));
-            Beat(8, "masking", 1200, BeatTrigger.ItemPickedUp, "itm_fuel_cylinder", false,
+            Beat(9, "masking", 1290, BeatTrigger.ItemPickedUp, "itm_fuel_cylinder", false,
                 "Hide in the noise", "Loud rooms cover your noise. Crusher: always. Pumps: on the beat. Valves: on a burst.",
-                "Masking: steady, pulsing, bursts", Obj(("obj_reach_cryo", "Take the loud route to the cryo bay", false)));
-            Beat(9, "follower", 1110, BeatTrigger.EnterRoom, "room_coolant_pump_hall", false,
+                "Masking: steady, pulsing, bursts", Obj(("obj_reach_cryo", "Take the loud route toward the cryo bay", false)));
+            Beat(10, "follower", 1230, BeatTrigger.EnterRoom, "room_coolant_pump_hall", false,
                 "Break contact", "It's following your sound. Get a door between you and wait.",
                 "Breaking contact; giving up", Obj(("obj_lose_it", "Lose the Crawler", true)), follower);
-            Beat(10, "cryo_cells", 1050, BeatTrigger.EnterRoom, "room_cryo_bay", true,
+            Beat(11, "flash_freeze", 1170, BeatTrigger.EnterRoom, "room_coolant_junction", false,
+                "Flash freeze", "The coolant main has burst. Anything that walks in freezes. The valve room needs a keycard.",
+                "Cold; reading a hazard", Obj(("obj_find_keycard", "Find a keycard for valve control", false)));
+            Beat(12, "chess", 1110, BeatTrigger.EnterRoom, "room_crew_mess", false,
+                "Queen takes bishop", "Chief engineer Okafor. His keycard is still on him.",
+                "Key items", Obj(("obj_take_keycard", "Take Okafor's keycard", false)));
+            Beat(13, "valve", 1050, BeatTrigger.ItemPickedUp, "itm_keycard_valve_control", true,
+                "Shut it off", "Open valve control and shut the coolant main. The junction will stay cold, which the cryo cells will like.",
+                "Switching off a hazard", Obj(("obj_shut_valve", "Shut the coolant valve", false)));
+            Beat(14, "cryo_cells", 990, BeatTrigger.InteractionCompleted, "valve_coolant_main", false,
                 "Handle with care", "Cryo cells lose condition when they get warm. Watch the bar on the cart.",
                 "Cargo condition", Obj(("obj_load_cells", "Load both cryo fuel cells", false)));
-            Beat(11, "sun", 990, BeatTrigger.ItemPickedUp, "itm_cryo_fuel_cell", false,
-                "The Patna turns to the sun", "Starboard rooms are heating up. Short and hot, or long, cool and patrolled?",
-                "Heat; choosing a route", Obj(("obj_keep_cells", "Keep the cryo cells intact", false)));
-            Beat(12, "security_officer", 900, BeatTrigger.EnterRoom, "room_security_checkpoint", false,
+            Beat(15, "sun", 930, BeatTrigger.ItemPickedUp, "itm_cryo_fuel_cell", false,
+                "The Patna turns to the sun", "Starboard rooms are heating up. The coolant junction is still cold, but something in there is moving.",
+                "Heat; picking a route", Obj(("obj_keep_cells", "Keep the cryo cells intact", false)), thawing);
+            Beat(16, "security_officer", 840, BeatTrigger.EnterRoom, "room_security_checkpoint", false,
                 "Mostly", "Search the officer: a stun grenade and its blueprint. The bench shows what it would need.",
                 "Blueprints and recipes", Obj(("obj_search_officer", "Search the security officer", false)));
-            Beat(13, "spitter", 840, BeatTrigger.EnterRoom, "room_port_corridor", false,
+            Beat(17, "spitter", 780, BeatTrigger.EnterRoom, "room_port_corridor", false,
                 "It sees heat", "The flame icon means it sees you through smoke. Stun it, then close in.",
                 "Ranged enemies; heat vision; grenades", Obj(("obj_kill_spitter", "Kill the Spitter", false)), coldCorridor);
-            Beat(14, "delivery", 780, BeatTrigger.ItemDelivered, "itm_cryo_fuel_cell", true,
+
+            // Act 2: the shuttle.
+            Beat(18, "delivery", 690, BeatTrigger.ItemDelivered, "itm_cryo_fuel_cell", true,
                 "Hold the perimeter", "Marlow is repairing the Nellie, and it's loud. Order J1M to patrol around the shuttle.",
                 "Patrol orders; shuttle noise draws aliens", Obj(("obj_patrol", "Patrol the shuttle perimeter", false)), perimeter);
-            Beat(15, "hack", 690, BeatTrigger.InteractionCompleted, "ws_bay_fabricator", false,
+            Beat(19, "hack", 660, BeatTrigger.InteractionCompleted, "ws_bay_fabricator", false,
                 "Two patterns", "Marlow cracked the fabricator: Sentry Mk I and ammo. The materials are in the Quartermaster's cage.",
                 "Fabricators; tools", Obj(("obj_take_tools", "Take the welder and the disassembler", false)));
-            Beat(16, "cage", 660, BeatTrigger.EnterRoom, "room_quartermaster_cage_door", false,
+            Beat(20, "cage", 630, BeatTrigger.EnterRoom, "room_quartermaster_cage_door", false,
                 "Locked out", "Cut the 4 bolts with the welder (bright, hot), then take apart the fallen rafters.",
                 "Welding; disassembling; light and heat",
                 Obj(("obj_cut_bolts", "Cut the bolts", false), ("obj_clear_rafters", "Clear the rafters", false), ("obj_haul_materials", "Bring the materials to the bay", false)));
-            Beat(17, "sentries", 600, BeatTrigger.ItemDelivered, "cache_quartermaster_cage", true,
+            Beat(21, "sentries", 600, BeatTrigger.ItemDelivered, "cache_quartermaster_cage", true,
                 "Hold the lanes", "Build two sentries and four ammo boxes. Place one on each lane.",
                 "Sentries; lanes; ammo",
                 Obj(("obj_build_sentries", "Fabricate 2 sentries", false), ("obj_build_ammo", "Fabricate 4 ammo boxes", false), ("obj_place_sentries", "Cover both lanes", false)));
-            Beat(18, "liability", 600, BeatTrigger.CraftCompleted, "rcp_sentry_mk1", false,
+            Beat(22, "liability", 600, BeatTrigger.CraftCompleted, "rcp_sentry_mk1", false,
                 "Clause 14(c)", "WARDEN reads out the contract. Losing the Patna makes Marlow liable. Vanishing costs money.",
                 "The extraction motive", Obj(("obj_hear_warden", "Listen to WARDEN", false)));
-            Beat(19, "stream", 570, BeatTrigger.PreviousBeatCompleted, null, false,
+            Beat(23, "stream", 570, BeatTrigger.PreviousBeatCompleted, null, false,
                 "They're coming", "The sentries hold the lanes. The Spitter on the gantry is out of their reach: send J1M.",
                 "Sentries vs Spitters; the stream", Obj(("obj_hold_lanes", "Hold both lanes", false), ("obj_kill_gantry_spitter", "Kill the gantry Spitter", false)),
                 stream1, stream2, stream3);
-            Beat(20, "alloy", 480, BeatTrigger.WaveCleared, "wave_stream_3", false,
+
+            // Act 3: the alloy and the launch.
+            Beat(24, "alloy", 480, BeatTrigger.WaveCleared, "wave_stream_3", false,
                 "Worth a new name", "Mine the grav-lattice alloy. Two units will do. Six would set you up. The clock is running.",
                 "Mining; greed vs the timer",
                 Obj(("obj_mine_two", "Mine 2 units of alloy", false), ("obj_mine_six", "Mine up to 6 units", true)), miningGuard);
-            Beat(21, "return", 180, BeatTrigger.EnterRoom, "room_cargo_bay_b", true,
+            Beat(25, "return", 180, BeatTrigger.EnterRoom, "room_cargo_bay_b", true,
                 "Last rounds", "The counters are nearly empty. Get the alloy aboard.",
                 "Ammo matters", Obj(("obj_load_alloy", "Load the alloy", false)));
-            Beat(22, "bay_doors", 120, BeatTrigger.ItemDelivered, "itm_grav_lattice_alloy", false,
+            Beat(26, "bay_doors", 120, BeatTrigger.ItemDelivered, "itm_grav_lattice_alloy", false,
                 "Doorway", "Take the pistol. You're in direct control: hold the doorway until the doors close.",
                 "The commander can fight in a pinch", Obj(("obj_hold_doorway", "Hold the bay doorway", false)), finale);
-            Beat(23, "launch", 45, BeatTrigger.TimerReached, "45", false,
+            Beat(27, "launch", 45, BeatTrigger.TimerReached, "45", false,
                 "Launch", "Strap in.",
                 "Launching", Obj(("obj_launch", "Launch the Nellie", false)));
+
+            var warden = make.Def<AnnouncementScheduleDefinition>("ann_warden_patna", ScriptFolder, "WARDEN",
+                "The Patna's AI. Calm, polite, corporate, and failing with the ship.", "announcements", "prologue");
+            warden.speakerName = "WARDEN";
+            warden.announcements = new[]
+            {
+                new Announcement(1800f, "Attention. Reactor containment failure in thirty minutes. All personnel proceed to designated lifeboats. Vashti-Kell thanks you for your service.", false),
+                new Announcement(1500f, "Attention. Reactor containment failure in twenty-five minutes. All personnel proceed to designated lifeboats.", false),
+                new Announcement(1200f, "Lifeboat two has launched. Lifeboat three has launched. Lifeboat one: launch aborted.", false),
+                new Announcement(900f, "Fifteen minutes. Reminder: crew members are liable for company property left aboard.", false),
+                new Announcement(600f, "Attention. Reactor containment failure in ten minutes. All per... all personnel proceed to designated lifeboats.", true),
+                new Announcement(300f, "Five minutes.", false),
+                new Announcement(240f, "Four minutes.", false),
+                new Announcement(180f, "Three minutes.", true),
+                new Announcement(120f, "Two minutes. Two. Two minutes.", true),
+                new Announcement(60f, "One minute. This announcement will not be repeated.", false),
+                new Announcement(10f, "Ten. Nine. Eight. Seven. Six. Five. Four. Three.", true)
+            };
+            c.Warden = warden;
 
             var mission = make.Def<MissionScriptDefinition>("mission_prologue_patna", ScriptFolder, "The last 30 minutes of the Patna",
                 "Prologue and demo: escape the Patna before the reactor goes.", "mission", "prologue");

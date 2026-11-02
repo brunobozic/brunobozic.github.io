@@ -23,6 +23,7 @@ namespace QuietHull.Data.Editor
         public CargoDefinition FuelCylinder { get; internal set; }
         public CargoDefinition CryoCell { get; internal set; }
         public ResourceDefinition GravLatticeAlloy { get; internal set; }
+        public KeyItemDefinition ValveKeycard { get; internal set; }
 
         // Deployables
         public SentryDefinition SentryMk1 { get; internal set; }
@@ -51,9 +52,15 @@ namespace QuietHull.Data.Editor
         public LootCacheDefinition MaintenanceShelves { get; internal set; }
         public LootCacheDefinition SecurityOfficerCorpse { get; internal set; }
         public LootCacheDefinition QuartermasterCage { get; internal set; }
+        public LootCacheDefinition ChessEngineer { get; internal set; }
+        public HazardZoneDefinition DarkReactorCorridor { get; internal set; }
+        public HazardZoneDefinition CoolantFlood { get; internal set; }
 
         // Script
         public IReadOnlyList<WaveDefinition> StreamWaves { get; internal set; }
+        public WaveDefinition StillCrawlers { get; internal set; }
+        public WaveDefinition ThawingCrawlers { get; internal set; }
+        public AnnouncementScheduleDefinition Warden { get; internal set; }
         public MissionScriptDefinition Mission { get; internal set; }
         public DefinitionCatalog Catalog { get; internal set; }
 

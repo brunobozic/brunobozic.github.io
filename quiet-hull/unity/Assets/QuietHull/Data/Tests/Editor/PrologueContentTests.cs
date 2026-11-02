@@ -56,11 +56,11 @@ namespace QuietHull.Data.Tests
         }
 
         [Test]
-        public void Mission_Has23OrderedBeatsAnd7Checkpoints()
+        public void Mission_Has27OrderedBeatsAnd7Checkpoints()
         {
             var beats = _content.Mission.Beats;
 
-            Assert.That(beats.Count, Is.EqualTo(23));
+            Assert.That(beats.Count, Is.EqualTo(27));
             Assert.That(beats.Select(b => b.Order), Is.Ordered.Ascending);
             Assert.That(beats.Select(b => b.TargetCountdownSeconds), Is.Ordered.Descending);
             Assert.That(beats.Count(b => b.IsCheckpoint), Is.EqualTo(7));
@@ -210,6 +210,70 @@ namespace QuietHull.Data.Tests
 
             Assert.That(gantry, Has.Count.EqualTo(1));
             Assert.That(gantry[0].spawnPointId, Does.Not.StartWith(PrologueContentBuilder.LaneAPrefix).And.Not.StartWith(PrologueContentBuilder.LaneBPrefix));
+        }
+    
+        [Test]
+        public void Keycard_IsOnOkafor_AndUnlocksTheFloodValve()
+        {
+            Assert.That(_content.ChessEngineer.Items.Select(i => i.item), Has.Member(_content.ValveKeycard));
+            Assert.That(_content.CoolantFlood.RequiresKey, Is.SameAs(_content.ValveKeycard));
+            Assert.That(_content.ValveKeycard.OpensDoorId, Is.EqualTo("door_valve_control"));
+        }
+
+        [Test]
+        public void CoolantFlood_FreezesJ1MBeforeHeCrossesTheRoom()
+        {
+            const float roomLengthMetres = 20f;
+            var speed = _content.J1M.MoveSpeed * _content.CoolantFlood.MoveSpeedMultiplier;
+            var secondsToCross = roomLengthMetres / speed;
+
+            Assert.That(_content.CoolantFlood.SecondsToDisable(_content.J1M.MaxHealth), Is.LessThan(secondsToCross));
+        }
+
+        [Test]
+        public void CoolantJunction_AfterTheValve_IsSafeForTheCryoCells()
+        {
+            Assert.That(_content.CoolantFlood.ResidualIntensity, Is.EqualTo(1));
+            Assert.That(_content.CoolantFlood.ResidualDamagePerSecond, Is.Zero);
+            Assert.That(_content.CryoCell.ConditionLossPerSecond(0), Is.Zero, "cold rooms never hurt the cells");
+        }
+
+        [Test]
+        public void DarkCorridor_LampSeesFurtherButIsSpottedFurther()
+        {
+            var dark = _content.DarkReactorCorridor;
+
+            Assert.That(_content.J1M.HasLamp, Is.True);
+            Assert.That(dark.VisionWithLamp, Is.GreaterThan(dark.VisionWithoutLamp));
+            Assert.That(dark.LampSpottedRangeMultiplier, Is.GreaterThan(1f));
+            Assert.That(_content.StillCrawlers.CountOf(_content.Crawler), Is.EqualTo(3));
+        }
+
+        [Test]
+        public void SunEvent_ThawsTheFrozenCrawlers()
+        {
+            var sun = _content.Mission.Beats.Single(b => b.Id == "beat_15_sun");
+
+            Assert.That(sun.StartsWaves, Has.Member(_content.ThawingCrawlers));
+        }
+
+        [Test]
+        public void Warden_AnnouncesInCountdownOrder_AndOpensAtThirtyMinutes()
+        {
+            var cursor = 0;
+            var fired = new List<string>();
+
+            for (var t = 1800f; t >= 0f; t -= 1f)
+            {
+                while (_content.Warden.TryTakeDue(t, ref cursor, out var line))
+                {
+                    fired.Add(line.text);
+                }
+            }
+
+            Assert.That(fired.Count, Is.EqualTo(_content.Warden.Announcements.Count));
+            Assert.That(fired[0], Does.StartWith("Attention. Reactor containment failure in thirty minutes"));
+            Assert.That(_content.Warden.Announcements.Count(a => a.degraded), Is.GreaterThan(0), "the voice should break down");
         }
     }
 }
