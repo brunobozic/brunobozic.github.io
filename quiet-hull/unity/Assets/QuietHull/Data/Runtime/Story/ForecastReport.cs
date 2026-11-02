@@ -10,7 +10,8 @@ namespace QuietHull.Data
     /// </summary>
     public sealed class ForecastReport
     {
-        public const string CandidateHeader = "Candidate M-7, \"Marlow\" (Patna survivor)";
+        /// <summary>The file's heading. Parousia: the company's internal name for the Hush programme (see the Theme tab).</summary>
+        public const string CandidateHeader = "Project Parousia: Candidate M-7, \"Marlow\" (Patna survivor)";
         public const string DeviationNote = "Acceptable deviation.";
         public const string UnforecastMark = "—";
 
