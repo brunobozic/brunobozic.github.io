@@ -69,7 +69,7 @@ namespace QuietHull.Data.Tests
             Assert.That(_c.Contract.PayAfter(1), Is.EqualTo(600));
             Assert.That(_c.Contract.ModuleGiven.OversizeLoadCapacity, Is.EqualTo(1), "one pod per trip is why it's two trips");
             Assert.That(_c.Contract.ItemsGiven.Single().count, Is.EqualTo(2));
-            Assert.That(_c.Contract.CompletionBlueprints, Has.Member(_c.StabilizedArmsBlueprint));
+            Assert.That(_c.Contract.CompletionBlueprints, Has.Member(_c.ServoArmsMk2Blueprint));
         }
 
         // ---- Picket's first choice -------------------------------------------------------------
@@ -137,15 +137,49 @@ namespace QuietHull.Data.Tests
         }
 
         [Test]
-        public void Augments_EightSlotsAtTheClinic_PlusACraftOnlyMk2()
+        public void Clinic_SellsTheStandardLine_OnePerBodySlot()
         {
             Assert.That(_c.Augments, Has.Count.EqualTo(8));
             Assert.That(_c.Augments.All(_c.Picket.Accepts), Is.True);
+            Assert.That(_c.Augments.All(a => a.Line == AugmentLine.Standard && a.SoldAtClinic), Is.True);
             Assert.That(_c.Augments.Select(a => a.Slot).Distinct().Count(), Is.EqualTo(8));
-            Assert.That(_c.Prologue.J1M.Accepts(_c.Augments[0]), Is.False, "workers take no augments");
+            Assert.That(_c.SecondWorker.Accepts(_c.Augments[0]), Is.False, "workers take work modules, not body augments");
+            Assert.That(_c.AugmentOffers.All(o => o.PriceScrip == ColdSleepContentBuilder.AugmentPrice), Is.True);
+        }
 
-            Assert.That(_c.StabilizedArmsMk2.SoldAtClinic, Is.False);
-            Assert.That(_c.StabilizedArmsMk2.Upgrades(_c.Augments.Single(a => a.Slot == AugmentSlot.Arms)), Is.True);
+        [Test]
+        public void ContractReward_IsServoArmsAtMkII()
+        {
+            Assert.That(_c.ServoArmsMk2Recipe.Output, Is.SameAs(_c.Augs.Synth(AugmentSlot.Arms, AugmentLine.Standard)));
+            Assert.That(_c.ServoArmsMk2Recipe.OutputMark, Is.EqualTo(Mark.MkII));
+        }
+
+        // ---- The teaser shelf -----------------------------------------------------------------
+
+        [Test]
+        public void Teasers_AtLeastFourPerMilitarySlot_AndPerWorkerSlot()
+        {
+            var bySlot = _c.TeaserOffers
+                .Select(o => ((BlueprintDefinition)o.Target).Unlocks.Output as AugmentDefinition)
+                .GroupBy(a => a.Slot)
+                .ToDictionary(g => g.Key, g => g.Count());
+
+            foreach (AugmentSlot slot in Enum.GetValues(typeof(AugmentSlot)))
+            {
+                Assert.That(bySlot.TryGetValue(slot, out var count) ? count : 0, Is.GreaterThanOrEqualTo(4), slot.ToString());
+            }
+        }
+
+        [Test]
+        public void Teasers_AreOnShowButOutOfReach()
+        {
+            var missionEarnings = _c.Prologue.GravLatticeAlloy.TotalScripValue(6) + 3 * 100 + _c.Contract.TotalPay + _c.JudeaContract.TotalPay;
+            var beyondMoney = _c.TeaserOffers.Count(o => o.PriceScrip > missionEarnings);
+
+            Assert.That(_c.TeaserOffers.All(o => o.TeaserOnly && !o.CanBuyNow && o.Kind == OfferKind.Blueprint), Is.True);
+            Assert.That(_c.TeaserOffers.All(o => o.UnlockRequirement.Contains("standing") || o.UnlockRequirement.Contains("licence")), Is.True,
+                "every teaser needs standing or a licence the player can't have yet");
+            Assert.That(beyondMoney, Is.GreaterThan(_c.TeaserOffers.Count / 2), $"{beyondMoney} of {_c.TeaserOffers.Count} cost more than the greedy path earns ({missionEarnings})");
         }
 
         // ---- The augment hook -------------------------------------------------------------------
@@ -155,14 +189,14 @@ namespace QuietHull.Data.Tests
         {
             var stations = new[] { _c.NellieWorkshop, _c.TorrensFabricator, _c.Prologue.BayFabricator, _c.Prologue.MaintenanceStation };
 
-            Assert.That(_c.StabilizedArmsRecipe.MinimumStationTier, Is.EqualTo(2));
-            Assert.That(stations.Any(s => s.CanMake(_c.StabilizedArmsRecipe)), Is.False);
+            Assert.That(_c.ServoArmsMk2Recipe.MinimumStationTier, Is.EqualTo(2));
+            Assert.That(stations.Any(s => s.CanMake(_c.ServoArmsMk2Recipe)), Is.False);
         }
 
         [Test]
         public void ArmsMk2_PrerequisitesCanAllBeGathered()
         {
-            var recipe = _c.StabilizedArmsRecipe;
+            var recipe = _c.ServoArmsMk2Recipe;
             Assert.That(_c.ConstableRemains.AmountOf(_c.SyntheticMyomer), Is.GreaterThanOrEqualTo(recipe.AmountOf(_c.SyntheticMyomer)));
             Assert.That(recipe.ItemInputs.Single().item, Is.SameAs(_c.Prologue.GravLatticeAlloy), "keep one alloy unit instead of selling it");
 

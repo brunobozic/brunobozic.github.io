@@ -42,8 +42,9 @@ namespace QuietHull.Data.Editor
             }
 
             var prologue = PrologueContentBuilder.Build(factory);
+            var augs = AugmentCatalogBuilder.Build(factory);
             var make = new DefinitionMaker(factory);
-            var c = new ColdSleepContent { Prologue = prologue };
+            var c = new ColdSleepContent { Prologue = prologue, Augs = augs, Augments = augs.StandardLine() };
 
             BuildMaterials(c, make);
             BuildWeapons(c, make);
@@ -53,6 +54,7 @@ namespace QuietHull.Data.Editor
             BuildWorld(c, make);
             BuildCrafting(c, make);
             BuildHub(c, make);
+            BuildTeasers(c, make);
             BuildScripts(c, make);
 
             c.Catalog = make.WriteCatalog(CatalogId);
@@ -213,56 +215,6 @@ namespace QuietHull.Data.Editor
             controller.strongAgainst = "Swarms and Leapers, next to sentries.";
             controller.weakAgainst = "Anything the sentries can't reach: he can't kill on his own.";
             c.Controller = controller;
-
-            AugmentDefinition Aug(AugmentSlot slot, string name, string description, params StatModifier[] modifiers)
-            {
-                var augment = make.Def<AugmentDefinition>($"aug_{slot.ToString().ToLowerInvariant()}_mk1", GrowthFolder,
-                    $"{name} Mk I", description, "augment", "cyber");
-                augment.slot = slot;
-                augment.kind = AugmentKind.Cyber;
-                augment.mark = Mark.MkI;
-                augment.rarity = Rarity.Common;
-                augment.priceScrip = AugmentPrice;
-                augment.modifiers = modifiers;
-                return augment;
-            }
-
-            c.Augments = new[]
-            {
-                Aug(AugmentSlot.Arms, "Servo arms", "Faster hands: more damage from any weapon.",
-                    StatModifier.Percent(UnitStat.FireRate, 0.15f), StatModifier.Percent(UnitStat.ReloadTime, -0.25f), StatModifier.Percent(UnitStat.MeleeDamage, 0.20f)),
-                Aug(AugmentSlot.Legs, "Damped legs", "Faster and quieter.",
-                    StatModifier.Percent(UnitStat.MoveSpeed, 0.20f), StatModifier.Add(UnitStat.NoiseWalking, -1f)),
-                Aug(AugmentSlot.Eyes, "Optic array", "Sees further and through smoke; finds weak points.",
-                    StatModifier.Add(UnitStat.VisionRange, 4f), StatModifier.Add(UnitStat.CritChance, 0.05f), StatModifier.Add(UnitStat.SeesThroughSmoke, 1f)),
-                Aug(AugmentSlot.Ears, "Audio sensors", "Hears through one more door; puts close contacts on the tracker.",
-                    StatModifier.Add(UnitStat.DoorsHeardThrough, 1f), StatModifier.Add(UnitStat.ContactDetectionRange, 12f)),
-                Aug(AugmentSlot.Lungs, "Heat exchanger", "Shrugs off heat and cold; cools down faster.",
-                    StatModifier.Add(UnitStat.HeatShielding, 1f), StatModifier.Add(UnitStat.ColdShielding, 1f), StatModifier.Add(UnitStat.HeatAfterExertion, -2f)),
-                Aug(AugmentSlot.Heart, "Micro-reactor", "Repairs itself out of combat; abilities come back sooner.",
-                    StatModifier.Add(UnitStat.HealthRegenOutOfCombat, 2f), StatModifier.Percent(UnitStat.AbilityCooldown, -0.15f)),
-                Aug(AugmentSlot.Dermis, "Ablative dermis", "Armoured and thermally damped.",
-                    StatModifier.Add(UnitStat.Armour, 15f), StatModifier.Add(UnitStat.HeatSignature, -1f)),
-                Aug(AugmentSlot.Brain, "Tactical cortex", "Learns faster, reacts faster, resists EMP and hacking.",
-                    StatModifier.Percent(UnitStat.ExperienceGain, 0.20f), StatModifier.Percent(UnitStat.TargetAcquisitionTime, -0.30f), StatModifier.Add(UnitStat.EmpResistance, 1f))
-            };
-
-            // The contract's real reward: a better augment you can't make yet.
-            var arms2 = make.Def<AugmentDefinition>("aug_arms_mk2", GrowthFolder, "Stabilized servo arms Mk II",
-                "Military pattern. Gyro-stabilized forearms that soak recoil. Needs a T2 fabricator.", "augment", "cyber", "crafted");
-            arms2.slot = AugmentSlot.Arms;
-            arms2.kind = AugmentKind.Cyber;
-            arms2.mark = Mark.MkII;
-            arms2.rarity = Rarity.Common;
-            arms2.priceScrip = 0;
-            arms2.modifiers = new[]
-            {
-                StatModifier.Percent(UnitStat.FireRate, 0.20f),
-                StatModifier.Percent(UnitStat.ReloadTime, -0.30f),
-                StatModifier.Percent(UnitStat.MeleeDamage, 0.25f),
-                StatModifier.Add(UnitStat.Accuracy, 0.10f)
-            };
-            c.StabilizedArmsMk2 = arms2;
         }
 
         private static void BuildUnits(ColdSleepContent c, DefinitionMaker make)
@@ -283,8 +235,20 @@ namespace QuietHull.Data.Editor
             picket.handCarrySlots = 0;
             picket.abilities = UnitAbility.Move | UnitAbility.Interact | UnitAbility.Attack | UnitAbility.Patrol | UnitAbility.FireWeapon;
             picket.startingItems = new ItemDefinition[] { c.Prologue.ServicePistol };
-            picket.augmentSlots = (AugmentSlot[])Enum.GetValues(typeof(AugmentSlot));
+            picket.augmentSlots = new[]
+            {
+                AugmentSlot.Arms, AugmentSlot.Legs, AugmentSlot.Eyes, AugmentSlot.Ears,
+                AugmentSlot.Lungs, AugmentSlot.Heart, AugmentSlot.Dermis, AugmentSlot.Brain
+            };
             picket.specializationOptions = new[] { c.BurstGunner, c.Bulwark, c.Marksman, c.Controller };
+            picket.combatRole = CombatRole.Combat;
+            picket.defendRadius = 0f;
+            picket.defendDamagePerSecond = 0f;
+            picket.workSpeed = 0.8f;
+            picket.augmentCapacityKg = 60f;
+            picket.basePowerOutputWatts = 200f;
+            picket.priceScrip = 500;
+            picket.markCurve = c.Augs.MilitaryCurve;
             c.Picket = picket;
 
             var j1m = c.Prologue.J1M;
@@ -302,8 +266,19 @@ namespace QuietHull.Data.Editor
             worker.exertionCooldownSeconds = j1m.ExertionCooldownSeconds;
             worker.lampRange = j1m.LampRange;
             worker.handCarrySlots = j1m.HandCarrySlots;
-            worker.abilities = j1m.Abilities;
+            worker.abilities = j1m.Abilities | UnitAbility.SupplySentries | UnitAbility.Guard | UnitAbility.StaffStation | UnitAbility.Harvest | UnitAbility.AutoRecharge;
             worker.startingItems = Array.Empty<ItemDefinition>();
+            worker.augmentSlots = new[] { AugmentSlot.Frame, AugmentSlot.Hardening, AugmentSlot.Hardening, AugmentSlot.Maintenance, AugmentSlot.ToolMount };
+            worker.specializationOptions = new[] { c.Augs.Hauler, c.Augs.Miner, c.Augs.Constructor, c.Augs.Technician, c.Augs.Sapper };
+            worker.charge = AugmentCatalog.WorkerCharge;
+            worker.combatRole = CombatRole.DefendOnly;
+            worker.defendRadius = 6f;
+            worker.defendDamagePerSecond = 6f;
+            worker.workSpeed = 1f;
+            worker.augmentCapacityKg = 30f;
+            worker.basePowerOutputWatts = 150f;
+            worker.priceScrip = 300;
+            worker.markCurve = c.Augs.WorkerCurve;
             c.SecondWorker = worker;
 
             var leaper = make.Def<AlienDefinition>("alien_leaper", UnitsFolder, "Leaper",
@@ -529,26 +504,27 @@ namespace QuietHull.Data.Editor
             conversion.requiresBlueprint = true;
             c.PistolConversionRecipe = conversion;
 
-            var arms = make.Def<RecipeDefinition>("rcp_aug_arms_mk2", WorldFolder, "Stabilized servo arms Mk II",
-                "Military pattern. Needs a healthy T2 fabricator, which neither the Nellie nor the Torrens has.", "recipe");
-            arms.output = c.StabilizedArmsMk2;
+            var arms = make.Def<RecipeDefinition>("rcp_aug_arms_mk2", WorldFolder, "Servo arms Mk II",
+                "Military pattern for the Mk II servo arms. Needs a healthy T2 fabricator, which neither the Nellie nor the Torrens has.", "recipe");
+            arms.output = c.Augs.Synth(AugmentSlot.Arms, AugmentLine.Standard);
+            arms.outputMark = Mark.MkII;
             arms.outputCount = 1;
             arms.inputs = new[] { new MaterialCost(p.Circuitry, 6), new MaterialCost(c.XenoalloyIngot, 4), new MaterialCost(c.SyntheticMyomer, 1) };
             arms.itemInputs = new[] { new ItemStack(p.GravLatticeAlloy, 1) };
             arms.minimumStationTier = 2;
             arms.craftSeconds = 60f;
             arms.requiresBlueprint = true;
-            c.StabilizedArmsRecipe = arms;
+            c.ServoArmsMk2Recipe = arms;
 
             var bpConversion = make.Def<BlueprintDefinition>("bp_pistol_conversion", WorldFolder, "Blueprint: micro-conversion kit",
                 "From the Judea's armoury locker.", "blueprint");
             bpConversion.unlocks = conversion;
             c.PistolConversionBlueprint = bpConversion;
 
-            var bpArms = make.Def<BlueprintDefinition>("bp_aug_arms_mk2", WorldFolder, "Blueprint: stabilized servo arms Mk II",
+            var bpArms = make.Def<BlueprintDefinition>("bp_aug_arms_mk2", WorldFolder, "Blueprint: servo arms Mk II",
                 "Doramin's bonus for the pods. Gather the materials; find a T2 fabricator.", "blueprint");
             bpArms.unlocks = arms;
-            c.StabilizedArmsBlueprint = bpArms;
+            c.ServoArmsMk2Blueprint = bpArms;
 
             var torrens = make.Def<WorkstationDefinition>("ws_torrens_fabricator", WorldFolder, "Torrens fabricator (T1)",
                 "Old, slow, still works. Prints ammo and breaks down amalgam.", "workstation", "fabricator");
@@ -572,6 +548,36 @@ namespace QuietHull.Data.Editor
             workshop.requiresHack = false;
             workshop.interactSeconds = 1f;
             c.NellieWorkshop = workshop;
+
+            var cradle = make.Def<WorkstationDefinition>("ws_nellie_cradle", WorldFolder, "Nellie charging cradle",
+                "One bay, always safe, always far from the fighting.", "workstation", "charging", "shuttle");
+            cradle.services = WorkstationService.Recharge;
+            cradle.tier = 1;
+            cradle.recipes = Array.Empty<RecipeDefinition>();
+            cradle.repairHealthPerSecond = 0f;
+            cradle.repairMaxSeconds = 0f;
+            cradle.chargeBays = 1;
+            cradle.rechargeMultiplier = 1f;
+            cradle.interactSeconds = 1f;
+            c.NellieCradle = cradle;
+
+            var bay = make.Def<WorkstationDefinition>("ws_torrens_charging_bay", WorldFolder, "Torrens charging bay",
+                "Three cradles next to the Lane. Welded shut and in vacuum: cut it open, restore the air, then it charges fast.",
+                "workstation", "charging", "forward");
+            bay.services = WorkstationService.Recharge;
+            bay.tier = 1;
+            bay.recipes = Array.Empty<RecipeDefinition>();
+            bay.repairHealthPerSecond = 0f;
+            bay.repairMaxSeconds = 0f;
+            bay.chargeBays = 3;
+            bay.rechargeMultiplier = 1.5f;
+            bay.interactSeconds = 1f;
+            bay.accessRequires = new[] { ToolActionKind.CutBolt };
+            bay.requiresKey = null;
+            bay.requiresAtmosphere = true;
+            bay.atmospherePanelId = "panel_charging_bay_life_support";
+            bay.atmosphereRestoreSeconds = 20f;
+            c.TorrensChargingBay = bay;
         }
 
         private static void BuildHub(ColdSleepContent c, DefinitionMaker make)
@@ -609,6 +615,88 @@ namespace QuietHull.Data.Editor
             }
 
             c.AugmentOffers = augmentOffers;
+        }
+
+        /// <summary>
+        /// The teaser shelf at Patusan: a blueprint for every synth family (4 per body slot) and every
+        /// worker module (at least 4 per work slot), all on show and none for sale yet. Each says what
+        /// unlocks it: faction standing or a licence the player can't have in mission 2, and a price
+        /// most of which is beyond what the mission pays.
+        /// </summary>
+        private static void BuildTeasers(ColdSleepContent c, DefinitionMaker make)
+        {
+            const string folder = "ColdSleep/Hub/Teasers";
+            var p = c.Prologue;
+            var offers = new List<MarketOfferDefinition>(64);
+
+            (int multiplier, int tier, string requirement, MaterialCost[] inputs) Terms(AugmentDefinition augment)
+            {
+                var worker = augment.IsWorkerModule;
+                switch (augment.Line)
+                {
+                    case AugmentLine.Assault:
+                        return worker
+                            ? (4, 2, "Needs a Vashti-Kell industrial licence (or forged papers) and Drifters' Union standing: Friendly.",
+                                new[] { new MaterialCost(p.Plating, 8), new MaterialCost(c.XenoalloyIngot, 2) })
+                            : (9, 2, "Military pattern: needs a Lane Authority licence, or Hollow Moon standing: Trusted.",
+                                new[] { new MaterialCost(p.Plating, 8), new MaterialCost(p.Ordnance, 2), new MaterialCost(c.XenoalloyIngot, 2) });
+                    case AugmentLine.Fine:
+                        return (worker ? 5 : 10, 1, "Precision pattern: needs Drifters' Union standing: Friendly.",
+                            new[] { new MaterialCost(p.Circuitry, 6), new MaterialCost(c.XenoalloyIngot, 1) });
+                    case AugmentLine.Shadow:
+                        return (8, 3, "Contraband: needs Hollow Moon standing: Trusted and Quiet Choir standing: Revered. Confiscated in Lane Authority scans.",
+                            new[] { new MaterialCost(p.Circuitry, 6), new MaterialCost(c.XenoalloyIngot, 3), new MaterialCost(c.SyntheticMyomer, 1) });
+                    default:
+                        return (worker ? 5 : 12, 1, "Needs Hollow Moon standing: Friendly.",
+                            new[] { new MaterialCost(p.Plating, 4), new MaterialCost(p.Circuitry, 4) });
+                }
+            }
+
+            void Teaser(AugmentDefinition augment)
+            {
+                var terms = Terms(augment);
+                var key = augment.Id;
+
+                var recipe = make.Def<RecipeDefinition>($"rcp_{key}", folder, augment.DisplayName, $"Mk I pattern for {augment.DisplayName}.", "recipe", "teaser");
+                recipe.output = augment;
+                recipe.outputMark = Mark.MkI;
+                recipe.outputCount = 1;
+                recipe.inputs = terms.inputs;
+                recipe.itemInputs = Array.Empty<ItemStack>();
+                recipe.minimumStationTier = terms.tier;
+                recipe.craftSeconds = 45f;
+                recipe.requiresBlueprint = true;
+
+                var blueprint = make.Def<BlueprintDefinition>($"bp_{key}", folder, $"Blueprint: {augment.DisplayName}", augment.Description, "blueprint", "teaser");
+                blueprint.unlocks = recipe;
+
+                var offer = make.Def<MarketOfferDefinition>($"offer_bp_{key}", folder, $"Blueprint: {augment.DisplayName}",
+                    augment.Description, "offer", "patusan", "teaser");
+                offer.kind = OfferKind.Blueprint;
+                offer.target = blueprint;
+                offer.priceScrip = augment.PriceScrip * terms.multiplier;
+                offer.required = false;
+                offer.lentForContract = false;
+                offer.vendor = augment.Line == AugmentLine.Shadow ? "The back room" : augment.IsWorkerModule ? "Drifters' Union yard" : "Blueprint broker";
+                offer.teaserOnly = true;
+                offer.unlockRequirement = terms.requirement;
+                offers.Add(offer);
+            }
+
+            for (var slot = AugmentSlot.Arms; slot <= AugmentSlot.Brain; slot++)
+            {
+                foreach (AugmentLine line in Enum.GetValues(typeof(AugmentLine)))
+                {
+                    Teaser(c.Augs.Synth(slot, line));
+                }
+            }
+
+            foreach (var module in c.Augs.WorkerModules)
+            {
+                Teaser(module);
+            }
+
+            c.TeaserOffers = offers;
         }
 
         private static void BuildScripts(ColdSleepContent c, DefinitionMaker make)
@@ -785,7 +873,7 @@ namespace QuietHull.Data.Editor
             contract.moduleGiven = c.CargoCradle;
             contract.itemsGiven = new[] { new ItemStack(p.SentryMk1, 2) };
             contract.partScripts = new[] { c.Trip1, c.Trip2 };
-            contract.completionBlueprints = new[] { c.StabilizedArmsBlueprint };
+            contract.completionBlueprints = new[] { c.ServoArmsMk2Blueprint };
             c.Contract = contract;
 
             var judeaContract = make.Def<ContractDefinition>("con_judea", HubFolder, "The Judea",

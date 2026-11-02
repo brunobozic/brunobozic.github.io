@@ -16,12 +16,21 @@ namespace QuietHull.Data
         [SerializeField] internal bool lentForContract;
         [SerializeField] internal string vendor = string.Empty;
 
+        [Header("Teaser")]
+        [Tooltip("Shown in the market as a preview but can't be bought yet.")]
+        [SerializeField] internal bool teaserOnly;
+        [Tooltip("Why it can't be bought yet, e.g. \"Needs Hollow Moon standing: Trusted\".")]
+        [SerializeField] internal string unlockRequirement = string.Empty;
+
         public OfferKind Kind => kind;
         public DefinitionBase Target => target;
         public int PriceScrip => priceScrip;
         public bool Required => required;
         public bool LentForContract => lentForContract;
         public string Vendor => vendor;
+        public bool TeaserOnly => teaserOnly;
+        public string UnlockRequirement => unlockRequirement;
+        public bool CanBuyNow => !teaserOnly;
 
         protected override void ValidateDefinition(ValidationReport report)
         {
@@ -33,6 +42,16 @@ namespace QuietHull.Data
             if (required && lentForContract)
             {
                 report.Error(this, nameof(lentForContract), "a required offer can't also be lent.");
+            }
+
+            if (teaserOnly && string.IsNullOrWhiteSpace(unlockRequirement))
+            {
+                report.Error(this, nameof(unlockRequirement), "a teaser must say what unlocks it.");
+            }
+
+            if (teaserOnly && required)
+            {
+                report.Error(this, nameof(teaserOnly), "a required offer can't be a teaser.");
             }
 
             if (string.IsNullOrWhiteSpace(vendor))

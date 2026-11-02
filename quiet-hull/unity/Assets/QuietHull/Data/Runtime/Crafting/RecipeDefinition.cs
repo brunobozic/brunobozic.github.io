@@ -10,6 +10,8 @@ namespace QuietHull.Data
     {
         [SerializeField] internal ItemDefinition output;
         [Min(1)] [SerializeField] internal int outputCount = 1;
+        [Tooltip("Mark of the output, for marked items such as augments.")]
+        [SerializeField] internal Mark outputMark = Mark.MkI;
         [SerializeField] internal MaterialCost[] inputs = Array.Empty<MaterialCost>();
         [Tooltip("Non-material inputs (a grav-lattice alloy unit, a myomer bundle).")]
         [SerializeField] internal ItemStack[] itemInputs = Array.Empty<ItemStack>();
@@ -22,6 +24,7 @@ namespace QuietHull.Data
 
         public ItemDefinition Output => output;
         public int OutputCount => outputCount;
+        public Mark OutputMark => outputMark;
         public IReadOnlyList<MaterialCost> Inputs => inputs ?? Array.Empty<MaterialCost>();
         public IReadOnlyList<ItemStack> ItemInputs => itemInputs ?? Array.Empty<ItemStack>();
         public int MinimumStationTier => minimumStationTier;
@@ -47,6 +50,17 @@ namespace QuietHull.Data
         {
             report.NotNull(this, nameof(output), output);
             report.Positive(this, nameof(outputCount), outputCount);
+            if (output is AugmentDefinition augment)
+            {
+                if (!augment.HasMark(outputMark))
+                {
+                    report.Error(this, nameof(outputMark), $"{augment.Id} doesn't come in {outputMark}.");
+                }
+                else if (minimumStationTier < AugmentMath.RequiredFabricatorTier(outputMark))
+                {
+                    report.Error(this, nameof(minimumStationTier), $"{outputMark} augments need a T{AugmentMath.RequiredFabricatorTier(outputMark)} fabricator.");
+                }
+            }
             if (Inputs.Count == 0 && ItemInputs.Count == 0)
             {
                 report.Error(this, nameof(inputs), "a recipe needs at least one input.");

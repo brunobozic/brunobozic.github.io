@@ -6,6 +6,7 @@ namespace QuietHull.Data.Editor
     public sealed class ColdSleepContent
     {
         public PrologueContent Prologue { get; internal set; }
+        public AugmentCatalog Augs { get; internal set; }
 
         // Units
         public UnitDefinition Picket { get; internal set; }
@@ -23,8 +24,8 @@ namespace QuietHull.Data.Editor
         public SpecializationDefinition Bulwark { get; internal set; }
         public SpecializationDefinition Marksman { get; internal set; }
         public SpecializationDefinition Controller { get; internal set; }
+        /// <summary>The Standard line, one per body slot: what the clinic sells at Mk I.</summary>
         public IReadOnlyList<AugmentDefinition> Augments { get; internal set; }
-        public AugmentDefinition StabilizedArmsMk2 { get; internal set; }
 
         // Omens
         public OmenCardDefinition ThinSwarm { get; internal set; }
@@ -51,11 +52,13 @@ namespace QuietHull.Data.Editor
         public RecipeDefinition SalvageAmmoRecipe { get; internal set; }
         public RecipeDefinition XenoalloyRecipe { get; internal set; }
         public RecipeDefinition PistolConversionRecipe { get; internal set; }
-        public RecipeDefinition StabilizedArmsRecipe { get; internal set; }
+        public RecipeDefinition ServoArmsMk2Recipe { get; internal set; }
         public BlueprintDefinition PistolConversionBlueprint { get; internal set; }
-        public BlueprintDefinition StabilizedArmsBlueprint { get; internal set; }
+        public BlueprintDefinition ServoArmsMk2Blueprint { get; internal set; }
         public WorkstationDefinition TorrensFabricator { get; internal set; }
         public WorkstationDefinition NellieWorkshop { get; internal set; }
+        public WorkstationDefinition NellieCradle { get; internal set; }
+        public WorkstationDefinition TorrensChargingBay { get; internal set; }
 
         // Hub
         public ShuttleModuleDefinition CargoCradle { get; internal set; }
@@ -65,6 +68,8 @@ namespace QuietHull.Data.Editor
         public MarketOfferDefinition SecondWorkerOffer { get; internal set; }
         public MarketOfferDefinition PicketOffer { get; internal set; }
         public IReadOnlyList<MarketOfferDefinition> AugmentOffers { get; internal set; }
+        /// <summary>Blueprints on show at Patusan but out of reach: at least 4 per military slot and per worker slot.</summary>
+        public IReadOnlyList<MarketOfferDefinition> TeaserOffers { get; internal set; }
         public ContractDefinition Contract { get; internal set; }
         public ContractDefinition JudeaContract { get; internal set; }
 

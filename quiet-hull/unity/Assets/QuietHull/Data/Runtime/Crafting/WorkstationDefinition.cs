@@ -19,10 +19,24 @@ namespace QuietHull.Data
         [Tooltip("Repairs cost nothing (prologue).")]
         [SerializeField] internal bool repairIsFree = true;
 
+        [Header("Recharge service")]
+        [Tooltip("Units charging at once.")]
+        [Min(0)] [SerializeField] internal int chargeBays;
+        [Tooltip("Multiplies a unit's own recharge rate.")]
+        [Min(0f)] [SerializeField] internal float rechargeMultiplier = 1f;
+
         [Header("Access")]
         [Tooltip("Locked until hacked by the commander (the prologue bay fabricator).")]
         [SerializeField] internal bool requiresHack;
         [Min(0f)] [SerializeField] internal float interactSeconds = 1f;
+        [Tooltip("Work needed before it can be used, in order (e.g. cut the welds).")]
+        [SerializeField] internal ToolActionKind[] accessRequires = Array.Empty<ToolActionKind>();
+        [SerializeField] internal KeyItemDefinition requiresKey;
+        [Tooltip("The room is in vacuum: restore atmosphere at its life-support panel before anything works.")]
+        [SerializeField] internal bool requiresAtmosphere;
+        [Tooltip("Life-support panel id that restores the room's atmosphere.")]
+        [SerializeField] internal string atmospherePanelId = string.Empty;
+        [Min(0f)] [SerializeField] internal float atmosphereRestoreSeconds = 20f;
 
         public WorkstationService Services => services;
         public IReadOnlyList<RecipeDefinition> Recipes => recipes ?? Array.Empty<RecipeDefinition>();
@@ -32,6 +46,22 @@ namespace QuietHull.Data
         public float RepairMaxSeconds => repairMaxSeconds;
         public bool RepairIsFree => repairIsFree;
         public bool RequiresHack => requiresHack;
+        public int ChargeBays => chargeBays;
+        public float RechargeMultiplier => rechargeMultiplier;
+        public IReadOnlyList<ToolActionKind> AccessRequires => accessRequires ?? Array.Empty<ToolActionKind>();
+        public KeyItemDefinition RequiresKey => requiresKey;
+        public bool RequiresAtmosphere => requiresAtmosphere;
+        public string AtmospherePanelId => atmospherePanelId;
+        public float AtmosphereRestoreSeconds => atmosphereRestoreSeconds;
+
+        /// <summary>Steps before first use: access work, the key, the atmosphere and the hack.</summary>
+        public int AccessStepCount => AccessRequires.Count + (requiresKey != null ? 1 : 0) + (requiresAtmosphere ? 1 : 0) + (requiresHack ? 1 : 0);
+
+        /// <summary>Seconds to fully charge <paramref name="unit"/> here; infinity if it doesn't use charge.</summary>
+        public float SecondsToCharge(UnitDefinition unit) =>
+            unit != null && unit.UsesCharge && Offers(WorkstationService.Recharge) && rechargeMultiplier > 0f
+                ? unit.Charge.SecondsToFull(Array.Empty<StatModifier>()) / rechargeMultiplier
+                : float.PositiveInfinity;
         public float InteractSeconds => interactSeconds;
 
         public bool Offers(WorkstationService service) => (services & service) == service;
@@ -52,12 +82,23 @@ namespace QuietHull.Data
                 report.Positive(this, nameof(repairMaxSeconds), repairMaxSeconds);
             }
 
+            if (Offers(WorkstationService.Recharge))
+            {
+                report.Positive(this, nameof(chargeBays), chargeBays);
+                report.Positive(this, nameof(rechargeMultiplier), rechargeMultiplier);
+            }
+
+            if (requiresAtmosphere && string.IsNullOrWhiteSpace(atmospherePanelId))
+            {
+                report.Error(this, nameof(atmospherePanelId), "a vacuum room needs a life-support panel id.");
+            }
+
             var crafts = Offers(WorkstationService.Craft) || Offers(WorkstationService.Fabricate);
             if (crafts)
             {
                 report.NotEmpty(this, nameof(recipes), recipes);
             }
-            else if (Recipes.Count > 0)
+            else if (Recipes.Count > 0 && !Offers(WorkstationService.Breakdown))
             {
                 report.Warning(this, nameof(recipes), "has recipes but offers neither Craft nor Fabricate.");
             }

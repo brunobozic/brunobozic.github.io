@@ -12,14 +12,66 @@ namespace QuietHull.Data
         Legendary = 4
     }
 
-    /// <summary>Equipment mark (Mk I–V). Prologue content is always <see cref="MkI"/>.</summary>
+    /// <summary>
+    /// Mark. Military chassis and equipment use Mk I–V, augments Mk I–VIII, worker androids Mk I–XII.
+    /// Prologue content is always <see cref="MkI"/>.
+    /// </summary>
     public enum Mark
     {
         MkI = 1,
         MkII = 2,
         MkIII = 3,
         MkIV = 4,
-        MkV = 5
+        MkV = 5,
+        MkVI = 6,
+        MkVII = 7,
+        MkVIII = 8,
+        MkIX = 9,
+        MkX = 10,
+        MkXI = 11,
+        MkXII = 12
+    }
+
+    /// <summary>Augment design lines: louder and stronger, or quieter and finer.</summary>
+    public enum AugmentLine
+    {
+        /// <summary>Heavy military parts: strongest, loudest, hottest; draws aliens.</summary>
+        Assault = 0,
+        /// <summary>Clinic parts: balanced.</summary>
+        Standard = 1,
+        /// <summary>Precision civilian parts: weaker, quieter, cooler.</summary>
+        Fine = 2,
+        /// <summary>Illegal infiltration parts: suppress noise, heat and sight; very expensive.</summary>
+        Shadow = 3
+    }
+
+    public enum Legality
+    {
+        Legal = 0,
+        /// <summary>Military: needs a licence, or the black market at a markup.</summary>
+        Restricted = 1,
+        /// <summary>Black market only; confiscated if found in a Lane Authority scan.</summary>
+        Contraband = 2
+    }
+
+    /// <summary>What a unit may be ordered to do in a fight.</summary>
+    public enum CombatRole
+    {
+        /// <summary>Workers: defend themselves and company assets only; can't be ordered to attack.</summary>
+        DefendOnly = 0,
+        /// <summary>Military: can be ordered to attack.</summary>
+        Combat = 1
+    }
+
+    /// <summary>
+    /// Worker firmware. Older generations glitch: their asset-protection directive counts alien
+    /// specimens (eggs, the Queen) as company property.
+    /// </summary>
+    public enum FirmwareGeneration
+    {
+        Gen1 = 1,
+        Gen2 = 2,
+        Gen3 = 3
     }
 
     public enum ItemCategory
@@ -114,7 +166,17 @@ namespace QuietHull.Data
         Throw = 1 << 5,
         RepairShuttle = 1 << 6,
         HackFabricator = 1 << 7,
-        FireWeapon = 1 << 8
+        FireWeapon = 1 << 8,
+        /// <summary>Standing order: ferry ammo boxes from the stockpile to any assigned sentry below a threshold.</summary>
+        SupplySentries = 1 << 9,
+        /// <summary>Standing order: defend a point or a company asset (workers can't attack).</summary>
+        Guard = 1 << 10,
+        /// <summary>Standing order: stay at a station and keep crafting a recipe (an ammo line).</summary>
+        StaffStation = 1 << 11,
+        /// <summary>Standing order: keep mining a seam or deposit and haul the output to a stockpile.</summary>
+        Harvest = 1 << 12,
+        /// <summary>Standing order: go and recharge below a charge threshold, then return to the previous order.</summary>
+        AutoRecharge = 1 << 13
     }
 
     public enum ToolActionKind
@@ -134,7 +196,9 @@ namespace QuietHull.Data
         RepairUnit = 1 << 0,
         Craft = 1 << 1,
         Fabricate = 1 << 2,
-        Breakdown = 1 << 3
+        Breakdown = 1 << 3,
+        /// <summary>A charging cradle for workers.</summary>
+        Recharge = 1 << 4
     }
 
     /// <summary>How a loud room's ambient noise level behaves over time.</summary>
@@ -173,7 +237,10 @@ namespace QuietHull.Data
         Error = 1
     }
 
-    /// <summary>Syndicate-style augment slots on a synthetic body.</summary>
+    /// <summary>
+    /// Upgrade slots. Military synths have the eight Syndicate-style body slots (Arms to Brain).
+    /// Worker androids have work slots: Frame, two Hardening sockets, Maintenance and a Tool mount.
+    /// </summary>
     public enum AugmentSlot
     {
         Arms = 0,
@@ -183,7 +250,11 @@ namespace QuietHull.Data
         Lungs = 4,
         Heart = 5,
         Dermis = 6,
-        Brain = 7
+        Brain = 7,
+        Frame = 8,
+        Hardening = 9,
+        Maintenance = 10,
+        ToolMount = 11
     }
 
     public enum AugmentKind
@@ -221,7 +292,55 @@ namespace QuietHull.Data
         SeesThroughSmoke = 23,
         SentryHitRateVsSlowed = 24,
         /// <summary>Expected hit rate, added as a fraction (0.15 = +15 points).</summary>
-        Accuracy = 25
+        Accuracy = 25,
+        /// <summary>How far alien eyes see this unit, as a percent change (−0.3 = seen at 70% range).</summary>
+        Visibility = 26,
+        /// <summary>How much aliens prefer this unit as a target, as a percent change.</summary>
+        Aggro = 27,
+        VibrationSignature = 28,
+        /// <summary>Noise of actions (reloads, melee, interactions), as a percent change.</summary>
+        ActionNoise = 29,
+        ThermalVision = 30,
+        DarkVision = 31,
+        HeavyWeaponHandling = 32,
+        CarryCapacityKg = 33,
+        /// <summary>Condition shielding ratings (0–3, matching hulk condition intensity).</summary>
+        GravityShielding = 34,
+        RadiationShielding = 35,
+        AcidShielding = 36,
+        IonShielding = 37,
+        /// <summary>Speed of interactions and tool work, as a percent change.</summary>
+        WorkSpeed = 38,
+        /// <summary>Health per second a unit can restore on another unit.</summary>
+        RepairOthersPerSecond = 39,
+        /// <summary>Extra hand-carry slots (a loader frame carries cargo without a cart).</summary>
+        CarrySlots = 40,
+        MiningSpeed = 41,
+        /// <summary>Welding, sealing and building speed.</summary>
+        ConstructionSpeed = 42,
+        /// <summary>Power a tool uses, as a percent change.</summary>
+        ToolEnergyCost = 43,
+        /// <summary>Oversize loads (a cryo bed) the unit can carry alone, without a cart or the Cradle sled.</summary>
+        OversizeCarry = 44,
+        SentryReloadSpeed = 45,
+        /// <summary>Speed of placing and picking up sentries and mines, as a percent change.</summary>
+        DeploySpeed = 48,
+        BatteryCapacity = 46,
+        /// <summary>Charge drained by every activity, as a percent change.</summary>
+        ChargeDrain = 47
+    }
+
+    /// <summary>What a worker is doing, for charge (stamina) drain. (Named to avoid System.Diagnostics.Activity.)</summary>
+    public enum WorkActivity
+    {
+        Idle = 0,
+        Walking = 1,
+        PushingCart = 2,
+        CarryingOversize = 3,
+        Mining = 4,
+        Welding = 5,
+        Building = 6,
+        Defending = 7
     }
 
     public enum ModifierOperation
@@ -232,12 +351,18 @@ namespace QuietHull.Data
         AddPercent = 1
     }
 
+    /// <summary>Military doctrine archetypes (0–3) and worker trades (4–7).</summary>
     public enum Archetype
     {
         Marksman = 0,
         Controller = 1,
         Bulwark = 2,
-        HeavyGunner = 3
+        HeavyGunner = 3,
+        Hauler = 4,
+        Miner = 5,
+        Constructor = 6,
+        Technician = 7,
+        Sapper = 8
     }
 
     public enum OmenFamily
@@ -307,6 +432,7 @@ namespace QuietHull.Data
         Unit = 1,
         ShuttleModule = 2,
         Augment = 3,
-        Item = 4
+        Item = 4,
+        Blueprint = 5
     }
 }
