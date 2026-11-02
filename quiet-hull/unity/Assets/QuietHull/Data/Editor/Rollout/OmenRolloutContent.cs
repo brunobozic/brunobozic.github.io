@@ -21,7 +21,7 @@ namespace QuietHull.Data.Editor
         public OmenCardDefinition TheDeck { get; internal set; }
         public OmenCardDefinition IronChitin { get; internal set; }
 
-        // Mission 7: old patterns
+        // Mission 7: Mr. Jones (Act 2 opener; the T3 fabricator hulk)
         public OmenCardDefinition EngineeringDeck { get; internal set; }
         public OmenCardDefinition TheFortress { get; internal set; }
 

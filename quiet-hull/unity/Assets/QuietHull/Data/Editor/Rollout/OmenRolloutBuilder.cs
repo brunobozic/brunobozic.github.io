@@ -125,7 +125,7 @@ namespace QuietHull.Data.Editor
             chitin.brutalityPayout = true;
             c.IronChitin = chitin;
 
-            // ---- Mission 7: old patterns ---------------------------------------------------------
+            // ---- Mission 7: Mr. Jones (the T3 fabricator hulk) -----------------------------------
             c.EngineeringDeck = Card(make, "omen_engineering_deck", "Engineering Deck",
                 "The hulk has a T3 fabricator or better; bigger surges guard it.", OmenFamily.Fabrication, Rarity.Common, 2,
                 "The fabricator comes with one random Mk VI recipe.",
@@ -331,7 +331,7 @@ namespace QuietHull.Data.Editor
                 Row(4, "Pod 7", 2, 2, 1, 1, Rarity.Common, false, Rarity.Common, 4),
                 Row(5, "The Nan-Shan", 2, 2, 2, 2, Rarity.Uncommon, false, Rarity.Common, 5),
                 Row(6, "The fall of Patusan", 3, 3, 2, 2, Rarity.Uncommon, true, Rarity.Rare, 5),
-                Row(7, "Old patterns", 3, 3, 2, 3, Rarity.Rare, true, Rarity.Rare, 6),
+                Row(7, "Mr. Jones", 3, 3, 2, 3, Rarity.Rare, true, Rarity.Rare, 6),
                 sephora,
                 Row(9, "Second breach", 3, 3, 2, 4, Rarity.Rare, true, Rarity.Rare, 7),
                 Row(10, "The Ledger", 3, 3, 2, 4, Rarity.Epic, true, Rarity.Epic, 7)
