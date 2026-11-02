@@ -8,6 +8,10 @@ Built test-first: every rule has a test in `Tests/`.
 | `HulkGraph` / `HulkGraphBuilder` | Rooms (with ambient noise) and doors. Immutable once built; share it freely. |
 | `DoorStates` | Open / Closed (muffles) / Sealed (blocks) per door, per run. |
 | `NoisePropagation` | Spreads a sound room by room: −2 per hop, −3 more through a closed door, stopped by a sealed one; each room keeps the loudest path. `HeardAt` subtracts the room's ambient noise (masking). |
+| `SenseField` / `SenseRules` | One solver for every sense channel. Sound: −2/hop, −3 more through a closed door, stopped by sealed. Vibration: −1/hop through the hull, doors don't matter. Heat: −3/hop, −2 more through any shut door, never fully blocked. Rooms have ambient levels per channel (masking). |
+| `HiveListener` / `SenseWeights` | Where the hive senses from and with what: per-channel percentages, so Crawlers feel the deck, Stalkers see heat. |
+| `Emission` | What a working Joe, a cart or a fire gives off on each channel. |
+| `PlaceSensor` / `SensorOverlay` | Sentry pups in sensor mode: cover rooms within a hop range; the map overlay shows each channel's level and whether it's masked, and nothing where no pup reads. |
 | `AwarenessGauge` | Heard noise fills it, silence drains it; Dormant → Restless (40) → Hunt (80), never back. Fixed-point, so runs replay exactly. |
 | `Simulation` | One run: noise sources (working Joes), the hive's listening rooms, doors, the tick, and the event log. One thread per simulation; run many in parallel. |
 

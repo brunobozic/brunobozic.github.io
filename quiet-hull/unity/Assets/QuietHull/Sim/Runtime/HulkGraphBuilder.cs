@@ -10,7 +10,7 @@ namespace QuietHull.Sim
         private readonly Dictionary<string, RoomId> _byKey = new Dictionary<string, RoomId>(StringComparer.Ordinal);
         private readonly List<(string A, string B)> _doors = new List<(string A, string B)>();
 
-        public HulkGraphBuilder Room(string key, string name, int ambientNoise = 0)
+        public HulkGraphBuilder Room(string key, string name, int ambientNoise = 0, int ambientVibration = 0, int ambientHeat = 0)
         {
             if (string.IsNullOrWhiteSpace(key))
             {
@@ -22,13 +22,13 @@ namespace QuietHull.Sim
                 throw new ArgumentException($"room '{key}' already exists.", nameof(key));
             }
 
-            if (ambientNoise < 0)
+            if (ambientNoise < 0 || ambientVibration < 0 || ambientHeat < 0)
             {
-                throw new ArgumentOutOfRangeException(nameof(ambientNoise), ambientNoise, "ambient noise can't be negative.");
+                throw new ArgumentOutOfRangeException(nameof(ambientNoise), "ambient levels can't be negative.");
             }
 
             var id = new RoomId(_rooms.Count);
-            _rooms.Add(new Room(id, key, name ?? key, ambientNoise));
+            _rooms.Add(new Room(id, key, name ?? key, ambientNoise, ambientVibration, ambientHeat));
             _byKey.Add(key, id);
             return this;
         }

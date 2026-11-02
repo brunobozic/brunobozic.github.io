@@ -5,15 +5,21 @@ namespace QuietHull.Sim
     /// <summary>All the tuning a simulation runs on. Immutable; the balance runner sweeps these.</summary>
     public sealed class SimRules
     {
-        public SimRules(NoiseRules noise, AwarenessRules awareness)
+        public SimRules(SenseRules senses, AwarenessRules awareness)
         {
-            Noise = noise ?? throw new ArgumentNullException(nameof(noise));
+            Senses = senses ?? throw new ArgumentNullException(nameof(senses));
             Awareness = awareness ?? throw new ArgumentNullException(nameof(awareness));
         }
 
-        public static SimRules Default { get; } = new SimRules(NoiseRules.Default, AwarenessRules.Default);
+        /// <summary>Sound tuned by <paramref name="noise"/>; vibration and heat at their defaults.</summary>
+        public SimRules(NoiseRules noise, AwarenessRules awareness)
+            : this(SenseRules.Default.WithSound(noise ?? throw new ArgumentNullException(nameof(noise))), awareness)
+        {
+        }
 
-        public NoiseRules Noise { get; }
+        public static SimRules Default { get; } = new SimRules(SenseRules.Default, AwarenessRules.Default);
+
+        public SenseRules Senses { get; }
         public AwarenessRules Awareness { get; }
     }
 }
