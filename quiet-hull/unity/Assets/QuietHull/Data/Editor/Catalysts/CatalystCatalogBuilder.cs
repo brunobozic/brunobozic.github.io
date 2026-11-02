@@ -4,7 +4,7 @@ using System.Collections.Generic;
 namespace QuietHull.Data.Editor
 {
     /// <summary>
-    /// The 19 Catalysts at Common: the 11 gear and 5 meta Catalysts of the design doc, plus the bench-only
+    /// The 22 Catalysts at Common: the 11 gear and 8 meta Catalysts (incl. the card-targeting Beacon, Sigil and Echo), plus the bench-only
     /// Strip, Temper and Seal (Path of Exile's remove / value-reroll / lock verbs, in our own terms).
     /// </summary>
     public static class CatalystCatalogBuilder
@@ -22,7 +22,7 @@ namespace QuietHull.Data.Editor
             }
 
             var byKind = new Dictionary<CatalystKind, CatalystDefinition>();
-            var all = new List<CatalystDefinition>(19);
+            var all = new List<CatalystDefinition>(22);
 
             void Add(CatalystKind kind, string name, string effect, int fromMission = 1)
             {
@@ -53,6 +53,9 @@ namespace QuietHull.Data.Editor
             Add(CatalystKind.Augury, "Augury", "The vault holds 1 Common Omen card.");
             Add(CatalystKind.Magnet, "Magnet", "30% of Catalyst drops become a chosen type.");
             Add(CatalystKind.Twin, "Twin", "25% chance the vault drops a second item of the same type, 2 grades lower.");
+            Add(CatalystKind.Beacon, "Beacon", "20% of this run's Omen card drops become one card you choose (one you've already met).");
+            Add(CatalystKind.Sigil, "Sigil", "35% of this run's Omen card drops come from one family or suit you choose.");
+            Add(CatalystKind.Echo, "Echo", "Each card slotted this run: 10% of card drops are a copy of it.");
             Add(CatalystKind.Strip, "Strip", "Removes one random affix from an item you own.", BenchCatalystsFromMission);
             Add(CatalystKind.Temper, "Temper", "Rerolls the numbers within each affix's tier; the affixes stay.", BenchCatalystsFromMission);
             Add(CatalystKind.Seal, "Seal", "Locks up to 2 affixes against the next Reroll or Strip; used up by it.", BenchCatalystsFromMission);

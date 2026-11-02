@@ -498,7 +498,13 @@ namespace QuietHull.Data
         /// <summary>Bench: rerolls the numbers within each affix's tier.</summary>
         Temper = 17,
         /// <summary>Bench: locks up to 2 affixes against the next Reroll or Strip.</summary>
-        Seal = 18
+        Seal = 18,
+        /// <summary>Meta: a share of this run's Omen card drops become one chosen card (one already met).</summary>
+        Beacon = 19,
+        /// <summary>Meta: a share of this run's Omen card drops come from one chosen family or suit.</summary>
+        Sigil = 20,
+        /// <summary>Meta: each card slotted this run has a chance per card drop to drop a copy of itself.</summary>
+        Echo = 21
     }
 
     /// <summary>Where a Catalyst can be used.</summary>

@@ -315,12 +315,12 @@ namespace QuietHull.Data.Tests
         // ---- Catalysts and the bench ------------------------------------------------------------
 
         [Test]
-        public void Catalysts_NineteenKinds_EachUsableSomewhere()
+        public void Catalysts_TwentyTwoKinds_EachUsableSomewhere()
         {
-            Assert.That(_r.Catalysts.All, Has.Count.EqualTo(19));
-            Assert.That(_r.Catalysts.All.Select(c => c.Kind).Distinct().Count(), Is.EqualTo(19));
+            Assert.That(_r.Catalysts.All, Has.Count.EqualTo(22));
+            Assert.That(_r.Catalysts.All.Select(c => c.Kind).Distinct().Count(), Is.EqualTo(22));
             Assert.That(_r.Catalysts.All, Has.All.Matches<CatalystDefinition>(c => c.Uses != CatalystUse.None));
-            Assert.That(_r.Catalysts.All.Count(c => c.IsMeta), Is.EqualTo(5));
+            Assert.That(_r.Catalysts.All.Count(c => c.IsMeta), Is.EqualTo(8));
         }
 
         [Test]

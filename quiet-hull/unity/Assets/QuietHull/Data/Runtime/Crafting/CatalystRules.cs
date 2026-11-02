@@ -20,6 +20,9 @@ namespace QuietHull.Data
                 case CatalystKind.Augury:
                 case CatalystKind.Magnet:
                 case CatalystKind.Twin:
+                case CatalystKind.Beacon:
+                case CatalystKind.Sigil:
+                case CatalystKind.Echo:
                     return CatalystUse.Reliquary;
 
                 case CatalystKind.Imprint:
@@ -45,6 +48,7 @@ namespace QuietHull.Data
 
         public static bool IsMeta(CatalystKind kind) =>
             kind == CatalystKind.Lodestone || kind == CatalystKind.Prism || kind == CatalystKind.Augury ||
-            kind == CatalystKind.Magnet || kind == CatalystKind.Twin;
+            kind == CatalystKind.Magnet || kind == CatalystKind.Twin ||
+            kind == CatalystKind.Beacon || kind == CatalystKind.Sigil || kind == CatalystKind.Echo;
     }
 }
