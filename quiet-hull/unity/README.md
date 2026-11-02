@@ -1,4 +1,4 @@
-# Quiet Hull — Unity data layer (prologue and mission 2)
+# Quiet Hull — Unity data layer (prologue, missions 2 and 3)
 
 Drop `Assets/QuietHull/` into the Unity 6 (URP) project. C# 9, no .NET 8 APIs in runtime code.
 
@@ -7,7 +7,7 @@ Drop `Assets/QuietHull/` into the Unity 6 (URP) project. C# 9, no .NET 8 APIs in
 | Assembly | Folder | Contents |
 | --- | --- | --- |
 | `QuietHull.Data` (runtime) | `Data/Runtime` | ScriptableObject definitions: items, weapons, tools, cargo, key items, sentries, units, aliens, augments (8 slots), specializations, Omen cards (with the rarity math), shuttle modules, market offers, contracts, recipes, workstations, room ambience, hazards, room treatments, fixtures, loot caches, waves, mission beats and scripts, announcements, and the `DefinitionCatalog` with a thread-safe id lookup. `RarityMath` and `StatMath` are pure helpers. No third-party dependencies. |
-| `QuietHull.Data.Editor` | `Data/Editor` | Content builders (`PrologueContentBuilder`, `ColdSleepContentBuilder`: every value in one place), the asset generator, catalog validation, Serilog + OpenTelemetry wiring. |
+| `QuietHull.Data.Editor` | `Data/Editor` | Content builders (prologue, Cold Sleep, the Tremolino, augments, ordnance, factions, the sun/belt sample: every value in one place), the asset generator, catalog validation, Serilog + OpenTelemetry wiring. |
 | `QuietHull.Data.Tests.Editor` | `Data/Tests/Editor` | Edit-mode tests that check the design doc's tuning targets: the rarity matrix, ammo per trip, masking, material totals, rupture and freeze times, the hub economy, specialization balance. |
 
 ## Setup
@@ -16,7 +16,7 @@ Drop `Assets/QuietHull/` into the Unity 6 (URP) project. C# 9, no .NET 8 APIs in
    - `Serilog` (3.1+)
    - `System.Diagnostics.DiagnosticSource` (8.0+; provides `ActivitySource` for OpenTelemetry spans)
 2. Make sure the Test Framework package is installed (Window ▸ Package Manager ▸ Test Framework).
-3. **Quiet Hull ▸ Content ▸ Generate Prologue** and **Generate Mission 2 (Cold Sleep)** write everything under
+3. **Quiet Hull ▸ Content ▸ Generate Prologue**, **Generate Mission 2 (Cold Sleep)** and **Generate Mission 3 (The Tremolino)** write everything under
    `Assets/QuietHull/Content/`. Running them again updates assets in place (GUIDs stay stable); shared
    definitions (materials, sentries, aliens) stay single assets.
 4. **Quiet Hull ▸ Validate All Catalogs** validates every catalog in the project.

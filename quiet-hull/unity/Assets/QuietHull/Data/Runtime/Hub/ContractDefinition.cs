@@ -21,6 +21,7 @@ namespace QuietHull.Data
         [SerializeField] internal MissionScriptDefinition[] partScripts = Array.Empty<MissionScriptDefinition>();
         [Tooltip("Blueprints given when the whole contract is complete.")]
         [SerializeField] internal BlueprintDefinition[] completionBlueprints = Array.Empty<BlueprintDefinition>();
+        [SerializeField] internal StandingChange[] completionStanding = Array.Empty<StandingChange>();
 
         public string Client => client;
         public string HulkName => hulkName;
@@ -31,6 +32,7 @@ namespace QuietHull.Data
         public IReadOnlyList<ItemStack> ItemsGiven => itemsGiven ?? Array.Empty<ItemStack>();
         public IReadOnlyList<MissionScriptDefinition> PartScripts => partScripts ?? Array.Empty<MissionScriptDefinition>();
         public IReadOnlyList<BlueprintDefinition> CompletionBlueprints => completionBlueprints ?? Array.Empty<BlueprintDefinition>();
+        public IReadOnlyList<StandingChange> CompletionStanding => completionStanding ?? Array.Empty<StandingChange>();
 
         public int TotalPay
         {

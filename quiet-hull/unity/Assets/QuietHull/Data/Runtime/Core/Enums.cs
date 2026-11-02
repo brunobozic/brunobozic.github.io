@@ -244,7 +244,27 @@ namespace QuietHull.Data
     {
         Dark = 0,
         Cold = 1,
-        Heat = 2
+        Heat = 2,
+        Radiation = 3
+    }
+
+    /// <summary>Standing with a faction, from Hostile (−2) to Revered (3).</summary>
+    public enum Standing
+    {
+        Hostile = -2,
+        Unfriendly = -1,
+        Neutral = 0,
+        Friendly = 1,
+        Trusted = 2,
+        Revered = 3
+    }
+
+    /// <summary>The hive's escalation stages.</summary>
+    public enum HiveStage
+    {
+        Dormant = 1,
+        Restless = 2,
+        Hunt = 3
     }
 
     public enum ValidationSeverity
@@ -430,7 +450,15 @@ namespace QuietHull.Data
         AlienDamagePercent = 4,
         NoEpicRolls = 5,
         RarityRolls = 6,
-        AwarenessJumpPercent = 7
+        AwarenessJumpPercent = 7,
+        /// <summary>Adds intensity of a hulk condition (Condition Omens).</summary>
+        ConditionIntensity = 8,
+        /// <summary>Bias of loot affixes toward the card's family.</summary>
+        AffixBias = 9,
+        /// <summary>Percent more of the card's currency (Plating, Circuitry, ...).</summary>
+        CurrencyPercent = 10,
+        /// <summary>Fewer patrols in Stages 1–2 (Expedition Omens).</summary>
+        PatrolReduction = 11
     }
 
     public enum VowCondition

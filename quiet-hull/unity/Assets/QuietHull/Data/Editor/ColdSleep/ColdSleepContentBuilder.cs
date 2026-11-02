@@ -45,6 +45,7 @@ namespace QuietHull.Data.Editor
             var augs = AugmentCatalogBuilder.Build(factory);
             var make = new DefinitionMaker(factory);
             var c = new ColdSleepContent { Prologue = prologue, Augs = augs, Augments = augs.StandardLine() };
+            c.Factions = FactionCatalogBuilder.Build(make);
 
             BuildMaterials(c, make);
             BuildWeapons(c, make);
@@ -632,7 +633,11 @@ namespace QuietHull.Data.Editor
             var p = c.Prologue;
             var offers = new List<MarketOfferDefinition>(64);
 
-            (int multiplier, int tier, string requirement, MaterialCost[] inputs) Terms(AugmentDefinition augment)
+            var f = c.Factions;
+            Requirement[] None() => Array.Empty<Requirement>();
+            Requirement[] One(params Requirement[] r) => r;
+
+            (int multiplier, int tier, string requirement, MaterialCost[] inputs, Requirement[] all, Requirement[] any) Terms(AugmentDefinition augment)
             {
                 var worker = augment.IsWorkerModule;
                 switch (augment.Line)
@@ -640,18 +645,31 @@ namespace QuietHull.Data.Editor
                     case AugmentLine.Assault:
                         return worker
                             ? (4, 2, "Needs a Vashti-Kell industrial licence (or forged papers) and Drifters' Union standing: Friendly.",
-                                new[] { new MaterialCost(p.Plating, 8), new MaterialCost(c.XenoalloyIngot, 2) })
+                                new[] { new MaterialCost(p.Plating, 8), new MaterialCost(c.XenoalloyIngot, 2) },
+                                One(Requirement.Faction(f.DriftersUnion, Standing.Friendly), Requirement.Holds(f.IndustrialLicence)), None())
                             : (9, 2, "Military pattern: needs a Lane Authority licence, or Hollow Moon standing: Trusted.",
-                                new[] { new MaterialCost(p.Plating, 8), new MaterialCost(p.Ordnance, 2), new MaterialCost(c.XenoalloyIngot, 2) });
+                                new[] { new MaterialCost(p.Plating, 8), new MaterialCost(p.Ordnance, 2), new MaterialCost(c.XenoalloyIngot, 2) },
+                                None(), One(Requirement.Holds(f.LaneMilitaryLicence), Requirement.Faction(f.HollowMoon, Standing.Trusted)));
                     case AugmentLine.Fine:
                         return (worker ? 5 : 10, 1, "Precision pattern: needs Drifters' Union standing: Friendly.",
-                            new[] { new MaterialCost(p.Circuitry, 6), new MaterialCost(c.XenoalloyIngot, 1) });
+                            new[] { new MaterialCost(p.Circuitry, 6), new MaterialCost(c.XenoalloyIngot, 1) },
+                            One(Requirement.Faction(f.DriftersUnion, Standing.Friendly)), None());
                     case AugmentLine.Shadow:
-                        return (8, 3, "Contraband: needs Hollow Moon standing: Trusted and Quiet Choir standing: Revered. Confiscated in Lane Authority scans.",
-                            new[] { new MaterialCost(p.Circuitry, 6), new MaterialCost(c.XenoalloyIngot, 3), new MaterialCost(c.SyntheticMyomer, 1) });
+                        return worker
+                            ? (8, 3, "Contraband: needs Hollow Moon standing: Trusted. Confiscated in Lane Authority scans.",
+                                new[] { new MaterialCost(p.Circuitry, 6), new MaterialCost(c.XenoalloyIngot, 3), new MaterialCost(c.SyntheticMyomer, 1) },
+                                One(Requirement.Faction(f.HollowMoon, Standing.Trusted)), None())
+                            : (8, 3, "Contraband: needs Hollow Moon standing: Trusted and Quiet Choir standing: Revered. Confiscated in Lane Authority scans.",
+                                new[] { new MaterialCost(p.Circuitry, 6), new MaterialCost(c.XenoalloyIngot, 3), new MaterialCost(c.SyntheticMyomer, 1) },
+                                One(Requirement.Faction(f.HollowMoon, Standing.Trusted), Requirement.Faction(f.QuietChoir, Standing.Revered)), None());
                     default:
-                        return (worker ? 5 : 12, 1, "Needs Hollow Moon standing: Friendly.",
-                            new[] { new MaterialCost(p.Plating, 4), new MaterialCost(p.Circuitry, 4) });
+                        return worker
+                            ? (5, 1, "Needs Drifters' Union standing: Friendly.",
+                                new[] { new MaterialCost(p.Plating, 4), new MaterialCost(p.Circuitry, 4) },
+                                One(Requirement.Faction(f.DriftersUnion, Standing.Friendly)), None())
+                            : (12, 1, "Needs Hollow Moon standing: Friendly.",
+                                new[] { new MaterialCost(p.Plating, 4), new MaterialCost(p.Circuitry, 4) },
+                                One(Requirement.Faction(f.HollowMoon, Standing.Friendly)), None());
                 }
             }
 
@@ -683,6 +701,8 @@ namespace QuietHull.Data.Editor
                 offer.vendor = augment.Line == AugmentLine.Shadow ? "The back room" : augment.IsWorkerModule ? "Drifters' Union yard" : "Blueprint broker";
                 offer.teaserOnly = true;
                 offer.unlockRequirement = terms.requirement;
+                offer.requiresAll = terms.all;
+                offer.requiresAnyOf = terms.any;
                 offers.Add(offer);
             }
 
@@ -717,6 +737,13 @@ namespace QuietHull.Data.Editor
                     : mine == c.Ordnance.Shredder ? "Military pattern: needs a Lane Authority licence, or Hollow Moon standing: Trusted."
                     : mine == c.Ordnance.Bloodhound ? "Needs Hollow Moon standing: Trusted."
                     : "Needs Drifters' Union standing: Friendly.";
+                offer.requiresAll = basic ? None()
+                    : mine == c.Ordnance.Shredder ? None()
+                    : mine == c.Ordnance.Bloodhound ? One(Requirement.Faction(f.HollowMoon, Standing.Trusted))
+                    : One(Requirement.Faction(f.DriftersUnion, Standing.Friendly));
+                offer.requiresAnyOf = mine == c.Ordnance.Shredder
+                    ? One(Requirement.Holds(f.LaneMilitaryLicence), Requirement.Faction(f.HollowMoon, Standing.Trusted))
+                    : None();
                 (basic ? mineOffers : offers).Add(offer);
             }
 
@@ -730,6 +757,8 @@ namespace QuietHull.Data.Editor
             compartmentOffer.vendor = "The back room";
             compartmentOffer.teaserOnly = true;
             compartmentOffer.unlockRequirement = "Contraband: needs Hollow Moon standing: Trusted.";
+            compartmentOffer.requiresAll = One(Requirement.Faction(f.HollowMoon, Standing.Trusted));
+            compartmentOffer.requiresAnyOf = None();
             offers.Add(compartmentOffer);
 
             c.MineOffers = mineOffers;
@@ -911,6 +940,7 @@ namespace QuietHull.Data.Editor
             contract.itemsGiven = new[] { new ItemStack(p.SentryMk1, 2) };
             contract.partScripts = new[] { c.Trip1, c.Trip2 };
             contract.completionBlueprints = new[] { c.ServoArmsMk2Blueprint };
+            contract.completionStanding = new[] { StandingChange.AtLeast(c.Factions.HollowMoon, Standing.Friendly) };
             c.Contract = contract;
 
             var judeaContract = make.Def<ContractDefinition>("con_judea", HubFolder, "The Judea",
@@ -923,6 +953,7 @@ namespace QuietHull.Data.Editor
             judeaContract.itemsGiven = Array.Empty<ItemStack>();
             judeaContract.partScripts = new[] { c.Judea };
             judeaContract.completionBlueprints = Array.Empty<BlueprintDefinition>();
+            judeaContract.completionStanding = new[] { StandingChange.By(c.Factions.DriftersUnion, 1) };
             c.JudeaContract = judeaContract;
 
             var locker = make.Def<LootCacheDefinition>("cache_judea_armoury", WorldFolder, "Judea armoury locker",

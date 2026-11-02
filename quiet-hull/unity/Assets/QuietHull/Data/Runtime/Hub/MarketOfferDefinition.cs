@@ -21,6 +21,10 @@ namespace QuietHull.Data
         [SerializeField] internal bool teaserOnly;
         [Tooltip("Why it can't be bought yet, e.g. \"Needs Hollow Moon standing: Trusted\".")]
         [SerializeField] internal string unlockRequirement = string.Empty;
+        [Tooltip("Every one of these must be met.")]
+        [SerializeField] internal Requirement[] requiresAll = System.Array.Empty<Requirement>();
+        [Tooltip("At least one of these must be met (empty = no alternative needed).")]
+        [SerializeField] internal Requirement[] requiresAnyOf = System.Array.Empty<Requirement>();
 
         public OfferKind Kind => kind;
         public DefinitionBase Target => target;
@@ -30,7 +34,43 @@ namespace QuietHull.Data
         public string Vendor => vendor;
         public bool TeaserOnly => teaserOnly;
         public string UnlockRequirement => unlockRequirement;
+        public System.Collections.Generic.IReadOnlyList<Requirement> RequiresAll => requiresAll ?? System.Array.Empty<Requirement>();
+        public System.Collections.Generic.IReadOnlyList<Requirement> RequiresAnyOf => requiresAnyOf ?? System.Array.Empty<Requirement>();
+
+        /// <summary>For offers with no standing requirements: whether it's for sale at all.</summary>
         public bool CanBuyNow => !teaserOnly;
+
+        /// <summary>Whether the player's standing and licences unlock it (price aside).</summary>
+        public bool IsUnlockedFor(PlayerStanding standing)
+        {
+            if (RequiresAll.Count == 0 && RequiresAnyOf.Count == 0)
+            {
+                return !teaserOnly;
+            }
+
+            foreach (var requirement in RequiresAll)
+            {
+                if (!requirement.IsMetBy(standing))
+                {
+                    return false;
+                }
+            }
+
+            if (RequiresAnyOf.Count == 0)
+            {
+                return true;
+            }
+
+            foreach (var requirement in RequiresAnyOf)
+            {
+                if (requirement.IsMetBy(standing))
+                {
+                    return true;
+                }
+            }
+
+            return false;
+        }
 
         protected override void ValidateDefinition(ValidationReport report)
         {
@@ -42,6 +82,11 @@ namespace QuietHull.Data
             if (required && lentForContract)
             {
                 report.Error(this, nameof(lentForContract), "a required offer can't also be lent.");
+            }
+
+            if (teaserOnly && RequiresAll.Count == 0 && RequiresAnyOf.Count == 0)
+            {
+                report.Error(this, nameof(requiresAll), "a teaser needs requirements that can unlock it.");
             }
 
             if (teaserOnly && string.IsNullOrWhiteSpace(unlockRequirement))

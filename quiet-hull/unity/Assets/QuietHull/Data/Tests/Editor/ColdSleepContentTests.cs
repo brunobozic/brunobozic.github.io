@@ -177,7 +177,9 @@ namespace QuietHull.Data.Tests
             var missionEarnings = _c.Prologue.GravLatticeAlloy.TotalScripValue(6) + 3 * 100 + _c.Contract.TotalPay + _c.JudeaContract.TotalPay;
             var beyondMoney = _c.TeaserOffers.Count(o => o.PriceScrip > missionEarnings);
 
+            var fresh = _c.Factions.NewStanding();
             Assert.That(_c.TeaserOffers.All(o => o.TeaserOnly && !o.CanBuyNow), Is.True);
+            Assert.That(_c.TeaserOffers.Where(o => o.IsUnlockedFor(fresh)).Select(o => o.Id), Is.Empty, "nothing on the shelf is unlocked at the start");
             Assert.That(_c.TeaserOffers.All(o => o.UnlockRequirement.Contains("standing") || o.UnlockRequirement.Contains("licence")), Is.True,
                 "every teaser needs standing or a licence the player can't have yet");
             Assert.That(beyondMoney, Is.GreaterThan(_c.TeaserOffers.Count / 2), $"{beyondMoney} of {_c.TeaserOffers.Count} cost more than the greedy path earns ({missionEarnings})");

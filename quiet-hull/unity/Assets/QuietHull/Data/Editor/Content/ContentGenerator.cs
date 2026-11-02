@@ -129,6 +129,11 @@ namespace QuietHull.Data.Editor
             ContentGenerator.ShowResult("Prologue", ContentGenerator.Run("Prologue", ContentGenerator.DefaultRoot,
                 factory => PrologueContentBuilder.Build(factory).Catalog));
 
+        [MenuItem("Quiet Hull/Content/Generate Mission 3 (The Tremolino)", priority = 12)]
+        private static void GenerateTremolino() =>
+            ContentGenerator.ShowResult("The Tremolino", ContentGenerator.Run("The Tremolino", ContentGenerator.DefaultRoot,
+                factory => TremolinoContentBuilder.Build(factory).Catalog));
+
         [MenuItem("Quiet Hull/Content/Generate Sample: Tremolino sun and belt", priority = 30)]
         private static void GenerateSunwheel() =>
             ContentGenerator.ShowResult("Tremolino sample", ContentGenerator.Run("Tremolino sample", ContentGenerator.DefaultRoot,

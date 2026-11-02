@@ -32,6 +32,14 @@ namespace QuietHull.Data
         [Min(0)] [SerializeField] internal int surgeCost = 1;
         [Min(0)] [SerializeField] internal int chitinBounty = 1;
         [Min(0)] [SerializeField] internal int experience = 1;
+        [Header("Death burst (Bloats)")]
+        [Min(0f)] [SerializeField] internal float deathBurstDamage;
+        [Min(0f)] [SerializeField] internal float deathBurstRadius;
+        [Tooltip("Its burst eats doors and barricades.")]
+        [SerializeField] internal bool deathBurstEatsDoors;
+        [Tooltip("Damage per second to doors and barricades it touches while alive.")]
+        [Min(0f)] [SerializeField] internal float doorDamagePerSecond;
+
         [Tooltip("Highest Heat intensity (0–3) it can stand. Above it, it burns: it flees if it can and dies if it can't.")]
         [Range(0, 3)] [SerializeField] internal int heatTolerance = 1;
         [Tooltip("How much acid blood it sprays when killed, toward an amalgam deposit (0 = none, e.g. synthetics).")]
@@ -56,6 +64,11 @@ namespace QuietHull.Data
         public int Experience => experience;
         public float AmalgamWeight => amalgamWeight;
         public int HeatTolerance => heatTolerance;
+        public float DeathBurstDamage => deathBurstDamage;
+        public float DeathBurstRadius => deathBurstRadius;
+        public bool DeathBurstEatsDoors => deathBurstEatsDoors;
+        public float DoorDamagePerSecond => doorDamagePerSecond;
+        public bool BurstsOnDeath => deathBurstDamage > 0f && deathBurstRadius > 0f;
 
         /// <summary>Damage per second for each Heat level above tolerance.</summary>
         public const float HeatBurnPerLevel = 20f;
@@ -90,6 +103,11 @@ namespace QuietHull.Data
             if (CanSignal)
             {
                 report.Positive(this, nameof(signalCooldownSeconds), signalCooldownSeconds);
+            }
+
+            if ((deathBurstDamage > 0f) != (deathBurstRadius > 0f))
+            {
+                report.Error(this, nameof(deathBurstRadius), "a death burst needs both damage and radius.");
             }
         }
     }
