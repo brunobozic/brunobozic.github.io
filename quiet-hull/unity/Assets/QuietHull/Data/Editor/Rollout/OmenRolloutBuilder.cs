@@ -103,7 +103,7 @@ namespace QuietHull.Data.Editor
                 Benefit(OmenEffectKind.AffixBias, ScalingRule.Chance, 0.30f),
                 Benefit(OmenEffectKind.CurrencyPercent, ScalingRule.Linear, 50f));
 
-            // ---- Mission 6: the ledger's price ---------------------------------------------------
+            // ---- Mission 6: the fall of Patusan -------------------------------------------------
             c.BrittleWelds = Card(make, "omen_brittle_welds", "Brittle Welds",
                 "Welds hold half as long; sentry guns in the loot.", OmenFamily.Ship, Rarity.Common, 2,
                 "Sentries you place start with a full magazine.",
@@ -301,7 +301,8 @@ namespace QuietHull.Data.Editor
                 benchOpen = mission >= BenchOpensAtMission,
                 mutationsOpen = mission >= MutationsOpenAtMission,
                 corruptionOpen = mission >= InfusionMath.OpensAtMission,
-                hasSetPieceLockingMajor = mission == 8 || mission == 10
+                // Set-pieces: the fall of Patusan (6), the Sephora's climax (8), the Act 2 finale (10).
+                hasSetPieceLockingMajor = mission == 6 || mission == 8 || mission == 10
             };
 
         /// <summary>Catalysts on owned gear: from mission 4 (the T2 fabricator arrives in mission 3).</summary>
@@ -329,7 +330,7 @@ namespace QuietHull.Data.Editor
                 Row(3, "The Tremolino", 1, 2, 0, 0, Rarity.Common, false, Rarity.Common, 4),
                 Row(4, "Pod 7", 2, 2, 1, 1, Rarity.Common, false, Rarity.Common, 4),
                 Row(5, "The Nan-Shan", 2, 2, 2, 2, Rarity.Uncommon, false, Rarity.Common, 5),
-                Row(6, "The ledger's price", 3, 3, 2, 2, Rarity.Uncommon, true, Rarity.Rare, 5),
+                Row(6, "The fall of Patusan", 3, 3, 2, 2, Rarity.Uncommon, true, Rarity.Rare, 5),
                 Row(7, "Old patterns", 3, 3, 2, 3, Rarity.Rare, true, Rarity.Rare, 6),
                 sephora,
                 Row(9, "Second breach", 3, 3, 2, 4, Rarity.Rare, true, Rarity.Rare, 7),

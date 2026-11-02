@@ -74,9 +74,11 @@ namespace QuietHull.Data.Tests
         }
 
         [Test]
-        public void SetPieces_LockTheMajorSlot_InTheSephoraAndTheFinale()
+        public void SetPieces_LockTheMajorSlot_InPatusansFall_TheSephora_AndTheFinale()
         {
-            Assert.That(Rollout.Schedule.Where(s => s.hasSetPieceLockingMajor).Select(s => s.mission), Is.EqualTo(new[] { 8, 10 }));
+            Assert.That(Rollout.Schedule.Where(s => s.hasSetPieceLockingMajor).Select(s => s.mission), Is.EqualTo(new[] { 6, 8, 10 }));
+            Rollout.TryGetSchedule(6, out var m6);
+            Assert.That(m6.workingTitle, Is.EqualTo("The fall of Patusan"));
             Assert.That(Rollout.MajorSlotsFor(8, true), Is.Zero);
             Assert.That(Rollout.MinorSlotsFor(8, 7, false), Is.EqualTo(2), "Minors stay open on a set-piece");
         }

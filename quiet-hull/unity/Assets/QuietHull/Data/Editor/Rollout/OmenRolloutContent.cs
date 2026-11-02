@@ -16,7 +16,7 @@ namespace QuietHull.Data.Editor
         public OmenCardDefinition CullingLeaper { get; internal set; }
         public OmenCardDefinition IonStorm { get; internal set; }
 
-        // Mission 6: the ledger's price
+        // Mission 6: the fall of Patusan
         public OmenCardDefinition BrittleWelds { get; internal set; }
         public OmenCardDefinition TheDeck { get; internal set; }
         public OmenCardDefinition IronChitin { get; internal set; }
