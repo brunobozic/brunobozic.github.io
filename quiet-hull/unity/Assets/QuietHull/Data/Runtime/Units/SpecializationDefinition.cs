@@ -25,6 +25,12 @@ namespace QuietHull.Data
 
         [SerializeField] internal StatModifier[] passives = Array.Empty<StatModifier>();
 
+        [Header("Matching module")]
+        [Tooltip("Worker trades: the module this trade upgrades instead of duplicating (Miner → mining beam).")]
+        [SerializeField] internal AugmentDefinition upgradesModule;
+        [Tooltip("Marks the matching module gains while the trade is active (capped at the module's maximum).")]
+        [Range(0, 4)] [SerializeField] internal int moduleMarkBonus = 2;
+
         [Header("Ability")]
         [SerializeField] internal string abilityId = string.Empty;
         [SerializeField] internal string abilityName = string.Empty;
@@ -45,6 +51,48 @@ namespace QuietHull.Data
         public string LockedReason => lockedReason;
 
         public IReadOnlyList<StatModifier> Passives => passives ?? Array.Empty<StatModifier>();
+        public AugmentDefinition UpgradesModule => upgradesModule;
+        public int ModuleMarkBonus => moduleMarkBonus;
+
+        /// <summary>The mark <paramref name="module"/> works at with this trade: +bonus for the matching module, capped.</summary>
+        public Mark EffectiveMark(AugmentDefinition module, Mark fitted)
+        {
+            if (module == null || module != upgradesModule || moduleMarkBonus <= 0)
+            {
+                return fitted;
+            }
+
+            return (Mark)Math.Min((int)fitted + moduleMarkBonus, (int)module.MaxMark);
+        }
+
+        /// <summary>
+        /// The passives that apply. With the matching module fitted, passives on stats the module already
+        /// covers drop out (the module's marks carry them instead), so trade and module never stack twice.
+        /// </summary>
+        public IReadOnlyList<StatModifier> PassivesWith(bool matchingModuleFitted)
+        {
+            if (!matchingModuleFitted || upgradesModule == null)
+            {
+                return Passives;
+            }
+
+            var covered = new HashSet<UnitStat>();
+            foreach (var modifier in upgradesModule.Modifiers)
+            {
+                covered.Add(modifier.stat);
+            }
+
+            var result = new List<StatModifier>(Passives.Count);
+            foreach (var passive in Passives)
+            {
+                if (!covered.Contains(passive.stat))
+                {
+                    result.Add(passive);
+                }
+            }
+
+            return result;
+        }
         public string AbilityId => abilityId;
         public string AbilityName => abilityName;
         public string AbilityDescription => abilityDescription;

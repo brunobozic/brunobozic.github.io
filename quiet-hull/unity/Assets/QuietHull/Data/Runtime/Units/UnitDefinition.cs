@@ -195,9 +195,9 @@ namespace QuietHull.Data
 
             if (UsesCharge)
             {
-                if (charge.drainPerSecond == null || charge.drainPerSecond.Length != ChargeProfile.ActivityCount)
+                if (!charge.IsOrdered)
                 {
-                    report.Error(this, nameof(charge), $"needs a drain rate for each of the {ChargeProfile.ActivityCount} activities.");
+                    report.Error(this, nameof(charge), "drain bands must run idle ≤ light ≤ heavy, with light above zero.");
                 }
 
                 report.Positive(this, "charge.rechargePerSecond", charge.rechargePerSecond);

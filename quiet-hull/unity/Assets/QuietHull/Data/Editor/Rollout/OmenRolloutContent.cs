@@ -55,7 +55,7 @@ namespace QuietHull.Data.Editor
         /// <summary>The Major cards this pack adds (missions 4–10).</summary>
         public IReadOnlyList<OmenCardDefinition> NewCards { get; internal set; }
 
-        /// <summary>The Minor cards this pack adds (the ledger's three suits, Skulls and Candles).</summary>
+        /// <summary>The Minor cards this pack adds (the ledger's three suits, Skulls, and Candles incl. The Deck and Prism Eclipse).</summary>
         public IReadOnlyList<OmenCardDefinition> MinorCards { get; internal set; }
         public DefinitionCatalog Catalog { get; internal set; }
         public IReadOnlyList<DefinitionBase> All { get; internal set; }

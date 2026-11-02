@@ -110,8 +110,9 @@ namespace QuietHull.Data.Editor
                 Handicap(OmenEffectKind.WeldDurationPercent, ScalingRule.Linear, -50f),
                 Benefit(OmenEffectKind.AffixBias, ScalingRule.Chance, 0.30f));
 
-            c.TheDeck = Card(make, "omen_the_deck", "The Deck",
-                "Fortune: one more Omen card from Requisition; the aliens hit a little harder.", OmenFamily.Fortune, Rarity.Common, 1,
+            // Fortune folded into Candles (review 2): The Deck and Prism Eclipse are Minor cards.
+            c.TheDeck = Minor(make, "omen_the_deck", "The Deck",
+                "Candles: one more Omen card from Requisition; the aliens hit a little harder.", OmenSuit.Candles,
                 "Every Omen dropped this run is one rarity higher.",
                 Benefit(OmenEffectKind.OmenDropCount, ScalingRule.Count, 1f),
                 Handicap(OmenEffectKind.AlienDamagePercent, ScalingRule.Linear, 10f));
@@ -180,16 +181,16 @@ namespace QuietHull.Data.Editor
             blood.brutalityPayout = true;
             c.BloodPrice = blood;
 
-            c.PrismEclipse = Card(make, "omen_prism_eclipse", "Prism Eclipse",
-                "Fortune: drops gain rarity; the aliens hit harder.", OmenFamily.Fortune, Rarity.Common, 3,
+            c.PrismEclipse = Minor(make, "omen_prism_eclipse", "Prism Eclipse",
+                "Candles: drops gain rarity; the aliens hit harder.", OmenSuit.Candles,
                 "One drop per run is upgraded to Legendary.",
                 Benefit(OmenEffectKind.RarityRolls, ScalingRule.Count, 1f),
-                Handicap(OmenEffectKind.AlienDamagePercent, ScalingRule.Linear, 20f));
+                Handicap(OmenEffectKind.AlienDamagePercent, ScalingRule.Linear, 10f));
 
             c.NewCards = new[]
             {
-                c.IronVow, c.HungryHive, c.CullingLeaper, c.IonStorm, c.BrittleWelds, c.TheDeck, c.IronChitin, c.EngineeringDeck,
-                c.TheFortress, c.TheWatcher, c.LongNight, c.SecondBreach, c.CullingSpitter, c.ChampionTide, c.BloodPrice, c.PrismEclipse
+                c.IronVow, c.HungryHive, c.CullingLeaper, c.IonStorm, c.BrittleWelds, c.IronChitin, c.EngineeringDeck,
+                c.TheFortress, c.TheWatcher, c.LongNight, c.SecondBreach, c.CullingSpitter, c.ChampionTide, c.BloodPrice
             };
         }
 
@@ -239,7 +240,7 @@ namespace QuietHull.Data.Editor
                 Benefit(OmenEffectKind.DropRolls, ScalingRule.Count, 1f),
                 Handicap(OmenEffectKind.HiveClockSeconds, ScalingRule.Linear, -60f));
 
-            c.MinorCards = new[] { c.TheTithe, c.BrokersSeal, c.TheLamplighter, c.TheVeteran, c.TheVigil };
+            c.MinorCards = new[] { c.TheTithe, c.BrokersSeal, c.TheLamplighter, c.TheVeteran, c.TheVigil, c.TheDeck, c.PrismEclipse };
         }
 
         /// <summary>Our answer to Martyr's endgame card: a high Threat floor, no Commons, more of the best. Act 3, from Rank 12.</summary>

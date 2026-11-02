@@ -54,6 +54,12 @@ namespace QuietHull.Data
         /// <summary>Change to the range alien eyes see this unit at, e.g. −0.55 = seen at 45% range.</summary>
         public float VisibilityPercent { get; }
         public float CooldownPenaltyPercent { get; }
+
+        /// <summary>
+        /// What the player sees: three signature stats. Noise is the louder of footsteps and vibration;
+        /// Heat and Aggro as they are. Visibility (seen range) shows as a fourth, smaller readout.
+        /// </summary>
+        public SignatureSummary Signature => new SignatureSummary(Math.Max(NoiseWalking, Vibration), HeatIdle, AggroPercent, VisibilityPercent);
         public int ContrabandCount { get; }
         public int TotalPriceScrip { get; }
         public IReadOnlyList<StatModifier> Modifiers { get; }

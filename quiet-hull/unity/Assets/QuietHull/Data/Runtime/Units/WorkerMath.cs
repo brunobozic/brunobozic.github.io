@@ -64,7 +64,27 @@ namespace QuietHull.Data
         /// <summary>Smart and quiet enough to be sent ahead to open rooms, search and salvage on its own.</summary>
         public static bool CanScavenge(UnitDefinition unit, Mark mark, LoadoutProfile profile) =>
             profile != null && Autonomy(unit, mark, profile) >= ScavengeAutonomy &&
-            profile.NoiseWalking <= ScavengeMaxNoise && profile.VisibilityPercent <= ScavengeMaxVisibility;
+            profile.Signature.Noise <= ScavengeMaxNoise && profile.VisibilityPercent <= ScavengeMaxVisibility;
+
+        /// <summary>
+        /// The behaviours a worker has, as the player sees them: its Processor and firmware grant them
+        /// (autonomy is the hidden number behind it). Scavenge also needs the worker to be quiet.
+        /// </summary>
+        public static WorkerBehaviour Behaviours(UnitDefinition unit, Mark mark, LoadoutProfile profile)
+        {
+            var result = WorkerBehaviour.None;
+            if (CanScavenge(unit, mark, profile))
+            {
+                result |= WorkerBehaviour.Scavenge;
+            }
+
+            if (CanRunSentryTactics(unit, mark, profile))
+            {
+                result |= WorkerBehaviour.SentryTactics;
+            }
+
+            return result;
+        }
 
         /// <summary>Smart enough to place sentries where it sees swarms coming from, move them when routes change, and restock them.</summary>
         public static bool CanRunSentryTactics(UnitDefinition unit, Mark mark, LoadoutProfile profile) =>

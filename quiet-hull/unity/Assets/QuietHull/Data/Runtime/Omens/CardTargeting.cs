@@ -4,8 +4,9 @@ using System.Collections.Generic;
 namespace QuietHull.Data
 {
     /// <summary>
-    /// The card-targeting Catalysts slotted for one run: a Beacon on one card, a Sigil on one family or suit,
-    /// an Echo on the slotted cards. Immutable; build one per run with the With* methods.
+    /// The run's card targeting: the cards slotted (each has a built-in Echo), plus the card-targeting
+    /// Catalysts: a Beacon on one card, a Sigil on one family or suit, an Echo Catalyst on the slotted cards.
+    /// Immutable; build one per run with the With* methods.
     /// </summary>
     public sealed class CardTargeting
     {
@@ -37,7 +38,10 @@ namespace QuietHull.Data
         public OmenSuit SigilSuit { get; }
         public Rarity SigilRarity { get; }
 
+        /// <summary>An Echo Catalyst is slotted (on top of the built-in Echo every slotted card has).</summary>
         public bool HasEcho { get; }
+
+        /// <summary>The cards slotted this run; each claims the built-in Echo share.</summary>
         public IReadOnlyList<OmenCardDefinition> EchoCards { get; }
         public Rarity EchoRarity { get; }
 
@@ -50,7 +54,12 @@ namespace QuietHull.Data
         public CardTargeting WithSigil(OmenSuit suit, Rarity rarity) =>
             new CardTargeting(BeaconCard, BeaconRarity, true, OmenFamily.Suit, suit, rarity, EchoCards, EchoRarity, HasEcho);
 
-        /// <summary>Echo on the run's slotted cards (copy the list; later changes to it don't leak in).</summary>
+        /// <summary>The run's slotted cards, for the built-in Echo (copied; later changes to the list don't leak in).</summary>
+        public CardTargeting WithSlotted(IEnumerable<OmenCardDefinition> slotted) =>
+            new CardTargeting(BeaconCard, BeaconRarity, HasSigil, SigilFamily, SigilSuit, SigilRarity,
+                new List<OmenCardDefinition>(slotted ?? throw new ArgumentNullException(nameof(slotted))).AsReadOnly(), EchoRarity, HasEcho);
+
+        /// <summary>An Echo Catalyst on the run's slotted cards (copy the list; later changes to it don't leak in).</summary>
         public CardTargeting WithEcho(IEnumerable<OmenCardDefinition> slotted, Rarity rarity) =>
             new CardTargeting(BeaconCard, BeaconRarity, HasSigil, SigilFamily, SigilSuit, SigilRarity,
                 new List<OmenCardDefinition>(slotted ?? throw new ArgumentNullException(nameof(slotted))).AsReadOnly(), rarity, true);

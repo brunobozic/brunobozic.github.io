@@ -32,6 +32,7 @@ namespace QuietHull.Data.Editor
             AugmentSlot.Frame, AugmentSlot.Hardening, AugmentSlot.Hardening, AugmentSlot.Maintenance, AugmentSlot.ToolMount, AugmentSlot.Processor
         };
         public AugmentDefinition ConstructionRig { get; internal set; }
+        public AugmentDefinition FieldRepairKit { get; internal set; }
 
         public SpecializationDefinition Hauler { get; internal set; }
         public SpecializationDefinition Miner { get; internal set; }
@@ -40,16 +41,11 @@ namespace QuietHull.Data.Editor
         public SpecializationDefinition Sapper { get; internal set; }
         public IReadOnlyList<SpecializationDefinition> WorkerTrades => new[] { Hauler, Miner, Constructor, Technician, Sapper };
 
-        /// <summary>The standard worker battery: about 20 minutes walking, 5 minutes mining, 4 carrying a cryo bed.</summary>
-        public static ChargeProfile WorkerCharge => new ChargeProfile(600f, 10f,
-            0.05f, // Idle
-            0.5f,  // Walking
-            1.0f,  // PushingCart
-            2.5f,  // CarryingOversize
-            2.0f,  // Mining
-            2.0f,  // Welding
-            1.5f,  // Building
-            1.5f); // Defending
+        /// <summary>
+        /// The standard worker battery, in three drain bands: about 3 hours idle, 20 minutes of light work
+        /// (walking, a cart) and 5 minutes of heavy work (tools, a cryo bed, a fight).
+        /// </summary>
+        public static ChargeProfile WorkerCharge => new ChargeProfile(600f, 10f, 0.05f, 0.5f, 2.0f);
 
         public DefinitionCatalog Catalog { get; internal set; }
 

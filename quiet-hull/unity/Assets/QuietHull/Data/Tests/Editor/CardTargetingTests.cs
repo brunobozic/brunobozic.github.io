@@ -90,7 +90,8 @@ namespace QuietHull.Data.Tests
             var t = CardTargeting.None.WithEcho(slotted, Rarity.Common);
             foreach (var card in slotted)
             {
-                Assert.That(ChanceOf(card, t), Is.EqualTo(0.1f + 0.8f / _pool.Count).Within(1e-6f));
+                // Built-in 10% plus the Common Echo Catalyst's 10%.
+                Assert.That(ChanceOf(card, t), Is.EqualTo(0.2f + 0.6f / _pool.Count).Within(1e-6f));
             }
         }
 
@@ -131,6 +132,22 @@ namespace QuietHull.Data.Tests
             Assert.That(CardDropMath.Resolve(_pool, t, 0.8f), Is.SameAs(_pool[0]), "0.8 + a uniform share");
             Assert.That(CardDropMath.Resolve(_pool, t, 0.9999f), Is.SameAs(_pool[_pool.Count - 1]));
             Assert.That(CardDropMath.Resolve(new List<OmenCardDefinition>(), t, 0.5f), Is.Null);
+        }
+
+        [Test]
+        public void EverySlottedCard_HasABuiltInEcho()
+        {
+            var t = CardTargeting.None.WithSlotted(new[] { _r.IronVow });
+            Assert.That(ChanceOf(_r.IronVow, t), Is.EqualTo(0.1f + 0.9f / _pool.Count).Within(1e-6f));
+            Assert.That(CardDropMath.Chances(_pool, t).Sum(p => p.Value), Is.EqualTo(1f).Within(1e-5f));
+        }
+
+        [Test]
+        public void PlayingACard_TakesItFromLevelOneToFive_InAboutTwentyFiveRuns()
+        {
+            var copiesPerRun = 3f * ChanceOf(_r.IronVow, CardTargeting.None.WithSlotted(new[] { _r.IronVow }));
+            var runs = 10f / copiesPerRun;
+            Assert.That(runs, Is.InRange(20f, 28f), $"{runs:0.0} runs slotted, no Catalysts");
         }
 
         [Test]

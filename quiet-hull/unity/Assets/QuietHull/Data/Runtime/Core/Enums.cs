@@ -373,6 +373,17 @@ namespace QuietHull.Data
     }
 
     /// <summary>What a worker is doing, for charge (stamina) drain. (Named to avoid System.Diagnostics.Activity.)</summary>
+    /// <summary>How hard an activity drains a worker's charge: three bands instead of a rate per activity.</summary>
+    public enum ChargeBand
+    {
+        /// <summary>Standing, guarding, waiting.</summary>
+        Idle = 0,
+        /// <summary>Walking and pushing a cart.</summary>
+        Light = 1,
+        /// <summary>Tool work, oversize loads and defending.</summary>
+        Heavy = 2
+    }
+
     public enum WorkActivity
     {
         Idle = 0,
@@ -682,5 +693,16 @@ namespace QuietHull.Data
         Reward = 2,
         /// <summary>Found on the hulk (a cache, a body, the crew's effects).</summary>
         Found = 3
+    }
+
+    /// <summary>What a worker can do on its own, granted by its Processor module and firmware.</summary>
+    [System.Flags]
+    public enum WorkerBehaviour
+    {
+        None = 0,
+        /// <summary>Sent ahead to open rooms, search and salvage on its own (also needs to be quiet).</summary>
+        Scavenge = 1,
+        /// <summary>Places sentries where the swarm comes from, moves them when routes change, restocks them.</summary>
+        SentryTactics = 2
     }
 }

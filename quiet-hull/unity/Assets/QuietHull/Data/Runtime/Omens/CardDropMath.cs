@@ -12,6 +12,9 @@ namespace QuietHull.Data
     /// </summary>
     public static class CardDropMath
     {
+        /// <summary>Every slotted card claims this share of card drops on its own: playing a card grows it.</summary>
+        public const float BuiltInEchoShare = 0.10f;
+
         /// <summary>Beacon and Echo together never claim more than this; there is always a chance of something else.</summary>
         public const float MaxTargetedShare = 0.9f;
 
@@ -64,12 +67,10 @@ namespace QuietHull.Data
                 Claim(targeting.BeaconCard, BeaconShare(targeting.BeaconRarity));
             }
 
-            if (targeting.HasEcho)
+            var perSlotted = BuiltInEchoShare + (targeting.HasEcho ? EchoShare(targeting.EchoRarity) : 0f);
+            foreach (var card in targeting.EchoCards)
             {
-                foreach (var card in targeting.EchoCards)
-                {
-                    Claim(card, EchoShare(targeting.EchoRarity));
-                }
+                Claim(card, perSlotted);
             }
 
             // Scale the targeted claims down together if they would crowd out everything else.

@@ -247,6 +247,37 @@ namespace QuietHull.Data.Tests
         }
 
         [Test]
+        public void Trades_UpgradeTheirMatchingModule_InsteadOfStacking()
+        {
+            Assert.That(_a.Miner.UpgradesModule, Is.SameAs(_a.MiningBeam));
+            Assert.That(_a.Constructor.UpgradesModule, Is.SameAs(_a.ConstructionRig));
+            Assert.That(_a.Sapper.UpgradesModule, Is.SameAs(_a.MuffledFrame));
+            Assert.That(_a.Hauler.UpgradesModule, Is.SameAs(_a.LoaderFrame));
+            Assert.That(_a.Technician.UpgradesModule, Is.SameAs(_a.FieldRepairKit));
+
+            Assert.That(_a.Constructor.EffectiveMark(_a.ConstructionRig, Mark.MkII), Is.EqualTo(Mark.MkIV));
+            Assert.That(_a.Constructor.EffectiveMark(_a.MiningBeam, Mark.MkII), Is.EqualTo(Mark.MkII), "only the matching module");
+            Assert.That(_a.Constructor.EffectiveMark(_a.ConstructionRig, _a.ConstructionRig.MaxMark), Is.EqualTo(_a.ConstructionRig.MaxMark), "capped");
+
+            // With the rig fitted, the trade's construction passives drop out: the rig's +2 marks carry them.
+            var withRig = _a.Constructor.PassivesWith(true);
+            Assert.That(withRig.Select(p => p.stat), Has.None.EqualTo(UnitStat.ConstructionSpeed));
+            Assert.That(_a.Constructor.PassivesWith(false), Has.Count.EqualTo(_a.Constructor.Passives.Count));
+
+            var rigAtFour = _a.ConstructionRig.ModifiersAt(Mark.MkIV);
+            var rigAtTwo = _a.ConstructionRig.ModifiersAt(Mark.MkII);
+            var charge = AugmentCatalog.WorkerCharge;
+            Assert.That(charge.SecondsOf(WorkActivity.Welding, rigAtFour), Is.GreaterThan(charge.SecondsOf(WorkActivity.Welding, rigAtTwo)));
+        }
+
+        [Test]
+        public void Signature_IsShownAsNoiseHeatAggro()
+        {
+            var s = new SignatureSummary(2f, 1f, 0.5f, -0.1f);
+            Assert.That(s.ToString(), Does.Contain("Noise 2").And.Contain("Heat 1").And.Contain("Aggro +50%"));
+        }
+
+        [Test]
         public void Charge_HeavyWorkEmptiesItFast_StandingStillBarelyTouchesIt()
         {
             var charge = _c.SecondWorker.Charge;
@@ -255,7 +286,9 @@ namespace QuietHull.Data.Tests
             Assert.That(_c.SecondWorker.UsesCharge, Is.True);
             Assert.That(charge.SecondsOf(WorkActivity.Walking, none), Is.EqualTo(1200f).Within(1f), "about 20 minutes walking");
             Assert.That(charge.SecondsOf(WorkActivity.Mining, none), Is.EqualTo(300f).Within(1f), "about 5 minutes mining");
-            Assert.That(charge.SecondsOf(WorkActivity.CarryingOversize, none), Is.EqualTo(240f).Within(1f), "about 4 minutes carrying a cryo bed");
+            Assert.That(charge.SecondsOf(WorkActivity.CarryingOversize, none), Is.EqualTo(300f).Within(1f), "about 5 minutes carrying a cryo bed (heavy band)");
+            Assert.That(ChargeProfile.BandOf(WorkActivity.PushingCart), Is.EqualTo(ChargeBand.Light));
+            Assert.That(ChargeProfile.BandOf(WorkActivity.Defending), Is.EqualTo(ChargeBand.Heavy));
             Assert.That(charge.SecondsOf(WorkActivity.Idle, none), Is.GreaterThan(10000f));
             Assert.That(charge.SecondsToFull(none), Is.EqualTo(60f).Within(0.1f));
         }
@@ -290,11 +323,11 @@ namespace QuietHull.Data.Tests
             Assert.That(worker.Can(UnitAbility.StaffStation) && worker.Can(UnitAbility.Harvest) && worker.Can(UnitAbility.SupplySentries), Is.True);
             Assert.That(worker.Can(UnitAbility.AutoRecharge), Is.True);
 
-            // The line breaks on its own if nobody recharges: the miner lasts 5 minutes, the fabricator operator under 7.
-            Assert.That(worker.Charge.SecondsOf(WorkActivity.Mining, none), Is.LessThan(worker.Charge.SecondsOf(WorkActivity.Building, none)));
+            // The line breaks on its own if nobody recharges: the miner and the fabricator operator both last about 5 minutes (heavy band).
+            Assert.That(worker.Charge.SecondsOf(WorkActivity.Mining, none), Is.EqualTo(worker.Charge.SecondsOf(WorkActivity.Building, none)));
             Assert.That(worker.Charge.SecondsOf(WorkActivity.Building, none), Is.LessThan(worker.Charge.SecondsOf(WorkActivity.Walking, none)));
-            // A runner that has to fight burns three times faster than one that walks.
-            Assert.That(worker.Charge.Drain(WorkActivity.Defending), Is.EqualTo(3f * worker.Charge.Drain(WorkActivity.Walking)));
+            // A runner that has to fight burns four times faster than one that walks.
+            Assert.That(worker.Charge.Drain(WorkActivity.Defending), Is.EqualTo(4f * worker.Charge.Drain(WorkActivity.Walking)));
         }
     }
 }

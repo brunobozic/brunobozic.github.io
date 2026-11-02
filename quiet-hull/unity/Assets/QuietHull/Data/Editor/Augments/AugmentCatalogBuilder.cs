@@ -32,6 +32,7 @@ namespace QuietHull.Data.Editor
             BuildSynthAugments(catalog, make);
             BuildWorkerModules(catalog, make);
             BuildWorkerTrades(catalog, make);
+            LinkTradesToModules(catalog);
             BuildShade(catalog, make);
 
             catalog.Catalog = make.WriteCatalog(CatalogId);
@@ -285,7 +286,7 @@ namespace QuietHull.Data.Editor
             c.SelfRepair = W("wmod_maint_nanites", "Self-repair nanites", "Repairs itself, slowly in a fight, faster out of one.",
                 AugmentSlot.Maintenance, AugmentLine.Standard, Legality.Legal, 2f, 30f, 0f, 0f, 0f, 0f, 400,
                 StatModifier.Add(UnitStat.HealthRegenPerSecond, 1f), StatModifier.Add(UnitStat.HealthRegenOutOfCombat, 3f));
-            W("wmod_maint_field_kit", "Field repair kit", "Repairs other units and sentries.",
+            c.FieldRepairKit = W("wmod_maint_field_kit", "Field repair kit", "Repairs other units and sentries.",
                 AugmentSlot.Maintenance, AugmentLine.Fine, Legality.Legal, 4f, 20f, 0f, 0f, 0f, 0f, 400,
                 StatModifier.Add(UnitStat.RepairOthersPerSecond, 15f));
             W("wmod_maint_quiet_nanites", "Quiet nanites", "Silent self-repair for workers who mustn't be heard.",
@@ -393,6 +394,16 @@ namespace QuietHull.Data.Editor
                 "Scouting; setting up kill zones before the hive wakes; The Ghost and other vows.", "Fighting: it hides, it doesn't hold.",
                 StatModifier.Add(UnitStat.NoiseWalking, -1f), StatModifier.Percent(UnitStat.ActionNoise, -0.30f),
                 StatModifier.Add(UnitStat.Visibility, -0.15f), StatModifier.Percent(UnitStat.DeploySpeed, 0.50f));
+        }
+
+        /// <summary>Each trade upgrades its matching module (+2 marks) instead of duplicating it.</summary>
+        private static void LinkTradesToModules(AugmentCatalog c)
+        {
+            c.Hauler.upgradesModule = c.LoaderFrame;
+            c.Miner.upgradesModule = c.MiningBeam;
+            c.Constructor.upgradesModule = c.ConstructionRig;
+            c.Technician.upgradesModule = c.FieldRepairKit;
+            c.Sapper.upgradesModule = c.MuffledFrame;
         }
 
         private static void BuildShade(AugmentCatalog c, DefinitionMaker make)
