@@ -18,6 +18,8 @@ namespace QuietHull.Data
         [Tooltip("Condition lost if detaching is interrupted (yanked out).")]
         [Min(0f)] [SerializeField] internal float interruptConditionLoss = 25f;
         [Min(1)] [SerializeField] internal int placedCount = 1;
+        [Tooltip("Scrip paid the moment it's detached (a salvage bonus, on top of the contract).")]
+        [Min(0)] [SerializeField] internal int salvageBonusScrip;
 
         public CargoDefinition Yields => yields;
         public ToolActionKind RequiredAction => requiredAction;
@@ -26,6 +28,7 @@ namespace QuietHull.Data
         public float Vibration => vibration;
         public float InterruptConditionLoss => interruptConditionLoss;
         public int PlacedCount => placedCount;
+        public int SalvageBonusScrip => salvageBonusScrip;
 
         protected override void ValidateDefinition(ValidationReport report)
         {

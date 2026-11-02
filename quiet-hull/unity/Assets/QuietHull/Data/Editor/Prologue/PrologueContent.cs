@@ -47,7 +47,6 @@ namespace QuietHull.Data.Editor
 
         // World
         public RoomAmbienceDefinition CrusherBay { get; internal set; }
-        public RoomAmbienceDefinition PumpHall { get; internal set; }
         public RoomAmbienceDefinition ValveGallery { get; internal set; }
         public LootCacheDefinition MaintenanceShelves { get; internal set; }
         public LootCacheDefinition SecurityOfficerCorpse { get; internal set; }
@@ -61,6 +60,12 @@ namespace QuietHull.Data.Editor
         public WaveDefinition StillCrawlers { get; internal set; }
         public WaveDefinition ThawingCrawlers { get; internal set; }
         public AnnouncementScheduleDefinition Warden { get; internal set; }
+        public ResourceDefinition ShipsStores { get; internal set; }
+        public IReadOnlyList<LootCacheDefinition> StoresCrates { get; internal set; }
+        public IReadOnlyList<LoreLogDefinition> Logs { get; internal set; }
+        public CountermeasureCardDefinition VentCard { get; internal set; }
+        public CommanderRankDefinition Ranks { get; internal set; }
+        public GoalDefinition NewNameGoal { get; internal set; }
         public MissionScriptDefinition Mission { get; internal set; }
         public DefinitionCatalog Catalog { get; internal set; }
 

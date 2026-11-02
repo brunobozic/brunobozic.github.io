@@ -15,6 +15,8 @@ namespace QuietHull.Data
         [Tooltip("Can be lent for free for the current contract instead of bought.")]
         [SerializeField] internal bool lentForContract;
         [SerializeField] internal string vendor = string.Empty;
+        [Tooltip("Hidden until the story sets this flag (staging the hub). Empty = shown from the first visit.")]
+        [SerializeField] internal string visibleFromFlag = string.Empty;
 
         [Header("Teaser")]
         [Tooltip("Shown in the market as a preview but can't be bought yet.")]
@@ -32,6 +34,8 @@ namespace QuietHull.Data
         public bool Required => required;
         public bool LentForContract => lentForContract;
         public string Vendor => vendor;
+        public string VisibleFromFlag => visibleFromFlag;
+        public bool IsVisibleFor(PlayerStanding standing) => string.IsNullOrEmpty(visibleFromFlag) || (standing != null && standing.HasFlag(visibleFromFlag));
         public bool TeaserOnly => teaserOnly;
         public string UnlockRequirement => unlockRequirement;
         public System.Collections.Generic.IReadOnlyList<Requirement> RequiresAll => requiresAll ?? System.Array.Empty<Requirement>();

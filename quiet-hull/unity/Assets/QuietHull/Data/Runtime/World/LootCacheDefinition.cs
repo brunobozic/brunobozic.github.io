@@ -15,6 +15,12 @@ namespace QuietHull.Data
         [SerializeField] internal ItemStack[] items = Array.Empty<ItemStack>();
         [Tooltip("Tools needed to get in, e.g. the welder for bolts and the disassembler for debris.")]
         [SerializeField] internal ToolActionKind[] accessRequires = Array.Empty<ToolActionKind>();
+        [Tooltip("Omen cards found here.")]
+        [SerializeField] internal OmenCardDefinition[] omenCards = Array.Empty<OmenCardDefinition>();
+        [Tooltip("Lore logs found here.")]
+        [SerializeField] internal LoreLogDefinition[] logs = Array.Empty<LoreLogDefinition>();
+        [Tooltip("Shown on the map as a \"?\" until opened.")]
+        [SerializeField] internal bool markedOnMap;
         [Tooltip("How many copies the level places (e.g. 10 bulkhead panels).")]
         [Min(1)] [SerializeField] internal int placedCount = 1;
 
@@ -22,6 +28,9 @@ namespace QuietHull.Data
         public IReadOnlyList<ItemStack> Items => items ?? Array.Empty<ItemStack>();
         public IReadOnlyList<ToolActionKind> AccessRequires => accessRequires ?? Array.Empty<ToolActionKind>();
         public int PlacedCount => placedCount;
+        public IReadOnlyList<OmenCardDefinition> OmenCards => omenCards ?? Array.Empty<OmenCardDefinition>();
+        public IReadOnlyList<LoreLogDefinition> Logs => logs ?? Array.Empty<LoreLogDefinition>();
+        public bool MarkedOnMap => markedOnMap;
 
         /// <summary>Total of <paramref name="material"/> across every placed copy.</summary>
         public int TotalAmountOf(MaterialDefinition material) => checked(AmountOf(material) * placedCount);
@@ -43,7 +52,7 @@ namespace QuietHull.Data
         protected override void ValidateDefinition(ValidationReport report)
         {
             report.Positive(this, nameof(placedCount), placedCount);
-            if (Materials.Count == 0 && Items.Count == 0)
+            if (Materials.Count == 0 && Items.Count == 0 && OmenCards.Count == 0 && Logs.Count == 0)
             {
                 report.Warning(this, nameof(materials), "the cache is empty.");
             }

@@ -33,6 +33,10 @@ namespace QuietHull.Data.Editor
         public MarketOfferDefinition Rumour { get; internal set; }
         public MarketOfferDefinition RadiationLining { get; internal set; }
 
+        public LootCacheDefinition SecuritySynthRemains { get; internal set; }
+        public CountermeasureCardDefinition TurnToSunCard { get; internal set; }
+        public GoalDefinition RescueGoal { get; internal set; }
+        public IReadOnlyList<LoreLogDefinition> Logs { get; internal set; }
         public MissionScriptDefinition Mission { get; internal set; }
         public DefinitionCatalog Catalog { get; internal set; }
         public IReadOnlyList<DefinitionBase> All { get; internal set; }

@@ -267,6 +267,7 @@ namespace QuietHull.Data.Editor
             j1m.heatAfterExertion = 5f;
             j1m.exertionCooldownSeconds = 6f;
             j1m.lampRange = 8f;
+            j1m.charge = AugmentCatalog.WorkerCharge; // Off in the prologue (MissionScript.chargeEnabled), on from mission 2.
             j1m.handCarrySlots = 1;
             j1m.abilities = UnitAbility.Move | UnitAbility.Interact | UnitAbility.Attack | UnitAbility.Patrol | UnitAbility.PushCart | UnitAbility.Throw;
             j1m.startingItems = Array.Empty<ItemDefinition>();
@@ -342,14 +343,6 @@ namespace QuietHull.Data.Editor
             crusher.causeText = "The crusher jammed on overload and won't stop turning.";
             c.CrusherBay = crusher;
 
-            var pumps = make.Def<RoomAmbienceDefinition>("amb_coolant_pump_hall", WorldFolder, "Coolant pump hall", "Pulsing masking noise: move on the beat.", "ambience");
-            pumps.pattern = AmbiencePattern.Pulsing;
-            pumps.peakLevel = 7f;
-            pumps.baseLevel = 1f;
-            pumps.periodSeconds = 4f;
-            pumps.peakSeconds = 1.5f;
-            pumps.causeText = "The pumps are cavitating as the reactor overheats; they hammer every few seconds.";
-            c.PumpHall = pumps;
 
             var valves = make.Def<RoomAmbienceDefinition>("amb_valve_gallery", WorldFolder, "Valve gallery", "Burst masking noise: wait for the vent.", "ambience");
             valves.pattern = AmbiencePattern.Burst;
@@ -440,7 +433,7 @@ namespace QuietHull.Data.Editor
                 new WaveSpawn(c.Crawler, 2, "corridor_b_north", 0f, 1.5f),
                 new WaveSpawn(c.Crawler, 1, "duct_b1", 4f, 0f));
             var follower = Wave("wave_follower", "The follower",
-                new WaveSpawn(c.Crawler, 1, "pump_hall_vent", 0f, 0f));
+                new WaveSpawn(c.Crawler, 1, "valve_gallery_vent", 0f, 0f));
             var coldCorridor = Wave("wave_cold_corridor_spitter", "Spitter in the cold corridor",
                 new WaveSpawn(c.Spitter, 1, "port_corridor_hold", 0f, 0f));
             var perimeter = Wave("wave_shuttle_perimeter", "Drawn by the repairs",
@@ -538,9 +531,9 @@ namespace QuietHull.Data.Editor
                 "You're loud now", "The wheels squeal. The ring around J1M is how far that carries.",
                 "Your own noise", Obj(("obj_load_cylinders", "Load both fuel cylinders", false)));
             Beat(9, "masking", 1290, BeatTrigger.ItemPickedUp, "itm_fuel_cylinder", false,
-                "Hide in the noise", "Loud rooms cover your noise. Crusher: always. Pumps: on the beat. Valves: on a burst.",
-                "Masking: steady, pulsing, bursts", Obj(("obj_reach_cryo", "Take the loud route toward the cryo bay", false)));
-            Beat(10, "follower", 1230, BeatTrigger.EnterRoom, "room_coolant_pump_hall", false,
+                "Hide in the noise", "Loud rooms cover your noise. The crusher: always. The valve gallery: only during a burst.",
+                "Masking: steady noise and bursts", Obj(("obj_reach_cryo", "Take the loud route toward the cryo bay", false)));
+            Beat(10, "follower", 1230, BeatTrigger.EnterRoom, "room_valve_gallery", false,
                 "Break contact", "It's following your sound. Get a door between you and wait.",
                 "Breaking contact; giving up", Obj(("obj_lose_it", "Lose the Crawler", true)), follower);
             Beat(11, "flash_freeze", 1170, BeatTrigger.EnterRoom, "room_coolant_junction", false,
@@ -597,7 +590,7 @@ namespace QuietHull.Data.Editor
                 "Last rounds", "The counters are nearly empty. Get the alloy aboard.",
                 "Ammo matters", Obj(("obj_load_alloy", "Load the alloy", false)));
             Beat(26, "bay_doors", 120, BeatTrigger.ItemDelivered, "itm_grav_lattice_alloy", false,
-                "Doorway", "Take the pistol. You're in direct control: hold the doorway until the doors close.",
+                "Doorway", "Take the pistol and hold the doorway: you're in direct control. When the swarm fills the bay, play Vent from the cockpit.",
                 "The commander can fight in a pinch", Obj(("obj_hold_doorway", "Hold the bay doorway", false)), finale);
             Beat(27, "launch", 45, BeatTrigger.TimerReached, "45", false,
                 "Launch", "Strap in.",
@@ -626,7 +619,92 @@ namespace QuietHull.Data.Editor
                 "Prologue and demo: escape the Patna before the reactor goes.", "mission", "prologue");
             mission.countdownSeconds = 1800f;
             mission.pauseCountdownDuringPrompts = true;
+            // Review fix 4: twelve full prompt cards for the ideas a player can't guess; the rest are toasts.
+            var cardBeats = new[] { 1, 3, 5, 8, 9, 11, 14, 15, 17, 18, 21, 26 };
+            foreach (var beat in beats)
+            {
+                beat.promptStyle = Array.IndexOf(cardBeats, beat.order) >= 0 ? PromptStyle.Card : PromptStyle.Toast;
+            }
+
+            // Review fix 3: the commander's first card, played in the finale.
+            var vent = make.Def<CountermeasureCardDefinition>("card_vent", ScriptFolder, "Vent",
+                "Blow a room's atmosphere out through its emergency vents. Everything inside is torn loose; the roar is heard ship-wide.", "card", "countermeasure");
+            vent.effect = CountermeasureEffect.VentRoom;
+            vent.powerCost = 2;
+            vent.cooldownSeconds = 45f;
+            vent.durationSeconds = 6f;
+            vent.noise = 14f;
+            vent.damagePerSecond = 30f;
+            c.VentCard = vent;
+
+            // Review fix 5: something found every few minutes, marked on the map.
+            var stores = make.Def<ResourceDefinition>("itm_ships_stores", ItemsFolder, "Ship's stores",
+                "A sealed crate of Vashti-Kell stores: rations, filters, spares. Worth 100 at Patusan.", "resource", "salvage");
+            stores.slotsPerUnit = 1;
+            stores.scripValue = 100;
+            stores.premiumFromUnit = 0;
+            stores.premiumScripValue = 0;
+            c.ShipsStores = stores;
+
+            LoreLogDefinition Log(string id, string title, string room, string text)
+            {
+                var log = make.Def<LoreLogDefinition>(id, ScriptFolder, title, title, "log", "patna");
+                log.hulk = "Patna";
+                log.roomId = room;
+                log.text = text;
+                return log;
+            }
+
+            var logs = new[]
+            {
+                Log("log_patna_lifeboats", "Lifeboat roster", "room_cargo_bay_b",
+                    "Lifeboat 1: Marlow, Okafor, Vance, J1M (cargo). Lifeboat 2: everyone else. Somebody has crossed out J1M and written 'company property, leave it'."),
+                Log("log_patna_okafor", "Okafor's game", "room_crew_mess",
+                    "Chief engineer Okafor, playing himself again. 'Queen takes bishop next move. Then mate in two. Tell nobody I cheated.'"),
+                Log("log_patna_security", "Security recorder", "room_security_checkpoint",
+                    "'They mostly come out of the chest. Mostly. Seal the checkpoint. Seal it now.'"),
+                Log("log_patna_directive", "WARDEN directive 7", "room_reactor",
+                    "Directive 7 (company eyes only): biological cargo recovered from the ore seam takes priority over crew retention. Crew are liable for property left aboard.")
+            };
+            c.Logs = logs;
+
+            LootCacheDefinition Crate(int n, string room)
+            {
+                var crate = make.Def<LootCacheDefinition>($"cache_ships_stores_{n}", WorldFolder, "Ship's stores", $"A sealed crate in {room}.", "cache", "salvage");
+                crate.materials = Array.Empty<MaterialCost>();
+                crate.items = new[] { new ItemStack(stores, 1) };
+                crate.accessRequires = Array.Empty<ToolActionKind>();
+                crate.markedOnMap = true;
+                crate.placedCount = 1;
+                return crate;
+            }
+
+            c.StoresCrates = new[] { Crate(1, "the corridor past the armory (minute 5)"), Crate(2, "android maintenance (minute 12)"), Crate(3, "the crusher bay (minute 18)") };
+
+            // Review fix 6: commander ranks. Rank 20 at about 4,950 XP (the doc's curve).
+            var ranks = make.Def<CommanderRankDefinition>("ranks_commander", ScriptFolder, "Commander ranks",
+                "Marlow's rank: a skill point per rank. Rank 2 after the prologue, 4 by the end of mission 2, 5 in mission 3.", "ranks");
+            ranks.xpForRank = new[] { 100, 218, 353, 507, 679, 869, 1076, 1301, 1544, 1805, 2084, 2381, 2696, 3029, 3380, 3749, 4136, 4541, 4964 };
+            ranks.skillPointsPerRank = 1;
+            c.Ranks = ranks;
+
+            // Review fix 1: the next goal is on screen before the results screen ends.
+            var goal = make.Def<GoalDefinition>("goal_new_name", ScriptFolder, "A new name",
+                "Get to Patusan with enough Scrip for a new identity and a transponder reflash.", "goal");
+            goal.steps = new[]
+            {
+                new GoalStep { label = "800 Scrip for a new identity and a reflash", kind = GoalStepKind.HaveScrip, count = 800, hint = "Sell the alloy at Patusan's Exchange" }
+            };
+            goal.payoff = "A new name, and work from Doramin.";
+            c.NewNameGoal = goal;
+
             mission.beats = beats.ToArray();
+            mission.commanderXp = 120;
+            mission.cardsGranted = new[] { vent };
+            mission.nextGoal = goal;
+            mission.loreLogs = logs;
+            mission.completionFlags = new[] { "prologue_complete" };
+            mission.chargeEnabled = false;
             c.Mission = mission;
         }
     }

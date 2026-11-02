@@ -67,6 +67,9 @@ namespace QuietHull.Data
         }
 
         public int Scrip { get; private set; }
+        public int CommanderXp { get; private set; }
+
+        public void AddCommanderXp(int amount) => CommanderXp = checked(CommanderXp + Math.Max(0, amount));
         public IReadOnlyCollection<string> Flags => _flags;
 
         public Standing Of(FactionDefinition faction) => faction != null && _standing.TryGetValue(faction, out var s) ? s : Standing.Neutral;

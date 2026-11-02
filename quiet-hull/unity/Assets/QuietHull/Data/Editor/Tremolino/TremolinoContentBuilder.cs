@@ -146,11 +146,16 @@ namespace QuietHull.Data.Editor
                 new[] { new ItemStack(o.Frag, 4), new ItemStack(o.Stun, 2), new ItemStack(Blueprint(o.Shredder), 1) }, "cache", "armoury");
             c.PartsStore = Cache("cache_tremolino_parts", "Parts store",
                 "Plating and Circuitry, and old amalgam from a fight nobody survived.",
-                new[] { new MaterialCost(p.Plating, 8), new MaterialCost(p.Circuitry, 6), new MaterialCost(cs.AmalgamChunk, 6) },
+                // Review fix 2: enough here for all four ingots, so the Mk II craft can't fail on mission 2 choices.
+                new[] { new MaterialCost(p.Plating, 8), new MaterialCost(p.Circuitry, 6), new MaterialCost(cs.AmalgamChunk, 12) },
                 Array.Empty<ItemStack>(), "cache", "parts");
             c.CryoVault = Cache("cache_tremolino_cryo_vault", "Cryo vault",
                 "Open only at facing 2. The regulator core, and the smugglers' ledger.",
                 Array.Empty<MaterialCost>(), new[] { new ItemStack(core, 1) }, "cache", "story");
+            c.SecuritySynthRemains = Cache("cache_tremolino_security_synth", "Dead security synth",
+                "On the crew deck, torn open by the crew it was guarding. Its myomer is intact.",
+                new[] { new MaterialCost(cs.SyntheticMyomer, 1), new MaterialCost(p.Circuitry, 2) }, Array.Empty<ItemStack>(), "cache", "synthetic");
+
             c.DeepHold = Cache("cache_tremolino_deep_hold", "Deep hold",
                 "Radiation 3 until the reactor housing is stripped. Three units of alloy and a Bloodhound pattern.",
                 Array.Empty<MaterialCost>(), new[] { new ItemStack(p.GravLatticeAlloy, 3), new ItemStack(Blueprint(o.Bloodhound), 1) }, "cache", "optional");
@@ -311,20 +316,24 @@ namespace QuietHull.Data.Editor
                 "The cryo vault opens; the nest turns into the sun and burns. What survives comes down the duct.", "The sun as a weapon",
                 ("obj_core", "Take the regulator core", false), ("obj_ledger", "Read the ledger", false),
                 ("obj_vent_nest", "Hold this facing until the belt vents the nest", true));
-            Beat(6, "repair", 1500, BeatTrigger.ItemPickedUp, "itm_regulator_core", false, "Old machines",
+            Beat(6, "directive", 2000, BeatTrigger.InteractionCompleted, "console_turn_2", false, "Company specimens at risk",
+                "J1M has stopped. Its old firmware counts the eggs as company property: it's walking into the burning nest to shield them. Order it back.",
+                "Old firmware; your crew isn't only yours",
+                ("obj_recall_j1m", "Order J1M back", false));
+            Beat(7, "repair", 1500, BeatTrigger.ItemPickedUp, "itm_regulator_core", false, "Old machines",
                 "Install the core, then craft. Choose which facing to hold while you defend.", "T2 crafting",
                 ("obj_install_core", "Repair the fabricator", false), ("obj_craft_arms", "Craft the Servo arms Mk II", false));
-            Beat(7, "deep_hold", 1200, BeatTrigger.CraftCompleted, "rcp_aug_arms_mk2", false, "The deep hold",
+            Beat(8, "deep_hold", 1200, BeatTrigger.CraftCompleted, "rcp_aug_arms_mk2", false, "The deep hold",
                 "Optional: hold facing 3 for 10 minutes and the belt strips the reactor housing.", "The belt; radiation",
                 ("obj_deep_hold", "Reach the deep hold", true));
-            Beat(8, "spine", 900, BeatTrigger.TimerReached, "900", false, "The spine is creaking",
+            Beat(9, "spine", 900, BeatTrigger.TimerReached, "900", false, "The spine is creaking",
                 "If the spine goes, the only way out is the armoury wall, which the belt opens at facing 1.", "Consequences of waiting",
                 ("obj_leave", "Get back to the Nellie", false));
-            Beat(9, "ledger", 300, BeatTrigger.PreviousBeatCompleted, null, true, "The ledger",
+            Beat(10, "ledger", 300, BeatTrigger.PreviousBeatCompleted, null, true, "The ledger",
                 "Doramin, the Lane Authority, or nobody.", "A choice with consequences",
                 ("obj_ledger_choice", "Decide what to do with the ledger", false));
-            Beat(10, "outpost", 120, BeatTrigger.PreviousBeatCompleted, null, false, "An outpost",
-                "The fabricator stays aboard. You can come back, while the belt allows.", "Outposts",
+            Beat(11, "outpost", 120, BeatTrigger.PreviousBeatCompleted, null, false, "An outpost, and a name",
+                "The fabricator stays aboard while the belt allows. And someone at Patusan is asking about live colonists. Pod 7 on the Torrens: Lin Adair, 9.", "Outposts; the next goal",
                 ("obj_mark_outpost", "Mark the Tremolino as an outpost", false));
 
             var mission = make.Def<MissionScriptDefinition>("mission_tremolino", Folder, "The Tremolino",
@@ -333,6 +342,49 @@ namespace QuietHull.Data.Editor
             mission.countdownIsFailTimer = false;
             mission.pauseCountdownDuringPrompts = true;
             mission.beats = beats.ToArray();
+
+            var turn = make.Def<CountermeasureCardDefinition>("card_turn_to_sun", Folder, "Turn to Sun",
+                "From a powered attitude console: turn the hulk one facing. Rooms cool and bake over the turn; the belt grinds a new face.", "card", "countermeasure");
+            turn.effect = CountermeasureEffect.TurnHulk;
+            turn.powerCost = 3;
+            turn.cooldownSeconds = 90f;
+            turn.durationSeconds = c.Sun.TurnSeconds;
+            turn.noise = 9f;
+            c.TurnToSunCard = turn;
+
+            LoreLogDefinition Log(string id, string title, string room, string text)
+            {
+                var log = make.Def<LoreLogDefinition>(id, Folder, title, title, "log", "tremolino");
+                log.hulk = "Tremolino";
+                log.roomId = room;
+                log.text = text;
+                return log;
+            }
+
+            var logs = new[]
+            {
+                Log("log_tremolino_cargo", "Cargo note", "room_crew_decks", "'Special cargo in the vault. Keep it cold, keep it quiet, don't open it. Doramin pays on delivery.'"),
+                Log("log_tremolino_leak", "The leak", "room_crew_decks", "'Vault seal failed during the tumble. Something's out. Okonkwo went to look. Okonkwo didn't come back.'"),
+                Log("log_tremolino_sunward", "Navigator's note", "room_bridge", "'Turn her and the nest bakes. Turn her too long and the spine goes. Somebody pick.'")
+            };
+            c.Logs = logs;
+
+            var rescue = make.Def<GoalDefinition>("goal_rescue_sleeper", Folder, "The sleeper in pod 7",
+                "A child asleep on the Torrens, and someone at Patusan asking about live colonists.", "goal");
+            rescue.steps = new[]
+            {
+                new GoalStep { label = "Know where she is", kind = GoalStepKind.HaveFlag, flag = "torrens_sleeper_logged", hint = "Pod 7 on the Torrens (logged on the second trip)" },
+                new GoalStep { label = "Somewhere safe to take her", kind = GoalStepKind.HaveFlag, flag = "sleeper_refuge_found", hint = "Ask at Patusan, or at a Lane Authority station" }
+            };
+            rescue.payoff = "Mission 4: the first rescue.";
+            c.RescueGoal = rescue;
+
+            mission.commanderXp = 150;
+            mission.cardsGranted = new[] { turn };
+            mission.nextGoal = rescue;
+            mission.loreLogs = logs;
+            mission.autosaveOnEvents = new[] { "console_turn_1", "console_turn_2", "console_turn_3", "console_turn_0" };
+            mission.completionFlags = new[] { "fabricator_t2_access", "tremolino_outpost" };
             c.Mission = mission;
         }
     }

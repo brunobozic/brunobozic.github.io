@@ -22,6 +22,10 @@ namespace QuietHull.Data.Editor
         public const int LaneConduitSegments = 2;
         public const int JudeaKillZoneSegments = 3;
 
+        // Story flags that stage the Patusan hub (review fix 9).
+        public const string TripOneDoneFlag = "cs_trip1_done";
+        public const string ContractDoneFlag = "cs_complete";
+
         // Economy.
         public const int AugmentPrice = 450;
         public const int PodPayPerTrip = 600;
@@ -46,6 +50,14 @@ namespace QuietHull.Data.Editor
             var make = new DefinitionMaker(factory);
             var c = new ColdSleepContent { Prologue = prologue, Augs = augs, Augments = augs.StandardLine() };
             c.Factions = FactionCatalogBuilder.Build(make);
+
+            // From mission 2, J1M is a Gen 1, Mk I worker like any other (and its old firmware will matter).
+            prologue.J1M.markCurve = augs.WorkerCurve;
+            prologue.J1M.augmentSlots = new[] { AugmentSlot.Frame, AugmentSlot.Hardening, AugmentSlot.Hardening, AugmentSlot.Maintenance, AugmentSlot.ToolMount };
+            prologue.J1M.combatRole = CombatRole.DefendOnly;
+            prologue.J1M.defendRadius = 6f;
+            prologue.J1M.augmentCapacityKg = 30f;
+            prologue.J1M.basePowerOutputWatts = 150f;
 
             BuildMaterials(c, make);
             BuildWeapons(c, make);
@@ -426,6 +438,7 @@ namespace QuietHull.Data.Editor
             mount.vibration = 6f;
             mount.interruptConditionLoss = 25f;
             mount.placedCount = 2;
+            mount.salvageBonusScrip = 100; // Review fix 5: paid the moment a pod comes free.
             c.PodMount = mount;
 
             var store = make.Def<LootCacheDefinition>("cache_security_store", WorldFolder, "Security store",
@@ -610,12 +623,15 @@ namespace QuietHull.Data.Editor
             c.TransponderReflash = Offer("offer_transponder_reflash", "Transponder reflash", OfferKind.Service, null, 300, true, false, "Dockmaster");
             c.RepairJ1M = Offer("offer_repair_j1m", "Repair J1M", OfferKind.Service, c.Prologue.J1M, 100, false, false, "Repair bay");
             c.SecondWorkerOffer = Offer("offer_second_worker", "Used J-series worker", OfferKind.Unit, c.SecondWorker, 300, false, false, "Android dealer");
+            c.SecondWorkerOffer.visibleFromFlag = TripOneDoneFlag; // Review fix 9: the hub opens in stages.
             c.PicketOffer = Offer("offer_picket", "Picket (combat droid)", OfferKind.Unit, c.Picket, 500, false, true, "Doramin");
 
             var augmentOffers = new List<MarketOfferDefinition>(c.Augments.Count);
             foreach (var augment in c.Augments)
             {
-                augmentOffers.Add(Offer($"offer_{augment.Id}", augment.DisplayName, OfferKind.Augment, augment, augment.PriceScrip, false, false, "Augment clinic"));
+                var clinicOffer = Offer($"offer_{augment.Id}", augment.DisplayName, OfferKind.Augment, augment, augment.PriceScrip, false, false, "Augment clinic");
+                clinicOffer.visibleFromFlag = TripOneDoneFlag;
+                augmentOffers.Add(clinicOffer);
             }
 
             c.AugmentOffers = augmentOffers;
@@ -700,6 +716,7 @@ namespace QuietHull.Data.Editor
                 offer.lentForContract = false;
                 offer.vendor = augment.Line == AugmentLine.Shadow ? "The back room" : augment.IsWorkerModule ? "Drifters' Union yard" : "Blueprint broker";
                 offer.teaserOnly = true;
+                offer.visibleFromFlag = ContractDoneFlag;
                 offer.unlockRequirement = terms.requirement;
                 offer.requiresAll = terms.all;
                 offer.requiresAnyOf = terms.any;
@@ -732,6 +749,7 @@ namespace QuietHull.Data.Editor
                 offer.required = false;
                 offer.lentForContract = false;
                 offer.vendor = "Blueprint broker";
+                offer.visibleFromFlag = ContractDoneFlag;
                 offer.teaserOnly = !basic;
                 offer.unlockRequirement = basic ? string.Empty
                     : mine == c.Ordnance.Shredder ? "Military pattern: needs a Lane Authority licence, or Hollow Moon standing: Trusted."
@@ -756,6 +774,7 @@ namespace QuietHull.Data.Editor
             compartmentOffer.lentForContract = false;
             compartmentOffer.vendor = "The back room";
             compartmentOffer.teaserOnly = true;
+            compartmentOffer.visibleFromFlag = ContractDoneFlag;
             compartmentOffer.unlockRequirement = "Contraband: needs Hollow Moon standing: Trusted.";
             compartmentOffer.requiresAll = One(Requirement.Faction(f.HollowMoon, Standing.Trusted));
             compartmentOffer.requiresAnyOf = None();
@@ -763,6 +782,127 @@ namespace QuietHull.Data.Editor
 
             c.MineOffers = mineOffers;
             c.TeaserOffers = offers;
+        }
+
+        /// <summary>Review fixes 1, 3, 5, 6, 10 and 13: goals, cards, finds, XP, safety nets and the stall.</summary>
+        private static void BuildProgression(ColdSleepContent c, DefinitionMaker make)
+        {
+            var p = c.Prologue;
+            const string folder = "ColdSleep/Progression";
+
+            CountermeasureCardDefinition Card(string id, string name, string description, CountermeasureEffect effect, int power, float cooldown, float duration, float noise)
+            {
+                var card = make.Def<CountermeasureCardDefinition>(id, folder, name, description, "card", "countermeasure");
+                card.effect = effect;
+                card.powerCost = power;
+                card.cooldownSeconds = cooldown;
+                card.durationSeconds = duration;
+                card.noise = noise;
+                card.damagePerSecond = 0f;
+                return card;
+            }
+
+            c.SealDoorCard = Card("card_seal_door", "Seal Door", "Slam and lock a door from the cockpit. Bloats and the Brood Mother can still break it.",
+                CountermeasureEffect.SealDoor, 1, 20f, 60f, 3f);
+            c.CutLightsCard = Card("card_cut_lights", "Cut Lights", "Kill the lights in a section for 30 s: alien eyes see half as far, and so do yours.",
+                CountermeasureEffect.CutLights, 1, 40f, 30f, 0f);
+
+            var pumps = make.Def<RoomAmbienceDefinition>("amb_ballast_pumps", folder, "Ballast pumps",
+                "Pulsing masking noise: move on the beat.", "ambience");
+            pumps.pattern = AmbiencePattern.Pulsing;
+            pumps.peakLevel = 7f;
+            pumps.baseLevel = 1f;
+            pumps.periodSeconds = 4f;
+            pumps.peakSeconds = 1.5f;
+            pumps.causeText = "The Torrens's ballast pumps still cycle on emergency power, hammering every few seconds.";
+            c.BallastPumps = pumps;
+
+            var uncommon = make.Def<OmenCardDefinition>("omen_thin_swarm_uncommon", folder, "Thin Swarm (Uncommon)",
+                c.ThinSwarm.Description, "omen", "expedition", "found");
+            uncommon.family = c.ThinSwarm.Family;
+            uncommon.rarity = Rarity.Uncommon;
+            uncommon.commonThreat = c.ThinSwarm.CommonThreat;
+            uncommon.effects = new List<OmenEffect>(c.ThinSwarm.Effects).ToArray();
+            uncommon.legendaryTwist = c.ThinSwarm.LegendaryTwist;
+            c.ThinSwarmUncommon = uncommon;
+
+            LoreLogDefinition Log(string id, string title, string hulk, string room, string text)
+            {
+                var log = make.Def<LoreLogDefinition>(id, folder, title, title, "log", hulk.ToLowerInvariant());
+                log.hulk = hulk;
+                log.roomId = room;
+                log.text = text;
+                return log;
+            }
+
+            var logs = new[]
+            {
+                Log("log_torrens_manifest", "Cargo manifest", "Torrens", "room_cryo_hold",
+                    "Colonists, 212, indentured. Listed under 'perishable cargo'. Pods 3, 7 and 11 marked 'do not thaw without authorisation'."),
+                Log("log_torrens_captain", "Captain's last entry", "Torrens", "room_crew_quarters",
+                    "We sold two pods to keep the reactor fed. Then two more. I'm told the company calls that theft. I call it arithmetic."),
+                Log("log_torrens_sleeper", "Pod 7", "Torrens", "room_cryo_hold",
+                    "Occupant: Lin Adair, 9. Contract inherited from mother. Note: 'leave the sleepers' is Doramin's rule, not mine."),
+                Log("log_judea_bunker", "Coal fire, day 1", "Judea", "room_judea_bunker",
+                    "Spontaneous combustion in the bunker. Captain says we sail on, it's only smoke. Captain says a lot of things."),
+                Log("log_judea_armoury", "Armoury officer", "Judea", "room_judea_armoury",
+                    "Locked the conversion kits up before the crew could sell them. If you're reading this, sell them yourself.")
+            };
+            c.Logs = logs;
+
+            var stash = make.Def<LootCacheDefinition>("cache_torrens_crew_stash", folder, "Crew stash",
+                "Behind a bunk panel in the crew quarters: circuit boards and a tarot card.", "cache", "stash");
+            stash.materials = new[] { new MaterialCost(p.Circuitry, 3) };
+            stash.items = Array.Empty<ItemStack>();
+            stash.omenCards = new[] { uncommon };
+            stash.logs = new[] { logs[1] };
+            stash.accessRequires = Array.Empty<ToolActionKind>();
+            stash.markedOnMap = true;
+            stash.placedCount = 1;
+            c.CrewStash = stash;
+
+            var goal = make.Def<GoalDefinition>("goal_servo_arms_mk2", folder, "Servo arms Mk II",
+                "Doramin's blueprint, and what it takes to build it.", "goal");
+            goal.steps = new[]
+            {
+                new GoalStep { label = "A working T2 fabricator", kind = GoalStepKind.HaveFlag, flag = "fabricator_t2_access", hint = "The Drifters' Union has a rumour about the Tremolino" },
+                new GoalStep { label = "4 xenoalloy ingots", kind = GoalStepKind.HaveMaterial, item = c.XenoalloyIngot, count = 4, hint = "Press amalgam from kill zones; the Tremolino's parts store has more" },
+                new GoalStep { label = "6 Circuitry", kind = GoalStepKind.HaveMaterial, item = p.Circuitry, count = 6, hint = "Conduit amalgam, salvage, the Tremolino's parts store" },
+                new GoalStep { label = "1 synthetic myomer bundle", kind = GoalStepKind.HaveMaterial, item = c.SyntheticMyomer, count = 1, hint = "Strip a security synth: Constable, or the one on the Tremolino's crew deck" },
+                new GoalStep { label = "1 grav-lattice alloy", kind = GoalStepKind.HaveItem, item = p.GravLatticeAlloy, count = 1, hint = "Keep one from the Patna, or take one from the Tremolino's deep hold" }
+            };
+            goal.payoff = "Picket's first Mk II augment.";
+            c.ServoArmsGoal = goal;
+
+            var stall = make.Def<ShopDefinition>("shop_patusan_stall", folder, "Your stall at Patusan",
+                "Doramin's gift. Sells your salvage while you're away, for more than the Exchange pays.", "shop");
+            stall.hostFaction = c.Factions.HollowMoon;
+            stall.tiers = new[]
+            {
+                new ShopTier { name = "Stall", upgradeCost = 0, displaySlots = 4, salesPerReturn = 2, priceMultiplier = 1.0f, rentPerReturn = 50 },
+                new ShopTier { name = "Shop", upgradeCost = 2500, displaySlots = 8, salesPerReturn = 4, priceMultiplier = 1.1f, rentPerReturn = 150, hasBackCounter = true },
+                new ShopTier { name = "Emporium", upgradeCost = 8000, displaySlots = 16, salesPerReturn = 8, priceMultiplier = 1.2f, rentPerReturn = 400, hasBackCounter = true,
+                    takesFactionOrders = true, requiresFaction = c.Factions.HollowMoon, requiresStanding = Standing.Trusted }
+            };
+            stall.cutByStanding = new[] { 0.2f, 0.1f, 0.05f };
+            stall.theftChancePerItem = 0.1f;
+            stall.inspectionChance = 0.1f;
+            stall.unlockFlag = "patusan_stall_offered";
+            c.Stall = stall;
+
+            c.Trip1.commanderXp = 150;
+            c.Trip1.cardsGranted = new[] { c.SealDoorCard, c.CutLightsCard };
+            c.Trip1.completionFlags = new[] { TripOneDoneFlag };
+            c.Trip1.loreLogs = new[] { logs[0], logs[1], logs[2] };
+
+            c.Judea.commanderXp = 60;
+            c.Judea.loreLogs = new[] { logs[3], logs[4] };
+
+            c.Trip2.commanderXp = 100;
+            c.Trip2.nextGoal = goal;
+            c.Trip2.mercyAfterFailures = 2;
+            c.Trip2.mercyOmen = c.ThinSwarm;
+            c.Trip2.completionFlags = new[] { "torrens_sleeper_logged" };
         }
 
         private static void BuildScripts(ColdSleepContent c, DefinitionMaker make)
@@ -848,15 +988,15 @@ namespace QuietHull.Data.Editor
                 "Removal of colonial property is theft", "Constable opened the store, then saw what you're taking. Bring it down, then strip it.",
                 "A mini-boss; focus fire", Obj(("obj_defeat_constable", "Defeat Constable", false), ("obj_strip_constable", "Take the myomer", true)), c.ConstableNoise);
             Beat(trip1, t1, 6, "insulate", 1140, BeatTrigger.WaveCleared, "wave_constable_noise", false,
-                "Line the hold", "Install the 8 acoustic panels. Two workers do it twice as fast.", "Room treatments",
-                Obj(("obj_install_panels", "Insulate the cryo hold", false)));
+                "Line the hold", "Install the 8 acoustic panels. Two workers do it twice as fast. Watch their charge: a worker at 20% should go to the Nellie's cradle.", "Room treatments; charge",
+                Obj(("obj_install_panels", "Insulate the cryo hold", false), ("obj_recharge", "Recharge a worker at the Nellie's cradle", true)));
             Beat(trip1, t1, 7, "detach", 1050, BeatTrigger.InteractionCompleted, "rt_acoustic_insulation", false,
                 "Contained", "Disconnect both pods. The meter says Contained: nothing outside can hear it.", "Contained noise",
                 Obj(("obj_detach_pods", "Disconnect both pods", false)));
             Beat(trip1, t1, 8, "ammo", 960, BeatTrigger.PreviousBeatCompleted, null, true,
-                "Feed the printer", "Cut bulkhead panels and print ammo. 7 panels must last both trips, and they are not enough on their own: plan.",
-                "Crafting from the hulk; planning ahead",
-                Obj(("obj_print_ammo", "Print at least 3 ammo boxes", false), ("obj_load_sentries", "Load both sentries on the Lane", false)));
+                "Feed the printer", "Cut bulkhead panels, then give a worker the standing order Staff the printer: it keeps making ammo while you do something else. 7 panels must last both trips, and they aren't enough on their own: plan.",
+                "Crafting from the hulk; standing orders; planning ahead",
+                Obj(("obj_staff_printer", "Order a worker to staff the printer", false), ("obj_print_ammo", "Print at least 3 ammo boxes", false), ("obj_load_sentries", "Load both sentries on the Lane", false)));
             Beat(trip1, t1, 9, "haul", 780, BeatTrigger.PreviousBeatCompleted, null, false,
                 "Moving it", "The pod is heavy and loud. The hive wakes; the vow window closes.", "Hauling noise; the stream",
                 Obj(("obj_haul_pod", "Haul pod 1 to the docking collar", false)), c.Trip1Stream);
@@ -866,7 +1006,7 @@ namespace QuietHull.Data.Editor
             Beat(trip1, t1, 11, "aboard", 300, BeatTrigger.ItemDelivered, "itm_cryo_pod", true,
                 "One down", "Pod 1 is in the Cradle. Undock.", "Partial payout", Obj(("obj_undock", "Undock", false)));
             Beat(trip1, t1, 12, "paid", 120, BeatTrigger.PreviousBeatCompleted, null, false,
-                "600 Scrip", "Half the pay. Picket has learned enough to specialize.", "Payment; specialization",
+                "600 Scrip", "Half the pay. Picket has learned enough to specialize. Before you choose: the board has a side job on the Judea whose reward turns the handgun automatic (+33% damage; with Burst Gunner, +100%).", "Payment; an informed specialization",
                 Obj(("obj_return_patusan", "Return to Patusan", false)));
 
             var judea = new List<MissionBeatDefinition>(6);
@@ -898,14 +1038,14 @@ namespace QuietHull.Data.Editor
             Beat(trip2, t2, 2, "nest", 1380, BeatTrigger.EnterRoom, "room_cryo_hold", false,
                 "They moved in", "Crawlers have nested around the last pod.", "Clearing a room",
                 Obj(("obj_clear_nest", "Clear the hold", false)), c.Trip2Nest);
-            Beat(trip2, t2, 3, "sleeper", 1320, BeatTrigger.WaveCleared, "wave_trip2_nest", false,
+            Beat(trip2, t2, 3, "sleeper", 1320, BeatTrigger.WaveCleared, "wave_trip2_nest", true,
                 "For later", "The sleeper is still in the third pod. Marlow logs its location.", "The rescue seed",
                 Obj(("obj_log_sleeper", "Log the sleeper's pod", true)));
             Beat(trip2, t2, 4, "foothold", 1200, BeatTrigger.PreviousBeatCompleted, null, true,
-                "Push the foothold", "Cut what's left of the bulkheads, mine the trip 1 kill zone, print. A third sentry is possible if you have the parts.",
-                "Planning across trips; amalgam", Obj(("obj_load_2", "Load both sentries", false), ("obj_third_sentry", "Build a third sentry", true)));
+                "Push the foothold", "Cut what's left of the bulkheads, mine the trip 1 kill zone, print. Give a worker the standing order Supply sentries so the counters never hit zero. A third sentry is possible if you have the parts.",
+                "Planning across trips; amalgam; supply orders", Obj(("obj_load_2", "Load both sentries", false), ("obj_supply_order", "Order a worker to supply the sentries", false), ("obj_third_sentry", "Build a third sentry", true)));
             Beat(trip2, t2, 5, "leaper", 1020, BeatTrigger.PreviousBeatCompleted, null, false,
-                "It jumped", "A Leaper crouches, then jumps the barricade onto a sentry and knocks it over. A worker can set it up again (3 s).",
+                "It jumped", "Watch the first one: it crouches for two full seconds before it jumps the barricade onto a sentry and knocks it over. A worker can set it up again (3 s).",
                 "The Leaper", Obj(("obj_right_sentry", "Set the sentry back up", false)), c.Trip2LeaperIntro);
             Beat(trip2, t2, 6, "haul_2", 900, BeatTrigger.PreviousBeatCompleted, null, false,
                 "Last load", "Haul the second pod. Keep the sentries fed; mine as you go.", "Specializations in play",
@@ -929,6 +1069,7 @@ namespace QuietHull.Data.Editor
             c.Trip1 = Script("mission_cold_sleep_1", "Cold Sleep (1/2)", trip1, 1500f);
             c.Judea = Script("mission_judea", "The Judea", judea, 900f);
             c.Trip2 = Script("mission_cold_sleep_2", "Cold Sleep (2/2)", trip2, 1500f);
+            BuildProgression(c, make);
 
             var contract = make.Def<ContractDefinition>("con_cold_sleep", HubFolder, "Cold Sleep",
                 "Two cryo pods from the Torrens for Doramin.", "contract", "starter");
@@ -941,6 +1082,8 @@ namespace QuietHull.Data.Editor
             contract.partScripts = new[] { c.Trip1, c.Trip2 };
             contract.completionBlueprints = new[] { c.ServoArmsMk2Blueprint };
             contract.completionStanding = new[] { StandingChange.AtLeast(c.Factions.HollowMoon, Standing.Friendly) };
+            contract.rewardSummary = "Reward: 1,200 Scrip, the Cargo Cradle, two sentries and a Servo arms Mk II blueprint.";
+            contract.completionFlags = new[] { ContractDoneFlag, "patusan_stall_offered" };
             c.Contract = contract;
 
             var judeaContract = make.Def<ContractDefinition>("con_judea", HubFolder, "The Judea",
@@ -954,6 +1097,8 @@ namespace QuietHull.Data.Editor
             judeaContract.partScripts = new[] { c.Judea };
             judeaContract.completionBlueprints = Array.Empty<BlueprintDefinition>();
             judeaContract.completionStanding = new[] { StandingChange.By(c.Factions.DriftersUnion, 1) };
+            judeaContract.rewardSummary = "Reward: blueprint for a micro-conversion kit that turns the military handgun automatic (+33% damage; with Burst Gunner, +100%).";
+            judeaContract.completionFlags = new[] { "judea_complete" };
             c.JudeaContract = judeaContract;
 
             var locker = make.Def<LootCacheDefinition>("cache_judea_armoury", WorldFolder, "Judea armoury locker",

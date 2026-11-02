@@ -25,6 +25,8 @@ namespace QuietHull.Data
 
         [Header("Teaching prompt")]
         [SerializeField] internal string promptTitle = string.Empty;
+        [Tooltip("Card for ideas a player can't guess; Toast for a one-liner; None when the level teaches it.")]
+        [SerializeField] internal PromptStyle promptStyle = PromptStyle.Card;
         [TextArea(2, 6)] [SerializeField] internal string promptBody = string.Empty;
         [Tooltip("What the beat teaches; shown on the results screen checklist.")]
         [SerializeField] internal string teaches = string.Empty;
@@ -41,7 +43,8 @@ namespace QuietHull.Data
         public string PromptTitle => promptTitle;
         public string PromptBody => promptBody;
         public string Teaches => teaches;
-        public bool HasPrompt => !string.IsNullOrWhiteSpace(promptTitle);
+        public PromptStyle PromptStyle => promptStyle;
+        public bool HasPrompt => !string.IsNullOrWhiteSpace(promptTitle) && promptStyle != PromptStyle.None;
         public bool IsCheckpoint => isCheckpoint;
         public IReadOnlyList<WaveDefinition> StartsWaves => startsWaves ?? Array.Empty<WaveDefinition>();
 

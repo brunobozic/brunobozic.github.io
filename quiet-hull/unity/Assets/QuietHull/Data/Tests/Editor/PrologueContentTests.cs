@@ -96,15 +96,6 @@ namespace QuietHull.Data.Tests
         }
 
         [Test]
-        public void Cart_InThePumpHall_IsMaskedOnlyOnTheBeat()
-        {
-            var noise = _content.HandCart.NoiseMoving;
-
-            Assert.That(_content.PumpHall.IsMasked(noise, 0.5f), Is.True, "on the beat");
-            Assert.That(_content.PumpHall.IsMasked(noise, 2.5f), Is.False, "between beats");
-        }
-
-        [Test]
         public void Cart_InTheValveGallery_IsMaskedOnlyDuringABurst()
         {
             var noise = _content.HandCart.NoiseMoving;

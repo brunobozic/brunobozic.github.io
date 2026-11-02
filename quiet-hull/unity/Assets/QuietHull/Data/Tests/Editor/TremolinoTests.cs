@@ -190,7 +190,7 @@ namespace QuietHull.Data.Tests
         public void Mission_IsParTimed_NotAFailTimer()
         {
             Assert.That(_t.Mission.CountdownIsFailTimer, Is.False);
-            Assert.That(_t.Mission.Beats, Has.Count.EqualTo(10));
+            Assert.That(_t.Mission.Beats, Has.Count.EqualTo(11));
             Assert.That(_t.Mission.Beats.Select(b => b.TargetCountdownSeconds), Is.Ordered.Descending);
         }
     }

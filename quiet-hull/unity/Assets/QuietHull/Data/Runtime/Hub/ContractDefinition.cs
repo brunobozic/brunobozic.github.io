@@ -22,6 +22,10 @@ namespace QuietHull.Data
         [Tooltip("Blueprints given when the whole contract is complete.")]
         [SerializeField] internal BlueprintDefinition[] completionBlueprints = Array.Empty<BlueprintDefinition>();
         [SerializeField] internal StandingChange[] completionStanding = Array.Empty<StandingChange>();
+        [Tooltip("One line on the board saying what the job really pays (\"Reward: a conversion kit, +33% damage\").")]
+        [SerializeField] internal string rewardSummary = string.Empty;
+        [Tooltip("Flags set when the contract completes (they open hub counters).")]
+        [SerializeField] internal string[] completionFlags = Array.Empty<string>();
 
         public string Client => client;
         public string HulkName => hulkName;
@@ -33,6 +37,29 @@ namespace QuietHull.Data
         public IReadOnlyList<MissionScriptDefinition> PartScripts => partScripts ?? Array.Empty<MissionScriptDefinition>();
         public IReadOnlyList<BlueprintDefinition> CompletionBlueprints => completionBlueprints ?? Array.Empty<BlueprintDefinition>();
         public IReadOnlyList<StandingChange> CompletionStanding => completionStanding ?? Array.Empty<StandingChange>();
+        public string RewardSummary => rewardSummary;
+        public IReadOnlyList<string> CompletionFlags => completionFlags ?? Array.Empty<string>();
+
+        /// <summary>Applies the completion standing and flags to the player.</summary>
+        public void Complete(PlayerStanding standing)
+        {
+            if (standing == null)
+            {
+                throw new ArgumentNullException(nameof(standing));
+            }
+
+            foreach (var change in CompletionStanding)
+            {
+                standing.Apply(change);
+            }
+
+            foreach (var flag in CompletionFlags)
+            {
+                standing.SetFlag(flag);
+            }
+
+            standing.AddScrip(TotalPay);
+        }
 
         public int TotalPay
         {

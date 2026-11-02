@@ -88,6 +88,14 @@ namespace QuietHull.Data.Editor
         public MissionScriptDefinition Trip2 { get; internal set; }
         public MissionScriptDefinition Judea { get; internal set; }
 
+        public RoomAmbienceDefinition BallastPumps { get; internal set; }
+        public LootCacheDefinition CrewStash { get; internal set; }
+        public OmenCardDefinition ThinSwarmUncommon { get; internal set; }
+        public CountermeasureCardDefinition SealDoorCard { get; internal set; }
+        public CountermeasureCardDefinition CutLightsCard { get; internal set; }
+        public GoalDefinition ServoArmsGoal { get; internal set; }
+        public ShopDefinition Stall { get; internal set; }
+        public IReadOnlyList<LoreLogDefinition> Logs { get; internal set; }
         public DefinitionCatalog Catalog { get; internal set; }
         public IReadOnlyList<DefinitionBase> All { get; internal set; }
     }

@@ -492,4 +492,31 @@ namespace QuietHull.Data
         /// <summary>The section caves in: the passage to the target room is blocked for good.</summary>
         Collapse = 3
     }
+
+    /// <summary>How a beat teaches: a full prompt card, a one-line toast, or nothing (the level teaches it).</summary>
+    public enum PromptStyle
+    {
+        Card = 0,
+        Toast = 1,
+        None = 2
+    }
+
+    /// <summary>What a commander countermeasure card does.</summary>
+    public enum CountermeasureEffect
+    {
+        VentRoom = 0,
+        SealDoor = 1,
+        CutLights = 2,
+        TurnHulk = 3
+    }
+
+    /// <summary>One step of a long-term goal, checked against the campaign state.</summary>
+    public enum GoalStepKind
+    {
+        HaveMaterial = 0,
+        HaveItem = 1,
+        HaveFlag = 2,
+        StandingAtLeast = 3,
+        HaveScrip = 4
+    }
 }
